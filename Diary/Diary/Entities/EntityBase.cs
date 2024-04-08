@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SQLite;
 
 namespace Diary.Entities
 {
     public class EntityBase
     {
-        [Key]
-        public Guid Id { get; set; }
+        [PrimaryKey]
+        public Guid Id { get; set; } = Guid.Empty;
     }
 }

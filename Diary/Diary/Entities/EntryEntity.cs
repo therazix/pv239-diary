@@ -1,6 +1,8 @@
-﻿namespace Diary.Entities
+﻿using SQLite;
+
+namespace Diary.Entities
 {
-    public class Entry : EntityBase
+    public class EntryEntity : EntityBase
     {
         public string Title { get; set; } = string.Empty;
 
@@ -10,7 +12,7 @@
 
         public DateTime EditedAt { get; set; }
 
-        public bool IsFavourite { get; set; }
+        public bool IsFavorite { get; set; }
 
         public int Mood { get; set; }
 
@@ -20,6 +22,7 @@
 
         public double Altitude { get; set; }
 
-        public virtual ICollection<Label> Labels { get; set; } = [];
+        [Ignore]
+        public ICollection<LabelEntity> Labels { get; set; } = new List<LabelEntity>();
     }
 }

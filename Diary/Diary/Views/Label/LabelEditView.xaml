@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase x:Class="Diary.Views.Label.LabelEditView"
+                       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+                       xmlns:models="clr-namespace:Diary.Models.Label"
+                       xmlns:vm="clr-namespace:Diary.ViewModels.Label"
+                       xmlns:texts="clr-namespace:Diary.Resources.Texts"
+                       xmlns:views="clr-namespace:Diary.Views"
+                       xmlns:converters="clr-namespace:Diary.Converters"
+                       x:Name="Root"
+                       Title="Edit Label"
+                       x:DataType="vm:LabelEditViewModel">
+    <views:ContentPageBase.Resources>
+        <ResourceDictionary>
+            <converters:StringToColorConverter x:Key="StringToColorConverter" />
+        </ResourceDictionary>
+    </views:ContentPageBase.Resources>
+
+    <Grid Padding="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Entry Grid.Row="0"
+               Placeholder="Name"
+               Text="{Binding Label.Name}" />
+
+        <StackLayout Grid.Row="1"
+                     Orientation="Horizontal"
+                     Spacing="10">
+            <Label Text="Color:"
+                   VerticalOptions="Center" />
+            <Entry Placeholder="#AARRGGBB"
+                   Text="{Binding Label.Color}" />
+            <BoxView WidthRequest="40"
+                     HeightRequest="40"
+                     VerticalOptions="Center">
+                <BoxView.Color>
+                    <Binding Path="Label.Color"
+                             Converter="{StaticResource StringToColorConverter}" />
+                </BoxView.Color>
+            </BoxView>
+
+        </StackLayout>
+
+        <Button Grid.Row="2"
+                Text="Submit"
+                Command="{Binding SaveCommand}" />
+        <Button Grid.Row="3"
+                Text="Delete"
+                Command="{Binding DeleteCommand}"
+                BackgroundColor="Red"
+                TextColor="White" />
+    </Grid>
+</views:ContentPageBase>
