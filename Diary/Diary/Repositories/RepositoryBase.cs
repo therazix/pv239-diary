@@ -8,8 +8,7 @@ public class RepositoryBase<T> where T : EntityBase, new()
 
     public RepositoryBase()
     {
-        var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Constants.DatabaseFilename);
-        connection = new SQLiteAsyncConnection(dbPath);
+        connection = new SQLiteAsyncConnection(Constants.DatabasePath);
     }
 
     public virtual async Task<CreateTableResult> CreateTableAsync()
