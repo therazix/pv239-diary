@@ -119,6 +119,12 @@ namespace Diary
 
             if (string.IsNullOrEmpty(isFirstRun))
             {
+                var directory = Path.GetDirectoryName(Constants.DatabasePath);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
                 var entryRepository = app.Services.GetRequiredService<IEntryRepository>();
                 var labelRepository = app.Services.GetRequiredService<ILabelRepository>();
                 var templateRepository = app.Services.GetRequiredService<ITemplateRepository>();
