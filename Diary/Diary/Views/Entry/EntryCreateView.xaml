@@ -2,17 +2,26 @@
 <views:ContentPageBase x:Class="Diary.Views.Entry.EntryCreateView"
                        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:f="clr-namespace:Diary.Resources.Fonts"
+                       xmlns:t="clr-namespace:Diary.Resources.Texts"
                        xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
                        xmlns:models="clr-namespace:Diary.Models.Entry"
                        xmlns:labelmodels="clr-namespace:Diary.Models.Label"
+                       xmlns:converters="clr-namespace:Diary.Converters"
                        xmlns:vm="clr-namespace:Diary.ViewModels.Entry"
                        xmlns:texts="clr-namespace:Diary.Resources.Texts"
                        xmlns:views="clr-namespace:Diary.Views"
                        x:Name="Root"
                        Title="Create Entry"
                        x:DataType="vm:EntryCreateViewModel">
-
-    <Grid Padding="20">
+    <views:ContentPageBase.Resources>
+        <ResourceDictionary>
+            <converters:IntToMoodIconConverter x:Key="IntToMoodIconConverter" />
+            <converters:IntToMoodColorConverter x:Key="IntToMoodColorConverter" />
+        </ResourceDictionary>
+    </views:ContentPageBase.Resources>
+    
+    <Grid Padding="20" RowSpacing="10" ColumnSpacing="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -26,7 +35,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0"
@@ -57,11 +66,23 @@
                Grid.Column="0"
                Text="Mood:"
                FontAttributes="Bold" />
-        <Slider Grid.Row="3"
-                Grid.Column="1"
-                Minimum="0"
-                Maximum="100"
+        
+        <Grid Grid.Row="3"
+              Grid.Column="1"
+              ColumnDefinitions="*, Auto">
+            <Slider 
+                Grid.Column="0"
+                Minimum="1"
+                Maximum="5"
                 Value="{Binding Entry.Mood}" />
+            <Label Grid.Column="1"
+                   Padding="15, 0, 0, 0"
+                   Text="{Binding Entry.Mood, Converter={StaticResource IntToMoodIconConverter}}"
+                   FontFamily="{x:Static f:Fonts.FontAwesome}"
+                   TextColor="{Binding Entry.Mood, Converter={StaticResource IntToMoodColorConverter}}"
+                   FontSize="Large" />
+        </Grid>
+
 
         <Label Grid.Row="4"
                Grid.Column="0"
