@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase x:Class="Diary.Views.Entry.EntryCreateView"
+                       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+                       xmlns:models="clr-namespace:Diary.Models.Entry"
+                       xmlns:labelmodels="clr-namespace:Diary.Models.Label"
+                       xmlns:vm="clr-namespace:Diary.ViewModels.Entry"
+                       xmlns:texts="clr-namespace:Diary.Resources.Texts"
+                       xmlns:views="clr-namespace:Diary.Views"
+                       x:Name="Root"
+                       Title="Create Entry"
+                       x:DataType="vm:EntryCreateViewModel">
+
+    <Grid Padding="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0"
+               Grid.Column="0"
+               Text="Title:"
+               FontAttributes="Bold" />
+        <Entry Grid.Row="0"
+               Grid.Column="1"
+               Text="{Binding Entry.Title}" />
+
+        <Label Grid.Row="1"
+               Grid.Column="0"
+               Text="Content:"
+               FontAttributes="Bold" />
+        <Editor Grid.Row="1"
+                Grid.Column="1"
+                Text="{Binding Entry.Content}" />
+
+        <Label Grid.Row="2"
+               Grid.Column="0"
+               Text="IsFavorite:"
+               FontAttributes="Bold" />
+        <Switch Grid.Row="2"
+                Grid.Column="1"
+                IsToggled="{Binding Entry.IsFavorite}" />
+
+        <Label Grid.Row="3"
+               Grid.Column="0"
+               Text="Mood:"
+               FontAttributes="Bold" />
+        <Slider Grid.Row="3"
+                Grid.Column="1"
+                Minimum="0"
+                Maximum="100"
+                Value="{Binding Entry.Mood}" />
+
+        <Label Grid.Row="4"
+               Grid.Column="0"
+               Text="Latitude:"
+               FontAttributes="Bold" />
+        <Entry Grid.Row="4"
+               Grid.Column="1"
+               Text="{Binding Entry.Latitude}" />
+
+        <Label Grid.Row="5"
+               Grid.Column="0"
+               Text="Longitude:"
+               FontAttributes="Bold" />
+        <Entry Grid.Row="5"
+               Grid.Column="1"
+               Text="{Binding Entry.Longitude}" />
+
+        <Label Grid.Row="6"
+               Grid.Column="0"
+               Text="Altitude:"
+               FontAttributes="Bold" />
+        <Entry Grid.Row="6"
+               Grid.Column="1"
+               Text="{Binding Entry.Altitude}" />
+
+        <Label Grid.Row="7"
+               Grid.Column="0"
+               Text="Labels:"
+               FontAttributes="Bold" />
+        <CollectionView Grid.Row="7"
+                        Grid.Column="1"
+                        ItemsSource="{Binding Labels}"
+                        SelectionMode="Multiple"
+                        SelectedItems="{Binding SelectedLabels}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="labelmodels:LabelListModel">
+                    <StackLayout Orientation="Horizontal"
+                                 Spacing="10">
+                        <BoxView WidthRequest="20"
+                                 HeightRequest="20"
+                                 BackgroundColor="{Binding Color}" />
+                        <Label Text="{Binding Name}" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Grid.Row="8"
+                Grid.Column="0"
+                Text="Submit"
+                Command="{Binding SaveCommand}" />
+    </Grid>
+</views:ContentPageBase>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase x:Class="Diary.Views.Label.LabelListView"
+                       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+                       xmlns:models="clr-namespace:Diary.Models.Label"
+                       xmlns:vm="clr-namespace:Diary.ViewModels.Label"
+                       xmlns:texts="clr-namespace:Diary.Resources.Texts"
+                       xmlns:views="clr-namespace:Diary.Views"
+                       xmlns:converters="clr-namespace:Diary.Converters"
+                       x:Name="Root"
+                       Title="Labels"
+                       x:DataType="vm:LabelListViewModel">
+    <views:ContentPageBase.Resources>
+        <ResourceDictionary>
+            <converters:StringToColorConverter x:Key="StringToColorConverter" />
+        </ResourceDictionary>
+    </views:ContentPageBase.Resources>
+
+    <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <CollectionView Grid.Row="0"
+                        ItemsSource="{Binding Items}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:LabelListModel">
+                    <Grid Padding="10"
+                          ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.GoToDetailCommand}"
+                                                  CommandParameter="{Binding Id}" />
+                        </Grid.GestureRecognizers>
+                        <BoxView Grid.Column="0"
+                                 WidthRequest="30"
+                                 HeightRequest="30"
+                                 VerticalOptions="Center"
+                                 Color="{Binding Color, Converter={StaticResource StringToColorConverter}}" />
+                        <Label Grid.Column="1"
+                               Text="{Binding Name}"
+                               TextColor="Black"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Start" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Grid.Row="1"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,20,20"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="30"
+                BackgroundColor="#007AFF"
+                Text="+"
+                TextColor="White"
+                FontSize="24"
+                FontAttributes="Bold"
+                Command="{Binding GoToCreateCommand}" />
+    </Grid>
+</views:ContentPageBase>
