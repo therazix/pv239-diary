@@ -1,4 +1,5 @@
 ﻿using Diary.Models.Entry;
+using Diary.Models.Mood;
 
 namespace Diary.Clients.Interfaces;
 public interface IEntryClient
@@ -10,4 +11,8 @@ public interface IEntryClient
     Task<Guid> SetAsync(EntryDetailModel model);
 
     Task DeleteAsync(EntryDetailModel model);
+
+    Task<ICollection<MoodListModel>> GetMoodFromAllEntries();
+
+    Task<ICollection<MoodListModel>> GetMoodFromEntriesByDateRange(DateTime dateFrom, DateTime dateTo);
 }

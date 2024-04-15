@@ -8,6 +8,7 @@
        xmlns:labelviews="clr-namespace:Diary.Views.Label"
        xmlns:entryviews="clr-namespace:Diary.Views.Entry"
        xmlns:templateviews="clr-namespace:Diary.Views.Template"
+       xmlns:moodviews="clr-namespace:Diary.Views.Mood"
        Shell.FlyoutBehavior="Flyout"
        FlyoutBackground="{StaticResource Primary}"
        Title="Diary">
@@ -25,12 +26,12 @@
                    Grid.Column="1"
                    VerticalOptions="Center"
                    FontSize="Large"
-                   TextColor="{StaticResource TextLight}"
+                   TextColor="{StaticResource PrimaryLightText}"
                    FontFamily="PoppinsBold"
                    Margin="10, 10, 0, 20" />
             <Label Grid.Row="1"
                    Grid.ColumnSpan="2"
-                   BackgroundColor="{StaticResource TextLight}" />
+                   BackgroundColor="{StaticResource PrimaryLightText}" />
         </Grid>
     </Shell.FlyoutHeader>
     <Shell.ItemTemplate>
@@ -47,7 +48,7 @@
                        Text="{Binding Title}"
                        VerticalOptions="Center"
                        FontSize="Default"
-                       TextColor="{StaticResource TextLight}" />
+                       TextColor="{StaticResource PrimaryLightText}" />
             </Grid>
         </DataTemplate>
     </Shell.ItemTemplate>
@@ -56,7 +57,7 @@
         <FlyoutItem.Icon>
             <FontImageSource Glyph="{Static f:FontAwesomeIcons.Tag}"
                              FontFamily="{Static f:Fonts.FontAwesome}"
-                             Color="{StaticResource TextLight}" />
+                             Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
         <ShellContent Title="Labels"
                       ContentTemplate="{DataTemplate labelviews:LabelListView}"
@@ -66,7 +67,7 @@
         <FlyoutItem.Icon>
             <FontImageSource Glyph="{Static f:FontAwesomeIcons.Clipboard}"
                              FontFamily="{Static f:Fonts.FontAwesome}"
-                             Color="{StaticResource TextLight}" />
+                             Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
         <ShellContent Title="Entries"
                       ContentTemplate="{DataTemplate entryviews:EntryListView}"
@@ -76,7 +77,7 @@
         <FlyoutItem.Icon>
             <FontImageSource Glyph="{Static f:FontAwesomeIcons.Ruler}"
                              FontFamily="{Static f:Fonts.FontAwesome}"
-                             Color="{StaticResource TextLight}" />
+                             Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
         <ShellContent Title="Templates"
                       ContentTemplate="{DataTemplate templateviews:TemplateListView}"
@@ -86,7 +87,7 @@
         <FlyoutItem.Icon>
             <FontImageSource Glyph="{Static f:FontAwesomeIcons.Images}"
                              FontFamily="{Static f:Fonts.FontAwesome}"
-                             Color="{StaticResource TextLight}" />
+                             Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
         <ShellContent Title="{x:Static t:AppShellTexts.Gallery_FlyoutItem_Title}"
                       ContentTemplate="{DataTemplate local:MainPage}"
@@ -96,11 +97,11 @@
         <FlyoutItem.Icon>
             <FontImageSource Glyph="{Static f:FontAwesomeIcons.Smile}"
                              FontFamily="{Static f:Fonts.FontAwesome}"
-                             Color="{StaticResource TextLight}" />
+                             Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
         <ShellContent Title="{x:Static t:AppShellTexts.Mood_FlyoutItem_Title}"
-                      ContentTemplate="{DataTemplate local:MainPage}"
-                      Route="MainPage" />
+                      ContentTemplate="{DataTemplate moodviews:MoodListView}"
+                      Route="mood" />
     </FlyoutItem>
 
     <Shell.FlyoutFooterTemplate>
@@ -113,7 +114,7 @@
                 <Label Grid.Column="0"
                        Text="{Static f:FontAwesomeIcons.Cog}"
                        FontFamily="{Static f:Fonts.FontAwesome}"
-                       TextColor="{StaticResource TextLight}"
+                       TextColor="{StaticResource PrimaryLightText}"
                        FontSize="Large" />
 
                 <Label Text="Settings"
