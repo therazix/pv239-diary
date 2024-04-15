@@ -81,16 +81,23 @@
                 HorizontalOptions="FillAndExpand" />
             <Grid ColumnDefinitions="*,*">
                 <DatePicker
-                    x:Name="AverageMoodFromDatepicker"
                     Grid.Column="0"
                     Margin="15"
                     Date="{Binding AverageMoodFrom}"
-                    HorizontalOptions="Start" />
+                    HorizontalOptions="Start">
+                    <DatePicker.Behaviors>
+                        <toolkit:EventToCommandBehavior Command="{Binding ChangeAverageMoodChartRangeCommand}" EventName="DateSelected" />
+                    </DatePicker.Behaviors>
+                </DatePicker>
                 <DatePicker
                     Grid.Column="1"
                     Margin="15"
                     Date="{Binding AverageMoodTo}"
-                    HorizontalOptions="End" />
+                    HorizontalOptions="End">
+                    <DatePicker.Behaviors>
+                        <toolkit:EventToCommandBehavior Command="{Binding ChangeAverageMoodChartRangeCommand}" EventName="DateSelected" />
+                    </DatePicker.Behaviors>
+                </DatePicker>
             </Grid>
         </StackLayout>
     </ScrollView>

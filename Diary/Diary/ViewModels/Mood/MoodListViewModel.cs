@@ -17,6 +17,9 @@ public partial class MoodListViewModel : IViewModel
     private readonly IntToMoodColorConverter _intToMoodColorConverter = new();
     private readonly IntToMoodEmojiConverter _intToMoodEmojiConverter = new();
 
+    private string _backgroundColorHex = ColorHelper.GetBackgroundColorForCurrentTheme().ToHex();
+    private string _textColorHex = ColorHelper.GetTextColorForCurrentTheme().ToHex();
+
     private DateTime _weekLineChartDayFrom;
     private DateTime _weekLineChartDayTo => _weekLineChartDayFrom.AddDays(6);
 
@@ -44,16 +47,16 @@ public partial class MoodListViewModel : IViewModel
     public MoodListViewModel(IEntryClient entryClient)
     {
         _entryClient = entryClient;
-    }
 
-    public async Task OnAppearingAsync()
-    {
         _weekLineChartDayFrom = DateTime.Today.AddDays(DateTime.Today.DayOfWeek == 0 ? -6 : (int)DateTime.Today.DayOfWeek - 1);
         _monthRadarChartDayTo = new(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
 
         AverageMoodFrom = _monthRadarChartDayFrom;
         AverageMoodTo = _monthRadarChartDayTo;
+    }
 
+    public async Task OnAppearingAsync()
+    {
         await InitializeCharts();
     }
 
@@ -64,7 +67,7 @@ public partial class MoodListViewModel : IViewModel
 
         var moodEntries = await _entryClient.GetMoodFromEntriesByDateRange(_weekLineChartDayFrom, _weekLineChartDayTo);
 
-        WeekLineChart.Entries = GetEntriesForWeekLineChart(moodEntries);
+        SetWeekLineChart(moodEntries);
     }
 
     [RelayCommand]
@@ -74,7 +77,7 @@ public partial class MoodListViewModel : IViewModel
 
         var moodEntries = await _entryClient.GetMoodFromEntriesByDateRange(_weekLineChartDayFrom, _weekLineChartDayTo);
 
-        WeekLineChart.Entries = GetEntriesForWeekLineChart(moodEntries);
+        SetWeekLineChart(moodEntries);
     }
 
     [RelayCommand]
@@ -84,7 +87,7 @@ public partial class MoodListViewModel : IViewModel
 
         var moodEntries = await _entryClient.GetMoodFromEntriesByDateRange(_monthRadarChartDayFrom, _monthRadarChartDayTo);
 
-        MonthRadarChart.Entries = GetEntriesForMonthRadarChart(moodEntries);
+        SetMonthRadarChart(moodEntries);
     }
 
     [RelayCommand]
@@ -94,32 +97,51 @@ public partial class MoodListViewModel : IViewModel
 
         var moodEntries = await _entryClient.GetMoodFromEntriesByDateRange(_monthRadarChartDayFrom, _monthRadarChartDayTo);
 
-        MonthRadarChart.Entries = GetEntriesForMonthRadarChart(moodEntries);
+        SetMonthRadarChart(moodEntries);
+    }
+
+    [RelayCommand]
+    private async Task ChangeAverageMoodChartRange()
+    {
+        var moodEntries = await _entryClient.GetMoodFromEntriesByDateRange(AverageMoodFrom, AverageMoodTo);
+
+        SetAverageMoodPointChart(moodEntries);
     }
 
     private async Task InitializeCharts()
     {
-        var backgroundColorHex = ColorHelper.GetBackgroundColorForCurrentTheme().ToHex();
-        var textColorHex = ColorHelper.GetTextColorForCurrentTheme().ToHex();
-
         var moodEntriesMonth = await _entryClient.GetMoodFromEntriesByDateRange(_monthRadarChartDayFrom, _monthRadarChartDayTo);
         var moodEntriesWeek = moodEntriesMonth
             .Where(m => m.DateTime.Date >= _weekLineChartDayFrom && m.DateTime.Date <= _weekLineChartDayTo)
             .ToList();
 
+        SetWeekLineChart(moodEntriesWeek);
+        SetMonthRadarChart(moodEntriesMonth);
+
+        var moodEntriesForAverageMood = await _entryClient.GetMoodFromEntriesByDateRange(AverageMoodFrom, AverageMoodTo);
+        SetAverageMoodPointChart(moodEntriesForAverageMood);
+    }
+
+    private void SetWeekLineChart(ICollection<MoodListModel> moodEntries)
+    {
+        var lineChartEntries = GetEntriesForWeekLineChart(moodEntries);
+
         WeekLineChart = new LineChart
         {
-            Entries = GetEntriesForWeekLineChart(moodEntriesWeek),
+            Entries = lineChartEntries,
             MinValue = 0,
             MaxValue = 5,
             ValueLabelOrientation = Orientation.Horizontal,
             LabelOrientation = Orientation.Horizontal,
             LabelTextSize = 12,
-            BackgroundColor = SkiaSharp.SKColor.Parse(backgroundColorHex),
-            LabelColor = SkiaSharp.SKColor.Parse(textColorHex)
+            BackgroundColor = SkiaSharp.SKColor.Parse(_backgroundColorHex),
+            LabelColor = SkiaSharp.SKColor.Parse(_textColorHex)
         };
+    }
 
-        var radarChartEntries = GetEntriesForMonthRadarChart(moodEntriesMonth);
+    private void SetMonthRadarChart(ICollection<MoodListModel> moodEntries)
+    {
+        var radarChartEntries = GetEntriesForMonthRadarChart(moodEntries);
 
         MonthRadarChart = new RadarChart
         {
@@ -128,13 +150,15 @@ public partial class MoodListViewModel : IViewModel
             MaxValue = radarChartEntries.Any()
                 ? radarChartEntries.Where(e => e.Value != null).Max(e => (float)e.Value!) + 0.35f // Without adding this value, some circles may not be fully visible in charts
                 : 0,
-            BackgroundColor = SkiaSharp.SKColor.Parse(backgroundColorHex),
-            LabelColor = SkiaSharp.SKColor.Parse(textColorHex),
-            BorderLineColor = SkiaSharp.SKColor.Parse(textColorHex),
+            BackgroundColor = SkiaSharp.SKColor.Parse(_backgroundColorHex),
+            LabelColor = SkiaSharp.SKColor.Parse(_textColorHex),
+            BorderLineColor = SkiaSharp.SKColor.Parse(_textColorHex),
         };
+    }
 
-        var moodEntriesForAverageMood = await _entryClient.GetMoodFromEntriesByDateRange(AverageMoodFrom, AverageMoodTo);
-        var pointChartEntries = GetEntriesForAverageMoodPointChart(moodEntriesForAverageMood);
+    private void SetAverageMoodPointChart(ICollection<MoodListModel> moodEntries)
+    {
+        var pointChartEntries = GetEntriesForAverageMoodPointChart(moodEntries);
 
         AverageMoodPointChart = new PointChart
         {
@@ -144,8 +168,8 @@ public partial class MoodListViewModel : IViewModel
             ValueLabelOrientation = Orientation.Horizontal,
             LabelOrientation = Orientation.Horizontal,
             LabelTextSize = 12,
-            BackgroundColor = SkiaSharp.SKColor.Parse(backgroundColorHex),
-            LabelColor = SkiaSharp.SKColor.Parse(textColorHex)
+            BackgroundColor = SkiaSharp.SKColor.Parse(_backgroundColorHex),
+            LabelColor = SkiaSharp.SKColor.Parse(_textColorHex)
         };
     }
 
