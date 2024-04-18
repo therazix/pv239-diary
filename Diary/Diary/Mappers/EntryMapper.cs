@@ -1,5 +1,6 @@
 ﻿using Diary.Entities;
 using Diary.Models.Entry;
+using Diary.Models.Mood;
 using Riok.Mapperly.Abstractions;
 
 namespace Diary.Mappers;
@@ -12,6 +13,11 @@ public static partial class EntryMapper
 
     public static partial EntryListModel MapToListModel(this EntryEntity entity);
     public static partial ICollection<EntryListModel> MapToListModels(this ICollection<EntryEntity> entities);
+
+    [MapProperty(nameof(EntryEntity.CreatedAt), nameof(MoodListModel.DateTime))]
+    public static partial MoodListModel MapToMoodListModel(this EntryEntity entities);
+
+    public static partial ICollection<MoodListModel> MapToMoodListModels(this ICollection<EntryEntity> entities);
 
     [MapperIgnoreTarget(nameof(EntryEntity.Content))]
     [MapperIgnoreTarget(nameof(EntryEntity.Mood))]

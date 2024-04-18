@@ -1,5 +1,6 @@
 ﻿using Diary.Models.Label;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Diary.Models.Entry;
 public record EntryDetailModel : ModelBase
@@ -10,7 +11,9 @@ public record EntryDetailModel : ModelBase
     public DateTime CreatedAt { get; set; }
     public DateTime EditedAt { get; set; }
     public bool IsFavorite { get; set; }
-    public int Mood { get; set; }
+
+    [Range(1, 5)]
+    public int Mood { get; set; } = 1;
     public double Latitude { get; set; }
     public double Longitude { get; set; }
     public double Altitude { get; set; }

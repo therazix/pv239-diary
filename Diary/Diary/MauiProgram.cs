@@ -14,6 +14,7 @@ using Diary.Views;
 using Diary.Views.Entry;
 using Diary.Views.Label;
 using Diary.Views.Template;
+using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
 
 namespace Diary
@@ -25,6 +26,7 @@ namespace Diary
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMicrocharts()
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase
+    x:Class="Diary.Views.Mood.MoodListView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:Diary.Converters"
+    xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+    xmlns:models="clr-namespace:Diary.Models.Mood"
+    xmlns:texts="clr-namespace:Diary.Resources.Texts"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:views="clr-namespace:Diary.Views"
+    xmlns:vm="clr-namespace:Diary.ViewModels.Mood"
+    Title="Mood"
+    x:DataType="vm:MoodListViewModel">
+
+    <ScrollView>
+        <StackLayout>
+            <Label
+                Margin="0,15,0,15"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                Style="{StaticResource LabelStripe}"
+                Text="Mood during week" />
+
+            <microcharts:ChartView
+                Chart="{Binding WeekLineChart}"
+                HeightRequest="250"
+                HorizontalOptions="FillAndExpand" />
+
+            <Grid ColumnDefinitions="*,*">
+                <Button
+                    Grid.Column="0"
+                    Margin="15"
+                    Command="{Binding WeekLineChartPreviousCommand}"
+                    HorizontalOptions="Start"
+                    Text="Previous week" />
+                <Button
+                    Grid.Column="1"
+                    Margin="15"
+                    Command="{Binding WeekLineChartNextCommand}"
+                    HorizontalOptions="End"
+                    Text="Next week" />
+            </Grid>
+
+            <Label
+                Margin="0,15,0,15"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                Style="{StaticResource LabelStripe}"
+                Text="Monthly mood counter" />
+            <Label HorizontalOptions="Center" Text="{Binding MonthRadarChartDayFromText}" />
+            <microcharts:ChartView
+                Chart="{Binding MonthRadarChart}"
+                HeightRequest="250"
+                HorizontalOptions="FillAndExpand" />
+
+            <Grid ColumnDefinitions="*,*">
+                <Button
+                    Grid.Column="0"
+                    Margin="15"
+                    Command="{Binding MonthRadarChartPreviousCommand}"
+                    HorizontalOptions="Start"
+                    Text="Previous week" />
+                <Button
+                    Grid.Column="1"
+                    Margin="15"
+                    Command="{Binding MonthRadarChartNextCommand}"
+                    HorizontalOptions="End"
+                    Text="Next week" />
+            </Grid>
+
+            <Label
+                Margin="0,15,0,15"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                Style="{StaticResource LabelStripe}"
+                Text="Average mood per day" />
+            <microcharts:ChartView
+                Chart="{Binding AverageMoodPointChart}"
+                HeightRequest="250"
+                HorizontalOptions="FillAndExpand" />
+            <Grid ColumnDefinitions="*,*">
+                <DatePicker
+                    Grid.Column="0"
+                    Margin="15"
+                    Date="{Binding AverageMoodFrom}"
+                    HorizontalOptions="Start">
+                    <DatePicker.Behaviors>
+                        <toolkit:EventToCommandBehavior Command="{Binding ChangeAverageMoodChartRangeCommand}" EventName="DateSelected" />
+                    </DatePicker.Behaviors>
+                </DatePicker>
+                <DatePicker
+                    Grid.Column="1"
+                    Margin="15"
+                    Date="{Binding AverageMoodTo}"
+                    HorizontalOptions="End">
+                    <DatePicker.Behaviors>
+                        <toolkit:EventToCommandBehavior Command="{Binding ChangeAverageMoodChartRangeCommand}" EventName="DateSelected" />
+                    </DatePicker.Behaviors>
+                </DatePicker>
+            </Grid>
+        </StackLayout>
+    </ScrollView>
+</views:ContentPageBase>

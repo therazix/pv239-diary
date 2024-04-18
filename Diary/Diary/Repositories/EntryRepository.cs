@@ -71,6 +71,15 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         });
     }
 
+    public async Task<ICollection<EntryEntity>> GetEntriesByDateRange(DateTime dateFrom, DateTime dateTo)
+    {
+        dateFrom = new DateTime(dateFrom.Year, dateFrom.Month, dateFrom.Day, 0, 0, 0);
+        dateTo = new DateTime(dateTo.Year, dateTo.Month, dateTo.Day, 23, 59, 59);
+
+        return await connection.Table<EntryEntity>()
+            .Where(e => e.CreatedAt >= dateFrom && e.CreatedAt <= dateTo)
+            .ToListAsync();
+    }
 
     private async Task<ICollection<LabelEntryEntity>> GetLabelEntriesByEntryId(Guid id)
     {
