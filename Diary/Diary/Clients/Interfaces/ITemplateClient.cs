@@ -5,6 +5,8 @@ public interface ITemplateClient
 {
     Task<ICollection<TemplateListModel>> GetAllAsync();
 
+    Task<ICollection<TemplateDetailModel>> GetAllDetailedAsync();
+
     Task<TemplateDetailModel?> GetByIdAsync(Guid id);
 
     Task<Guid> SetAsync(TemplateDetailModel model);
