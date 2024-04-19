@@ -8,13 +8,13 @@ namespace Diary.Entities
 
         public string Content { get; set; } = string.Empty;
 
-        public int Mood { get; set; }
+        public int? Mood { get; set; }
 
-        public double Latitude { get; set; }
+        public double? Latitude { get; set; }
 
-        public double Longitude { get; set; }
+        public double? Longitude { get; set; }
 
-        public double Altitude { get; set; }
+        public double? Altitude { get; set; }
 
         [Ignore]
         public ICollection<LabelEntity> Labels { get; set; } = new List<LabelEntity>();
