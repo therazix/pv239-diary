@@ -19,6 +19,12 @@ public class TemplateClient : ITemplateClient
         return entities.MapToListModels();
     }
 
+    public async Task<ICollection<TemplateDetailModel>> GetAllDetailedAsync()
+    {
+        var entities = await _repository.GetAllDetailedAsync();
+        return entities.MapToDetailModels();
+    }
+
     public async Task<TemplateDetailModel?> GetByIdAsync(Guid id)
     {
         var entity = await _repository.GetByIdAsync(id);

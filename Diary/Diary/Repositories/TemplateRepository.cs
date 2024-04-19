@@ -8,6 +8,20 @@ public class TemplateRepository : RepositoryBase<TemplateEntity>, ITemplateRepos
     {
     }
 
+    public async Task<ICollection<TemplateEntity>> GetAllDetailedAsync()
+    {
+        var entities = await connection.Table<TemplateEntity>().ToListAsync();
+
+        foreach (var entity in entities)
+        {
+            var labels = await GetLabelsByTemplateId(entity.Id);
+
+            entity.Labels = labels;
+        }
+
+        return entities;
+    }
+
     public async override Task<TemplateEntity?> GetByIdAsync(Guid id)
     {
         var entity = await connection.Table<TemplateEntity>().Where(e => e.Id == id).FirstOrDefaultAsync();
@@ -72,5 +86,11 @@ public class TemplateRepository : RepositoryBase<TemplateEntity>, ITemplateRepos
     private async Task<ICollection<LabelTemplateEntity>> GetLabelTemplatesByTemplateId(Guid id)
     {
         return await connection.Table<LabelTemplateEntity>().Where(e => e.TemplateId == id).ToListAsync();
+    }
+
+    private async Task<ICollection<LabelEntity>> GetLabelsByTemplateId(Guid id)
+    {
+        var labelIds = (await GetLabelTemplatesByTemplateId(id)).Select(e => e.LabelId).ToList();
+        return await connection.Table<LabelEntity>().Where(e => labelIds.Contains(e.Id)).ToListAsync();
     }
 }

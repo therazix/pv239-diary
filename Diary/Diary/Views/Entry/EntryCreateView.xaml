@@ -9,6 +9,7 @@
     xmlns:models="clr-namespace:Diary.Models.Entry"
     xmlns:t="clr-namespace:Diary.Resources.Texts"
     xmlns:texts="clr-namespace:Diary.Resources.Texts"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:views="clr-namespace:Diary.Views"
     xmlns:vm="clr-namespace:Diary.ViewModels.Entry"
     x:Name="Root"
@@ -31,6 +32,19 @@
                 FontAttributes="Bold"
                 Text="Title:" />
             <Entry Text="{Binding Entry.Title}" />
+
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Template:" />
+            <Picker
+                ItemDisplayBinding="{Binding Name}"
+                ItemsSource="{Binding Templates}"
+                SelectedItem="{Binding SelectedTemplate}">
+                <Picker.Behaviors>
+                    <toolkit:EventToCommandBehavior Command="{Binding InsertTemplateContentCommand}" EventName="SelectedIndexChanged" />
+                </Picker.Behaviors>
+            </Picker>
 
             <Label
                 Padding="0,15,0,0"
@@ -84,7 +98,7 @@
                 Text="Labels:" />
             <CollectionView
                 ItemsSource="{Binding Labels}"
-                SelectedItems="{Binding SelectedLabels}"
+                SelectedItems="{Binding SelectedLabels, Mode=TwoWay}"
                 SelectionMode="Multiple">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="labelmodels:LabelListModel">
