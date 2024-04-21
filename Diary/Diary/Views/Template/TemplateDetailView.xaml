@@ -1,105 +1,109 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<views:ContentPageBase x:Class="Diary.Views.Template.TemplateDetailView"
-                       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
-                       xmlns:models="clr-namespace:Diary.Models.Template"
-                       xmlns:labelmodels="clr-namespace:Diary.Models.Label"
-                       xmlns:vm="clr-namespace:Diary.ViewModels.Template"
-                       xmlns:texts="clr-namespace:Diary.Resources.Texts"
-                       xmlns:views="clr-namespace:Diary.Views"
-                       x:Name="Root"
-                       Title="Template Detail"
-                       x:DataType="vm:TemplateDetailViewModel">
+<views:ContentPageBase
+    x:Class="Diary.Views.Template.TemplateDetailView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:Diary.Converters"
+    xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+    xmlns:labelmodels="clr-namespace:Diary.Models.Label"
+    xmlns:models="clr-namespace:Diary.Models.Template"
+    xmlns:texts="clr-namespace:Diary.Resources.Texts"
+    xmlns:views="clr-namespace:Diary.Views"
+    xmlns:vm="clr-namespace:Diary.ViewModels.Template"
+    x:Name="Root"
+    Title="Template Detail"
+    x:DataType="vm:TemplateDetailViewModel">
+    <views:ContentPageBase.Resources>
+        <ResourceDictionary>
+            <converters:IntToMoodIconConverter x:Key="IntToMoodIconConverter" />
+            <converters:IntToMoodColorConverter x:Key="IntToMoodColorConverter" />
+        </ResourceDictionary>
+    </views:ContentPageBase.Resources>
+    <ScrollView>
+        <VerticalStackLayout Padding="15">
+            <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="0,15,0,0"
+                    FontAttributes="Bold"
+                    Text="Name:" />
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Text="{Binding Template.Name}" />
 
-    <Grid Padding="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Padding="0,15,0,0"
+                    FontAttributes="Bold"
+                    IsVisible="{Binding ShowMood}"
+                    Text="Mood:" />
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Padding="15,0,0,0"
+                    FontFamily="{x:Static fonts:Fonts.FontAwesome}"
+                    FontSize="Large"
+                    IsVisible="{Binding ShowMood}"
+                    Text="{Binding Template.Mood, Converter={StaticResource IntToMoodIconConverter}}"
+                    TextColor="{Binding Template.Mood, Converter={StaticResource IntToMoodColorConverter}}" />
+            </Grid>
 
-        <Label Grid.Row="0"
-               Grid.Column="0"
-               Text="Name:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="0"
-               Grid.Column="1"
-               Text="{Binding Template.Name}" />
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Content:" />
+            <Label Text="{Binding Template.Content}" />
 
-        <Label Grid.Row="1"
-               Grid.Column="0"
-               Text="Content:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="1"
-               Grid.Column="1"
-               Text="{Binding Template.Content}" />
+            <VerticalStackLayout IsVisible="{Binding ShowLocation}">
+                <Label
+                    Padding="0,15,0,0"
+                    FontAttributes="Bold"
+                    Text="Latitude:" />
+                <Label Text="{Binding Template.Latitude}" />
 
-        <Label Grid.Row="2"
-               Grid.Column="0"
-               Text="Mood:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="2"
-               Grid.Column="1"
-               Text="{Binding Template.Mood}" />
+                <Label
+                    Padding="0,15,0,0"
+                    FontAttributes="Bold"
+                    Text="Longitude:" />
+                <Label Text="{Binding Template.Longitude}" />
 
-        <Label Grid.Row="3"
-               Grid.Column="0"
-               Text="Latitude:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="3"
-               Grid.Column="1"
-               Text="{Binding Template.Latitude}" />
+                <Label
+                    Padding="0,15,0,0"
+                    FontAttributes="Bold"
+                    Text="Altitude:" />
+                <Label
+                    Grid.Row="5"
+                    Grid.Column="1"
+                    Text="{Binding Template.Altitude}" />
+            </VerticalStackLayout>
 
-        <Label Grid.Row="4"
-               Grid.Column="0"
-               Text="Longitude:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="4"
-               Grid.Column="1"
-               Text="{Binding Template.Longitude}" />
+            <VerticalStackLayout IsVisible="{Binding ShowLabels}">
+                <Label
+                    Padding="0,15,0,0"
+                    FontAttributes="Bold"
+                    Text="Labels:" />
+                <CollectionView ItemsSource="{Binding Template.Labels}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="labelmodels:LabelListModel">
+                            <StackLayout Orientation="Horizontal" Spacing="10">
+                                <BoxView
+                                    BackgroundColor="{Binding Color}"
+                                    HeightRequest="20"
+                                    WidthRequest="20" />
+                                <Label Text="{Binding Name}" />
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
 
-        <Label Grid.Row="5"
-               Grid.Column="0"
-               Text="Altitude:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="5"
-               Grid.Column="1"
-               Text="{Binding Template.Altitude}" />
-
-        <Label Grid.Row="6"
-               Grid.Column="0"
-               Text="Labels:"
-               FontAttributes="Bold" />
-        <CollectionView Grid.Row="6"
-                        Grid.Column="1"
-                        ItemsSource="{Binding Template.Labels}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="labelmodels:LabelListModel">
-                    <StackLayout Orientation="Horizontal"
-                                 Spacing="10">
-                        <BoxView WidthRequest="20"
-                                 HeightRequest="20"
-                                 BackgroundColor="{Binding Color}" />
-                        <Label Text="{Binding Name}" />
-                    </StackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-
-        <Button Grid.Row="7"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Text="Edit"
-                Command="{Binding GoToEditCommand}" />
-    </Grid>
+            <Button
+                Margin="0,15,0,0"
+                Command="{Binding GoToEditCommand}"
+                Text="Edit" />
+        </VerticalStackLayout>
+    </ScrollView>
 </views:ContentPageBase>
