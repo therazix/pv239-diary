@@ -8,7 +8,7 @@ namespace Diary.Entities
 
         public string Content { get; set; } = string.Empty;
 
-        public int? Mood { get; set; }
+        public int Mood { get; set; }
 
         public double? Latitude { get; set; }
 

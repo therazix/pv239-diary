@@ -74,9 +74,9 @@ public partial class EntryCreateViewModel : ViewModelBase
         {
             Entry.Content = SelectedTemplate.Content;
 
-            if (SelectedTemplate.Mood != null)
+            if (SelectedTemplate.Mood != 0)
             {
-                Entry.Mood = SelectedTemplate.Mood.Value;
+                Entry.Mood = SelectedTemplate.Mood;
             }
             if (SelectedTemplate.Latitude != null)
             {
@@ -102,7 +102,7 @@ public partial class EntryCreateViewModel : ViewModelBase
     {
         bool hasEntryContent = !string.IsNullOrWhiteSpace(Entry?.Content);
         bool hasTemplateContent = !string.IsNullOrWhiteSpace(SelectedTemplate?.Content);
-        bool hasTemplateMood = SelectedTemplate?.Mood != null;
+        bool hasTemplateMood = SelectedTemplate?.Mood != 0;
         bool hasTemplateLocation = SelectedTemplate?.Longitude != null || SelectedTemplate?.Latitude != null || SelectedTemplate?.Altitude != null;
         bool hasTemplateLabels = SelectedTemplate?.Labels.Count > 0;
 
