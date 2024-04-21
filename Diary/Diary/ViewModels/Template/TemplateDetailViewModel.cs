@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Models.Template;
 using PropertyChanged;
@@ -13,6 +14,15 @@ public partial class TemplateDetailViewModel : ViewModelBase
     [DoNotNotify]
     public Guid Id { get; set; }
 
+    [ObservableProperty]
+    private bool _showMood;
+
+    [ObservableProperty]
+    private bool _showLocation;
+
+    [ObservableProperty]
+    private bool _showLabels;
+
     public TemplateDetailModel? Template { get; set; }
 
     public TemplateDetailViewModel(ITemplateClient templateClient)
@@ -23,6 +33,10 @@ public partial class TemplateDetailViewModel : ViewModelBase
     public override async Task OnAppearingAsync()
     {
         Template = await _templateClient.GetByIdAsync(Id);
+
+        ShowMood = Template?.Mood != 0;
+        ShowLocation = Template?.Latitude != null && Template?.Longitude != null && Template.Altitude != null;
+        ShowLabels = Template?.Labels.Count > 0;
     }
 
     [RelayCommand]
