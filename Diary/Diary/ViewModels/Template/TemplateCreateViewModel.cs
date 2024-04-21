@@ -12,6 +12,10 @@ public partial class TemplateCreateViewModel : ViewModelBase
     private readonly ITemplateClient _templateClient;
     private readonly ILabelClient _labelClient;
 
+    public bool PresetMood { get; set; } = true;
+
+    public bool PresetLocation { get; set; } = true;
+
     public TemplateDetailModel? Template { get; set; }
 
     public ObservableCollection<LabelListModel> Labels { get; set; }
@@ -42,6 +46,15 @@ public partial class TemplateCreateViewModel : ViewModelBase
     {
         if (Template != null)
         {
+            Template.Mood = PresetMood ? Template.Mood : 0;
+            
+            if (!PresetLocation)
+            {
+                Template.Latitude = null;
+                Template.Longitude = null;
+                Template.Altitude = null;
+            }
+
             Template.Labels = new ObservableCollection<LabelListModel>(SelectedLabels.Select(l => (LabelListModel)l));
             await _templateClient.SetAsync(Template);
         }

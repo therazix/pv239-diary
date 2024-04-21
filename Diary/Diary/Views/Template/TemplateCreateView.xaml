@@ -1,109 +1,129 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<views:ContentPageBase x:Class="Diary.Views.Template.TemplateCreateView"
-                       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
-                       xmlns:models="clr-namespace:Diary.Models.Template"
-                       xmlns:labelmodels="clr-namespace:Diary.Models.Label"
-                       xmlns:vm="clr-namespace:Diary.ViewModels.Template"
-                       xmlns:texts="clr-namespace:Diary.Resources.Texts"
-                       xmlns:views="clr-namespace:Diary.Views"
-                       x:Name="Root"
-                       Title="Create Template"
-                       x:DataType="vm:TemplateCreateViewModel">
+<views:ContentPageBase
+    x:Class="Diary.Views.Template.TemplateCreateView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:Diary.Converters"
+    xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+    xmlns:labelmodels="clr-namespace:Diary.Models.Label"
+    xmlns:models="clr-namespace:Diary.Models.Template"
+    xmlns:texts="clr-namespace:Diary.Resources.Texts"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:views="clr-namespace:Diary.Views"
+    xmlns:vm="clr-namespace:Diary.ViewModels.Template"
+    x:Name="Root"
+    Title="Create Template"
+    x:DataType="vm:TemplateCreateViewModel">
 
-    <Grid Padding="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+    <views:ContentPageBase.Resources>
+        <ResourceDictionary>
+            <converters:IntToMoodIconConverter x:Key="IntToMoodIconConverter" />
+            <converters:IntToMoodColorConverter x:Key="IntToMoodColorConverter" />
+        </ResourceDictionary>
+    </views:ContentPageBase.Resources>
+    <ScrollView>
+        <VerticalStackLayout Padding="15">
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Name:" />
+            <Entry Text="{Binding Template.Name}" />
 
-        <Label Grid.Row="0"
-               Grid.Column="0"
-               Text="Name:"
-               FontAttributes="Bold" />
-        <Entry Grid.Row="0"
-               Grid.Column="1"
-               Text="{Binding Template.Name}" />
-
-        <Label Grid.Row="1"
-               Grid.Column="0"
-               Text="Content:"
-               FontAttributes="Bold" />
-        <Editor Grid.Row="1"
-                Grid.Column="1"
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Content:" />
+            <Editor
+                AutoSize="TextChanges"
+                MinimumHeightRequest="100"
                 Text="{Binding Template.Content}" />
 
-        <Label Grid.Row="2"
-               Grid.Column="0"
-               Text="Mood:"
-               FontAttributes="Bold" />
-        <Switch Grid.Row="2"
-                Grid.Column="1"
-                IsToggled="{Binding Template.Mood}" />
-
-        <Label Grid.Row="3"
-               Grid.Column="0"
-               Text="Latitude:"
-               FontAttributes="Bold" />
-        <Slider Grid.Row="3"
-                Grid.Column="1"
-                Minimum="0"
-                Maximum="100"
-                Value="{Binding Template.Latitude}" />
-
-        <Label Grid.Row="4"
-               Grid.Column="0"
-               Text="Longitude:"
-               FontAttributes="Bold" />
-        <Entry Grid.Row="4"
-               Grid.Column="1"
-               Text="{Binding Template.Longitude}" />
-
-        <Label Grid.Row="5"
-               Grid.Column="0"
-               Text="Altitude:"
-               FontAttributes="Bold" />
-        <Entry Grid.Row="5"
-               Grid.Column="1"
-               Text="{Binding Template.Altitude}" />
-        
-        <Label Grid.Row="6"
-               Grid.Column="0"
-               Text="Labels:"
-               FontAttributes="Bold" />
-        <CollectionView Grid.Row="6"
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto, Auto">
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="0,15,0,0"
+                    FontAttributes="Bold"
+                    Text="Preset mood?" />
+                <Switch
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    IsToggled="{Binding PresetMood}" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Padding="0,15,0,0"
+                    FontAttributes="Bold"
+                    Text="Mood:" />
+                <Grid
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    ColumnDefinitions="*, Auto">
+                    <Slider
+                        Grid.Column="0"
+                        IsEnabled="{Binding PresetMood}"
+                        Maximum="5"
+                        Minimum="1"
+                        Value="{Binding Template.Mood}" />
+                    <Label
                         Grid.Column="1"
-                        ItemsSource="{Binding Labels}"
-                        SelectionMode="Multiple"
-                        SelectedItems="{Binding SelectedLabels}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="labelmodels:LabelListModel">
-                    <StackLayout Orientation="Horizontal"
-                                 Spacing="10">
-                        <BoxView WidthRequest="20"
-                                 HeightRequest="20"
-                                 BackgroundColor="{Binding Color}" />
-                        <Label Text="{Binding Name}" />
-                    </StackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                        Padding="15,0,0,0"
+                        FontFamily="{x:Static fonts:Fonts.FontAwesome}"
+                        FontSize="Large"
+                        IsVisible="{Binding PresetMood}"
+                        Text="{Binding Template.Mood, Converter={StaticResource IntToMoodIconConverter}}"
+                        TextColor="{Binding Template.Mood, Converter={StaticResource IntToMoodColorConverter}}" />
+                </Grid>
+            </Grid>
 
-        <Button Grid.Row="7"
-                Grid.Column="0"
-                Text="Submit"
-                Command="{Binding SaveCommand}" />
-    </Grid>
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Preset location?" />
+            <Switch IsToggled="{Binding PresetLocation}" />
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Latitude:" />
+            <Entry IsEnabled="{Binding PresetLocation}" Text="{Binding Template.Latitude}" />
+
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Longitude:" />
+            <Entry IsEnabled="{Binding PresetLocation}" Text="{Binding Template.Longitude}" />
+
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Altitude:" />
+            <Entry IsEnabled="{Binding PresetLocation}" Text="{Binding Template.Altitude}" />
+
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Labels:" />
+            <CollectionView
+                ItemsSource="{Binding Labels}"
+                SelectedItems="{Binding SelectedLabels, Mode=TwoWay}"
+                SelectionMode="Multiple">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="labelmodels:LabelListModel">
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <BoxView
+                                BackgroundColor="{Binding Color}"
+                                HeightRequest="20"
+                                WidthRequest="20" />
+                            <Label Text="{Binding Name}" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button
+                Margin="0,15,0,0"
+                Command="{Binding SaveCommand}"
+                Text="Submit" />
+        </VerticalStackLayout>
+    </ScrollView>
 </views:ContentPageBase>
