@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Maps;
 using CommunityToolkit.Maui.Storage;
 using Diary.Clients;
 using Diary.Clients.Interfaces;
@@ -30,6 +31,11 @@ namespace Diary
                 .UseMauiApp<App>()
                 .UseMicrocharts()
                 .UseMauiCommunityToolkit()
+#if ANDROID || IOS
+                .UseMauiMaps()
+#elif WINDOWS
+                .UseMauiCommunityToolkitMaps(Constants.BingMapsApiKey)
+#endif
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("FontAwesome-Solid.ttf", Fonts.FontAwesome);
@@ -65,6 +71,7 @@ namespace Diary
             services.AddSingleton<IGlobalExceptionService, GlobalExceptionService>();
             services.AddSingleton<IGlobalExceptionServiceInitializer, GlobalExceptionServiceInitializer>();
             services.AddSingleton<ICommandFactory, CommandFactory>();
+            services.AddSingleton<IFilePicker>(FilePicker.Default);
             services.AddSingleton<IFileSaver>(FileSaver.Default);
             services.AddSingleton<IImportExportService, ImportExportService>();
         }

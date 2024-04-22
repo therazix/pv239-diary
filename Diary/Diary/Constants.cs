@@ -8,5 +8,9 @@ public static class Constants
 
     public const string FirstRunKey = "FirstRun";
 
-    public const string DefaultImportExportFileName = "DiaryAppExport.json";
+    public const string DefaultImportExportFileName = "DiaryData.json";
+
+    public const string MapDateTimeFormat = "dd/MM/y H:mm";
+
+    public const string BingMapsApiKey = "AslgOYkoOW5Q3lhZ0c3az5GzKnFtvrWQjayd4ihqT5nNOYr6WUzoXLX6o4yHAwE9";
 }
