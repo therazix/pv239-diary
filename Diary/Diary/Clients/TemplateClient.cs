@@ -21,7 +21,7 @@ public class TemplateClient : ITemplateClient
 
     public async Task<ICollection<TemplateDetailModel>> GetAllDetailedAsync()
     {
-        var entities = await _repository.GetAllDetailedAsync();
+        var entities = await _repository.GetAllAsync();
         return entities.MapToDetailModels();
     }
 
