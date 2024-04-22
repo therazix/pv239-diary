@@ -6,7 +6,7 @@ namespace Diary.Converters;
 
 public class IntToMoodIconConverter : BaseConverterOneWay<int, string>
 {
-    private static readonly string _defaultMoodIconName = FontAwesomeIcons.SadTear;
+    private static readonly string _defaultMoodIconName = "";
 
     public override string ConvertFrom(int value, CultureInfo? culture)
     {
