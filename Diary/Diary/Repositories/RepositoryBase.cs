@@ -38,7 +38,7 @@ public class RepositoryBase<T> where T : EntityBase, new()
             entity.Id = Guid.NewGuid();
         }
 
-        if (await Exists(entity.Id))
+        if (await ExistsAsync(entity.Id))
         {
             await connection.UpdateAsync(entity);
         }
@@ -63,7 +63,7 @@ public class RepositoryBase<T> where T : EntityBase, new()
         }
     }
 
-    public virtual async Task<bool> Exists(Guid id)
+    public virtual async Task<bool> ExistsAsync(Guid id)
     {
         var entity = await connection.Table<T>().Where(e => e.Id == id).FirstOrDefaultAsync();
         return entity != null;

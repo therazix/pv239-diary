@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Storage;
 using Diary.Clients;
 using Diary.Clients.Interfaces;
 using Diary.Commands;
@@ -12,6 +13,7 @@ using Diary.Services.Interfaces;
 using Diary.ViewModels.Interfaces;
 using Diary.Views;
 using Diary.Views.Entry;
+using Diary.Views.ImportExport;
 using Diary.Views.Label;
 using Diary.Views.Template;
 using Microcharts.Maui;
@@ -63,6 +65,8 @@ namespace Diary
             services.AddSingleton<IGlobalExceptionService, GlobalExceptionService>();
             services.AddSingleton<IGlobalExceptionServiceInitializer, GlobalExceptionServiceInitializer>();
             services.AddSingleton<ICommandFactory, CommandFactory>();
+            services.AddSingleton<IFileSaver>(FileSaver.Default);
+            services.AddSingleton<IImportExportService, ImportExportService>();
         }
 
         private static void ConfigureRepositories(IServiceCollection services)
@@ -111,6 +115,8 @@ namespace Diary
             Routing.RegisterRoute("//templates/detail", typeof(TemplateDetailView));
             Routing.RegisterRoute("//templates/edit", typeof(TemplateEditView));
             Routing.RegisterRoute("//templates/create", typeof(TemplateCreateView));
+
+            Routing.RegisterRoute("//importexport", typeof(ImportExportView));
         }
 
         private static async Task SetupDatabaseAsync(MauiApp app)
