@@ -8,6 +8,7 @@
     xmlns:importexportviews="clr-namespace:Diary.Views.ImportExport"
     xmlns:labelviews="clr-namespace:Diary.Views.Label"
     xmlns:local="clr-namespace:Diary"
+    xmlns:mapviews="clr-namespace:Diary.Views.Map"
     xmlns:moodviews="clr-namespace:Diary.Views.Mood"
     xmlns:t="clr-namespace:Diary.Resources.Texts"
     xmlns:templateviews="clr-namespace:Diary.Views.Template"
@@ -132,6 +133,19 @@
             Title="Import &amp; Export"
             ContentTemplate="{DataTemplate importexportviews:ImportExportView}"
             Route="importexport" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Map">
+        <FlyoutItem.Icon>
+            <FontImageSource
+                FontFamily="{Static f:Fonts.FontAwesome}"
+                Glyph="{Static f:FontAwesomeIcons.Map}"
+                Color="{StaticResource PrimaryLightText}" />
+        </FlyoutItem.Icon>
+        <ShellContent
+            Title="Map"
+            ContentTemplate="{DataTemplate mapviews:MapView}"
+            Route="map" />
     </FlyoutItem>
 
     <Shell.FlyoutFooterTemplate>

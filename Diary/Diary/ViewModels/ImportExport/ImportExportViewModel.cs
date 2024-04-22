@@ -8,9 +8,10 @@ namespace Diary.ViewModels.ImportExport;
 
 public partial class ImportExportViewModel : ViewModelBase
 {
+    private readonly IFilePicker _filePicker;
     private readonly IFileSaver _fileSaver;
     private readonly IImportExportService _importExportService;
-    private readonly FilePickerFileType _jsonFileType = new FilePickerFileType(
+    private readonly FilePickerFileType _jsonFileType = new(
                 new Dictionary<DevicePlatform, IEnumerable<string>>
                 {
                     { DevicePlatform.Android, new[] { "application/json" } } ,
@@ -20,8 +21,9 @@ public partial class ImportExportViewModel : ViewModelBase
                     { DevicePlatform.WinUI, new[] { ".json" } }
                 });
 
-    public ImportExportViewModel(IFileSaver fileSaver, IImportExportService importExportService)
+    public ImportExportViewModel(IFilePicker filePicker, IFileSaver fileSaver, IImportExportService importExportService)
     {
+        _filePicker = filePicker;
         _fileSaver = fileSaver;
         _importExportService = importExportService;
     }
@@ -50,7 +52,7 @@ public partial class ImportExportViewModel : ViewModelBase
         string? toastMessage = null;
         try
         {
-            var result = await FilePicker.Default.PickAsync(options);
+            var result = await _filePicker.PickAsync(options);
             if (result != null)
             {
                 if (result.FileName.EndsWith("json", StringComparison.OrdinalIgnoreCase))

@@ -1,6 +1,7 @@
 ﻿using Diary.Entities;
 using Diary.Models.Entry;
 using Diary.Models.Mood;
+using Diary.Models.Pin;
 using Riok.Mapperly.Abstractions;
 
 namespace Diary.Mappers;
@@ -18,6 +19,24 @@ public static partial class EntryMapper
     public static partial MoodListModel MapToMoodListModel(this EntryEntity entities);
 
     public static partial ICollection<MoodListModel> MapToMoodListModels(this ICollection<EntryEntity> entities);
+
+    public static PinModel MapToPinModel(this EntryEntity entity)
+    {
+        return new PinModel()
+        {
+            EntryId = entity.Id,
+            Title = entity.Title,
+            Description = $"Created: {entity.CreatedAt.ToString(Constants.MapDateTimeFormat)}",
+            Location = new Location()
+            {
+                Latitude = entity.Latitude,
+                Longitude = entity.Longitude,
+                Altitude = entity.Altitude,
+            },
+        };
+    }
+
+    public static partial ICollection<PinModel> MapToPinModels(this ICollection<EntryEntity> entities);
 
     [MapperIgnoreTarget(nameof(EntryEntity.Content))]
     [MapperIgnoreTarget(nameof(EntryEntity.Mood))]
