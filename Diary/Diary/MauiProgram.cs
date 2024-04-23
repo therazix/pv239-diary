@@ -12,10 +12,12 @@ using Diary.Resources.Fonts;
 using Diary.Services;
 using Diary.Services.Interfaces;
 using Diary.ViewModels.Interfaces;
+using Diary.ViewModels.Map;
 using Diary.Views;
 using Diary.Views.Entry;
 using Diary.Views.ImportExport;
 using Diary.Views.Label;
+using Diary.Views.Map;
 using Diary.Views.Template;
 using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
@@ -50,6 +52,7 @@ namespace Diary
             ConfigureClients(builder.Services);
             ConfigureViewModels(builder.Services);
             ConfigureViews(builder.Services);
+            ConfigurePopups(builder.Services);
 
 
 #if DEBUG
@@ -108,6 +111,11 @@ namespace Diary
                 .AddClasses(filter => filter.AssignableTo<IViewModel>())
                 .AsSelfWithInterfaces()
                 .WithTransientLifetime());
+        }
+
+        private static void ConfigurePopups(IServiceCollection services)
+        {
+            services.AddTransientPopup<MapPopupView, MapPopupViewModel>();
         }
 
         private static void RegisterRoutes()

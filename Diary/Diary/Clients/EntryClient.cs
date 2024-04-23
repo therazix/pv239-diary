@@ -54,6 +54,7 @@ public class EntryClient : IEntryClient
     public async Task<ICollection<PinModel>> GetAllLocationPinsAsync()
     {
         var entities = await _repository.GetAllAsync();
-        return entities.MapToPinModels();
+        var entitiesWithLocation = entities.Where(e => e.Latitude != null && e.Longitude != null).ToList();
+        return entitiesWithLocation.MapToPinModels();
     }
 }

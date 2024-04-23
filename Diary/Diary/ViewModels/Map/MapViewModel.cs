@@ -1,5 +1,7 @@
-﻿using Diary.Clients.Interfaces;
+﻿using CommunityToolkit.Maui.Core.Extensions;
+using Diary.Clients.Interfaces;
 using Diary.Models.Pin;
+using System.Collections.ObjectModel;
 
 namespace Diary.ViewModels.Map;
 
@@ -8,8 +10,9 @@ public partial class MapViewModel : ViewModelBase
     private readonly IEntryClient _entryClient;
 
     public bool IsLocationEnabled { get; set; } = false;
+    public Location? CurrentLocation { get; set; }
 
-    public IEnumerable<PinModel> Pins { get; set; } = new List<PinModel>();
+    public ObservableCollection<PinModel> Pins { get; set; } = new ObservableCollection<PinModel>();
 
     public MapViewModel(IEntryClient entryClient)
     {
@@ -18,24 +21,11 @@ public partial class MapViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
-        IsLocationEnabled = await HasLocationPermission();
-        Pins = await _entryClient.GetAllLocationPinsAsync();
-    }
-
-    private async Task<bool> HasLocationPermission()
-    {
-        try
+        IsLocationEnabled = await Helpers.LocationHelper.HasLocationPermission();
+        if (IsLocationEnabled)
         {
-            var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
-            if (status != PermissionStatus.Granted)
-            {
-                status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
-            }
-            return status == PermissionStatus.Granted;
+            CurrentLocation = await Helpers.LocationHelper.GetAnyLocationAsync();
         }
-        catch
-        {
-            return false;
-        }
+        Pins = (await _entryClient.GetAllLocationPinsAsync()).ToObservableCollection();
     }
 }

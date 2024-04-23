@@ -40,8 +40,7 @@ public static class DataSeedService
             IsFavorite = false,
             Mood = 1,
             Latitude = 1,
-            Longitude = 1,
-            Altitude = 1
+            Longitude = 1
         },
         new EntryEntity()
         {
@@ -52,8 +51,7 @@ public static class DataSeedService
             IsFavorite = false,
             Mood = 2,
             Latitude = 2,
-            Longitude = 2,
-            Altitude = 2
+            Longitude = 2
         },
         new EntryEntity()
         {
@@ -64,8 +62,7 @@ public static class DataSeedService
             IsFavorite = false,
             Mood = 3,
             Latitude = 3,
-            Longitude = 3,
-            Altitude = 3
+            Longitude = 3
         }
     };
 
@@ -78,8 +75,7 @@ public static class DataSeedService
             Content = "Template Content 1",
             Mood = 1,
             Latitude = 1,
-            Longitude = 1,
-            Altitude = 1
+            Longitude = 1
         },
         new TemplateEntity()
         {
@@ -87,8 +83,7 @@ public static class DataSeedService
             Content = "Template Content 2",
             Mood = 2,
             Latitude = 2,
-            Longitude = 2,
-            Altitude = 2
+            Longitude = 2
         },
         new TemplateEntity()
         {
@@ -96,8 +91,7 @@ public static class DataSeedService
             Content = "Template Content 3",
             Mood = 3,
             Latitude = 3,
-            Longitude = 3,
-            Altitude = 3
+            Longitude = 3
         }
     };
 

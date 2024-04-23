@@ -77,20 +77,23 @@
             <Label
                 Padding="0,15,0,0"
                 FontAttributes="Bold"
-                Text="Latitude:" />
-            <Entry Text="{Binding Entry.Latitude}" />
+                Text="Location:" />
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    Padding="0,15,0,0"
+                    Text="{Binding LocationText}"
+                    TextColor="{Binding LocationTextColor}" />
+                <Button
+                    Margin="15,0,0,0"
+                    Command="{Binding DisplayMapPopupCommand}"
+                    Text="Show Map" />
+                <Button
+                    Margin="15,0,0,0"
+                    Command="{Binding ClearLocationCommand}"
+                    IsVisible="{Binding IsLocationSet}"
+                    Text="Clear" />
+            </StackLayout>
 
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Longitude:" />
-            <Entry Text="{Binding Entry.Longitude}" />
-
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Altitude:" />
-            <Entry Text="{Binding Entry.Altitude}" />
 
             <Label
                 Padding="0,15,0,0"

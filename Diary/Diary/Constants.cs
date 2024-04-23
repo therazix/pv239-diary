@@ -13,4 +13,6 @@ public static class Constants
     public const string MapDateTimeFormat = "dd/MM/y H:mm";
 
     public const string BingMapsApiKey = "AslgOYkoOW5Q3lhZ0c3az5GzKnFtvrWQjayd4ihqT5nNOYr6WUzoXLX6o4yHAwE9";
+
+    public static TimeSpan CancellationTokenDelay = TimeSpan.FromSeconds(5);
 }

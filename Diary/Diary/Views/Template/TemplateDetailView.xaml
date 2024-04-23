@@ -61,23 +61,11 @@
                 <Label
                     Padding="0,15,0,0"
                     FontAttributes="Bold"
-                    Text="Latitude:" />
-                <Label Text="{Binding Template.Latitude}" />
-
-                <Label
-                    Padding="0,15,0,0"
-                    FontAttributes="Bold"
-                    Text="Longitude:" />
-                <Label Text="{Binding Template.Longitude}" />
-
-                <Label
-                    Padding="0,15,0,0"
-                    FontAttributes="Bold"
-                    Text="Altitude:" />
-                <Label
-                    Grid.Row="5"
-                    Grid.Column="1"
-                    Text="{Binding Template.Altitude}" />
+                    Text="Location:" />
+                <StackLayout Orientation="Horizontal">
+                    <Label Padding="0,15,0,0" Text="{Binding LocationText}" />
+                    <Button Command="{Binding DisplayMapPopupCommand}" Text="Show Map" />
+                </StackLayout>
             </VerticalStackLayout>
 
             <VerticalStackLayout IsVisible="{Binding ShowLabels}">
