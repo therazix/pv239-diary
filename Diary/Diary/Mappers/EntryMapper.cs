@@ -12,6 +12,8 @@ public static partial class EntryMapper
     public static partial ICollection<EntryDetailModel> MapToDetailModels(this ICollection<EntryEntity> entities);
 
     public static partial EntryListModel MapToListModel(this EntryEntity entity);
+
+    [MapProperty(nameof(EntryEntity.Content), nameof(EntryListModel.Content), Use = nameof(MapContentToContentSubstring))]
     public static partial ICollection<EntryListModel> MapToListModels(this ICollection<EntryEntity> entities);
 
     [MapProperty(nameof(EntryEntity.CreatedAt), nameof(MoodListModel.DateTime))]
@@ -27,4 +29,7 @@ public static partial class EntryMapper
     [MapperIgnoreTarget(nameof(EntryEntity.Labels))]
     public static partial EntryEntity MapToEntity(this EntryListModel model);
     public static partial EntryEntity MapToEntity(this EntryDetailModel model);
+
+    [UserMapping(Default = false)]
+    private static string MapContentToContentSubstring(string content) => content[..50];
 }

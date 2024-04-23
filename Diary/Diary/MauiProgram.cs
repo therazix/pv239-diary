@@ -9,6 +9,7 @@ using Diary.Repositories.Interfaces;
 using Diary.Resources.Fonts;
 using Diary.Services;
 using Diary.Services.Interfaces;
+using Diary.ViewModels.Entry;
 using Diary.ViewModels.Interfaces;
 using Diary.Views;
 using Diary.Views.Entry;
@@ -107,6 +108,7 @@ namespace Diary
             Routing.RegisterRoute("//entries/detail", typeof(EntryDetailView));
             Routing.RegisterRoute("//entries/edit", typeof(EntryEditView));
             Routing.RegisterRoute("//entries/create", typeof(EntryCreateView));
+            Routing.RegisterRoute("//entries/calendar", typeof(EntryCalendarListView));
 
             Routing.RegisterRoute("//templates/detail", typeof(TemplateDetailView));
             Routing.RegisterRoute("//templates/edit", typeof(TemplateEditView));

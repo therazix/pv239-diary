@@ -35,6 +35,12 @@ public partial class EntryListViewModel : IViewModel
     }
 
     [RelayCommand]
+    private async Task SwitchToCalendarView()
+    {
+        await Shell.Current.GoToAsync("//entries/calendar");
+    }
+
+    [RelayCommand]
     private async Task GoToCreateAsync()
     {
         await Shell.Current.GoToAsync("//entries/create");
