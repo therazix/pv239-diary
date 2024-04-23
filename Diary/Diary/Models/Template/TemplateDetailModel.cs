@@ -10,6 +10,5 @@ public record TemplateDetailModel : ModelBase
     public int Mood { get; set; } = 1;
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
-    public double? Altitude { get; set; }
     public ObservableCollection<LabelListModel> Labels { get; set; } = new();
 }

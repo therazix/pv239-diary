@@ -14,8 +14,7 @@ public record EntryDetailModel : ModelBase
 
     [Range(1, 5)]
     public int Mood { get; set; } = 1;
-    public double Latitude { get; set; }
-    public double Longitude { get; set; }
-    public double Altitude { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
     public ObservableCollection<LabelListModel> Labels { get; set; } = new();
 }

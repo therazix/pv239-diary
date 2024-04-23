@@ -84,20 +84,25 @@
             <Label
                 Padding="0,15,0,0"
                 FontAttributes="Bold"
-                Text="Latitude:" />
-            <Entry IsEnabled="{Binding PresetLocation}" Text="{Binding Template.Latitude}" />
-
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Longitude:" />
-            <Entry IsEnabled="{Binding PresetLocation}" Text="{Binding Template.Longitude}" />
-
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Altitude:" />
-            <Entry IsEnabled="{Binding PresetLocation}" Text="{Binding Template.Altitude}" />
+                Text="Location:" />
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    Padding="0,15,0,0"
+                    IsEnabled="{Binding PresetLocation}"
+                    Text="{Binding LocationText}"
+                    TextColor="{Binding LocationTextColor}" />
+                <Button
+                    Margin="15,0,0,0"
+                    Command="{Binding DisplayMapPopupCommand}"
+                    IsEnabled="{Binding PresetLocation}"
+                    Text="Show Map" />
+                <Button
+                    Margin="15,0,0,0"
+                    Command="{Binding ClearLocationCommand}"
+                    IsEnabled="{Binding PresetLocation}"
+                    IsVisible="{Binding IsLocationSet}"
+                    Text="Clear" />
+            </StackLayout>
 
             <Label
                 Padding="0,15,0,0"

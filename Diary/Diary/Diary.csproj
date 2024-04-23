@@ -104,6 +104,9 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>AppShellTexts.resx</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\Map\MapPopupView.xaml.cs">
+	    <DependentUpon>MapPopupView.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -145,6 +148,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Label\LabelListView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Map\MapPopupView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Map\MapView.xaml">

@@ -29,9 +29,8 @@ public static partial class EntryMapper
             Description = $"Created: {entity.CreatedAt.ToString(Constants.MapDateTimeFormat)}",
             Location = new Location()
             {
-                Latitude = entity.Latitude,
-                Longitude = entity.Longitude,
-                Altitude = entity.Altitude,
+                Latitude = entity.Latitude ?? 0,
+                Longitude = entity.Longitude ?? 0,
             },
         };
     }
@@ -42,7 +41,6 @@ public static partial class EntryMapper
     [MapperIgnoreTarget(nameof(EntryEntity.Mood))]
     [MapperIgnoreTarget(nameof(EntryEntity.Latitude))]
     [MapperIgnoreTarget(nameof(EntryEntity.Longitude))]
-    [MapperIgnoreTarget(nameof(EntryEntity.Altitude))]
     [MapperIgnoreTarget(nameof(EntryEntity.Labels))]
     public static partial EntryEntity MapToEntity(this EntryListModel model);
     public static partial EntryEntity MapToEntity(this EntryDetailModel model);

@@ -1,0 +1,71 @@
+<toolkit:Popup
+    x:Class="Diary.Views.Map.MapPopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+    xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
+    xmlns:models="clr-namespace:Diary.Models.Pin"
+    xmlns:sensors="clr-namespace:Microsoft.Maui.Devices.Sensors;assembly=Microsoft.Maui.Essentials"
+    xmlns:texts="clr-namespace:Diary.Resources.Texts"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:views="clr-namespace:Diary.Views"
+    xmlns:vm="clr-namespace:Diary.ViewModels.Map"
+    x:DataType="vm:MapPopupViewModel">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <maps:Map
+            x:Name="map"
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            IsShowingUser="{Binding IsLocationEnabled}"
+            ItemsSource="{Binding Pins}"
+            MapClicked="OnMapClicked">
+            <x:Arguments>
+                <maps:MapSpan>
+                    <x:Arguments>
+                        <sensors:Location>
+                            <x:Arguments>
+                                <!--  Prague  -->
+                                <x:Double>50.073658</x:Double>
+                                <x:Double>14.418540</x:Double>
+                            </x:Arguments>
+                        </sensors:Location>
+                        <x:Double>0.01</x:Double>
+                        <x:Double>0.01</x:Double>
+                    </x:Arguments>
+                </maps:MapSpan>
+            </x:Arguments>
+            <maps:Map.ItemTemplate>
+                <DataTemplate x:DataType="models:PinModel">
+                    <maps:Pin
+                        Label="{Binding Title}"
+                        Location="{Binding Location}"
+                        Type="Generic" />
+                </DataTemplate>
+            </maps:Map.ItemTemplate>
+        </maps:Map>
+
+        <Button
+            Grid.Row="1"
+            Grid.Column="0"
+            Clicked="OnCancelButtonClicked"
+            Text="Cancel" />
+        <Button
+            Grid.Row="1"
+            Grid.Column="1"
+            Clicked="OnSaveButtonClicked"
+            IsVisible="{Binding IsControlEnabled}"
+            Text="Save" />
+
+    </Grid>
+</toolkit:Popup>

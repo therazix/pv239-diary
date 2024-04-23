@@ -16,7 +16,6 @@ public static partial class TemplateMapper
     [MapperIgnoreTarget(nameof(TemplateEntity.Mood))]
     [MapperIgnoreTarget(nameof(TemplateEntity.Latitude))]
     [MapperIgnoreTarget(nameof(TemplateEntity.Longitude))]
-    [MapperIgnoreTarget(nameof(TemplateEntity.Altitude))]
     [MapperIgnoreTarget(nameof(TemplateEntity.Labels))]
     public static partial TemplateEntity MapToEntity(this TemplateListModel model);
     public static partial TemplateEntity MapToEntity(this TemplateDetailModel model);
