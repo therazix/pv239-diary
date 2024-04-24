@@ -92,8 +92,7 @@ public partial class EntryCreateViewModel : ViewModelBase
             }
             if (SelectedTemplate.Labels.Count > 0)
             {
-                // BUG: SelectedLabels are added correctly when saving the entry, but they are not highlighted as selected in the UI
-                Entry.Labels = new ObservableCollection<LabelListModel>(SelectedTemplate.Labels);
+                SelectedLabels = new ObservableCollection<object>(Labels.Where(l => SelectedTemplate.Labels.Select(el => el.Id).Contains(l.Id)));
             }
         }
     }
