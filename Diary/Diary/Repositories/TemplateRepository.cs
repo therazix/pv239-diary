@@ -27,8 +27,7 @@ public class TemplateRepository : RepositoryBase<TemplateEntity>, ITemplateRepos
         var entity = await connection.Table<TemplateEntity>().Where(e => e.Id == id).FirstOrDefaultAsync();
         if (entity != null)
         {
-            var labelIds = (await GetLabelTemplatesByTemplateId(id)).Select(e => e.LabelId).ToList();
-            var labels = await connection.Table<LabelEntity>().Where(e => labelIds.Contains(e.Id)).ToListAsync();
+            var labels = await GetLabelsByTemplateId(id);
 
             entity.Labels = labels;
         }
