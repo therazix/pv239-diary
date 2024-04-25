@@ -70,7 +70,6 @@ namespace Diary
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(_ => SecureStorage.Default);
             services.AddSingleton<IGlobalExceptionService, GlobalExceptionService>();
             services.AddSingleton<IGlobalExceptionServiceInitializer, GlobalExceptionServiceInitializer>();
             services.AddSingleton<ICommandFactory, CommandFactory>();
@@ -136,11 +135,7 @@ namespace Diary
 
         private static async Task SetupDatabaseAsync(MauiApp app)
         {
-            var secureStorage = app.Services.GetRequiredService<ISecureStorage>();
-            //secureStorage.Remove(Constants.FirstRunKey);
-            var isFirstRun = await secureStorage.GetAsync(Constants.FirstRunKey);
-
-            if (string.IsNullOrEmpty(isFirstRun))
+            if (!File.Exists(Constants.DatabasePath))
             {
                 var directory = Path.GetDirectoryName(Constants.DatabasePath);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
@@ -161,8 +156,6 @@ namespace Diary
                 await labelTemplateRepository.CreateTableAsync();
 
                 await DataSeedService.SeedAsync(entryRepository, labelRepository, templateRepository);
-
-                await secureStorage.SetAsync(Constants.FirstRunKey, "false");
             }
         }
     }
