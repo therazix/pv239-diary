@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
     xmlns:models="clr-namespace:Diary.Models.Entry"
+    xmlns:plugin="clr-namespace:Plugin.Maui.Calendar.Controls;assembly=Plugin.Maui.Calendar"
     xmlns:texts="clr-namespace:Diary.Resources.Texts"
     xmlns:views="clr-namespace:Diary.Views"
     xmlns:vm="clr-namespace:Diary.ViewModels.Entry"
@@ -12,78 +13,100 @@
     Title="Entries"
     x:DataType="vm:EntryListViewModel">
 
-    <Grid x:Name="MainGrid">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <Grid
+        Padding="15,0,15,15"
+        ColumnDefinitions="*"
+        RowDefinitions="Auto, *, Auto">
+        <plugin:Calendar
+            Grid.Row="0"
+            ArrowsBackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
+                                                    Dark={StaticResource DarkBackground}}"
+            ArrowsBorderColor="{AppThemeBinding Light={StaticResource LightBackground},
+                                                Dark={StaticResource DarkBackground}}"
+            ArrowsColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                          Dark={StaticResource PrimaryLightText}}"
+            ArrowsFontSize="27"
+            ArrowsSymbolNext="⇾"
+            ArrowsSymbolPrev="⇽"
+            DayTappedCommand="{Binding DaySelectedCommand}"
+            DaysTitleColor="{StaticResource PrimaryLight}"
+            DaysTitleWeekendColor="{StaticResource Primary}"
+            DeselectedDayTextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                     Dark={StaticResource PrimaryLightText}}"
+            EventIndicatorColor="{AppThemeBinding Light={StaticResource TertiaryDark},
+                                                  Dark={StaticResource Tertiary}}"
+            EventIndicatorType="BottomDot"
+            Events="{Binding Events}"
+            HorizontalOptions="Fill"
+            MonthLabelColor="{StaticResource PrimaryLight}"
+            SelectedDate="{Binding SelectedDate}"
+            SelectedDayBackgroundColor="{StaticResource Primary}"
+            ShownDate="{Binding SelectedDate}"
+            TodayOutlineColor="{StaticResource Primary}"
+            TodayTextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                             Dark={StaticResource PrimaryLightText}}"
+            VerticalOptions="Fill"
+            YearLabelColor="{StaticResource Primary}" />
 
-        <CollectionView Grid.Row="0" ItemsSource="{Binding Items}">
-            <CollectionView.Header>
-                <Grid ColumnDefinitions="Auto,Auto,*">
-                    <Label Grid.Column="0" Text="Title" />
-                    <Label Grid.Column="1" Text="Created At" />
-                    <Label Grid.Column="2" Text="Edited At" />
-                </Grid>
-            </CollectionView.Header>
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:EntryListModel">
-                    <Grid Padding="10" ColumnSpacing="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.GoToDetailCommand}" CommandParameter="{Binding Id}" />
-                        </Grid.GestureRecognizers>
-                        <Label
-                            Grid.Column="0"
-                            HorizontalOptions="Start"
-                            Text="{Binding Title}"
-                            TextColor="Black"
-                            VerticalOptions="Center" />
-                        <Label
-                            Grid.Column="1"
-                            HorizontalOptions="Start"
-                            Text="{Binding CreatedAt}"
-                            TextColor="Black"
-                            VerticalOptions="Center" />
-                        <Label
-                            Grid.Column="2"
-                            HorizontalOptions="Start"
-                            Text="{Binding EditedAt}"
-                            TextColor="Black"
-                            VerticalOptions="Center" />
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-
+        <ScrollView Grid.Row="1">
+            <StackLayout BindableLayout.ItemsSource="{Binding SelectedDayEntries}" Orientation="Vertical">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:EntryListModel">
+                        <StackLayout>
+                            <StackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.GoToDetailCommand, Source={x:Reference Root}}" CommandParameter="{Binding Id}" />
+                            </StackLayout.GestureRecognizers>
+                            <BoxView
+                                Margin="0,0,0,15"
+                                HeightRequest="1"
+                                VerticalOptions="End"
+                                Color="{AppThemeBinding Light={StaticResource PrimaryDark},
+                                                        Dark={StaticResource PrimaryLight}}" />
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    FontAttributes="Bold"
+                                    HorizontalOptions="Start"
+                                    Text="{Binding Title}"
+                                    TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                                Dark={StaticResource PrimaryLightText}}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    HorizontalOptions="End"
+                                    Text="{Binding CreatedAt, StringFormat='{0:D}'}"
+                                    TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                                Dark={StaticResource PrimaryLightText}}"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Margin="0,0,0,15"
+                                HorizontalOptions="Start"
+                                Text="{Binding Content}"
+                                TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                            Dark={StaticResource PrimaryLightText}}"
+                                VerticalOptions="Center" />
+                        </StackLayout>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+        </ScrollView>
         <Button
-            Grid.Row="1"
-            Margin="0,0,20,20"
-            Command="{Binding SwitchToCalendarViewCommand}"
-            FontAttributes="Bold"
-            FontSize="24"
-            HorizontalOptions="Start"
-            Text="Calendar"
-            TextColor="White"
-            VerticalOptions="End" />
-
-        <Button
-            Grid.Row="1"
-            Margin="0,0,20,20"
-            BackgroundColor="#007AFF"
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="0,20,0,0"
+            BackgroundColor="{StaticResource PrimaryLight}"
             Command="{Binding GoToCreateCommand}"
-            CornerRadius="30"
+            CornerRadius="10"
             FontAttributes="Bold"
-            FontSize="24"
-            HeightRequest="60"
-            HorizontalOptions="End"
-            Text="+"
+            FontSize="Small"
+            Text="Add new"
             TextColor="White"
-            VerticalOptions="End"
-            WidthRequest="60" />
+            VerticalOptions="Center" />
     </Grid>
 </views:ContentPageBase>

@@ -103,8 +103,8 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>AppShellTexts.resx</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\Entry\EntryCalendarListView.xaml.cs">
-	    <DependentUpon>EntryCalendarListView.xaml</DependentUpon>
+	  <Compile Update="Views\Entry\EntryListView.xaml.cs">
+	    <DependentUpon>EntryListView.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -132,9 +132,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Entry\EntryEditView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\Entry\EntryCalendarListView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Entry\EntryListView.xaml">
