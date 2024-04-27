@@ -72,14 +72,7 @@ public partial class TemplateDetailViewModel : ViewModelBase
             pinLocation = new Location((double)Template.Latitude, (double)Template.Longitude);
         }
 
-        var result = await _popupService.ShowPopupAsync<MapPopupViewModel>(onPresenting: viewModel => viewModel.Initialize(pinLocation, userLocation, false));
-
-        if (Template != null && result is Location locationResult)
-        {
-            Template.Latitude = locationResult.Latitude;
-            Template.Longitude = locationResult.Longitude;
-        }
-        UpdateFormLocationInfo();
+        await _popupService.ShowPopupAsync<MapPopupViewModel>(onPresenting: viewModel => viewModel.Initialize(pinLocation, userLocation, false));
     }
 
     private void UpdateFormLocationInfo()
