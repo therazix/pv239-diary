@@ -3,7 +3,6 @@ using Diary.Mappers;
 using Diary.Models.Entry;
 using Diary.Models.Mood;
 using Diary.Repositories.Interfaces;
-using System.Reflection;
 using static Diary.Enums.EntryFilterEnums;
 
 namespace Diary.Clients;
@@ -22,7 +21,6 @@ public class EntryClient : IEntryClient
 
         foreach (var entity in entities)
         {
-            entity.Content = entity.Content[..Math.Min(entity.Content.Length, 50)];
             entity.Title = !string.IsNullOrEmpty(entity.Title) ? entity.Title : "No title";
         }
 
