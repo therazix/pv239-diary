@@ -22,7 +22,7 @@ public partial class EntryListViewModel : IViewModel
     [ObservableProperty]
     private ICollection<EntryListModel>? _selectedDayEntries = [];
 
-    public string SelectedDate { get; set; } = DateTime.Now.Date.ToString("yyyy-MM-dd");
+    public string? SelectedDate { get; set; } = null;
 
 
     public EntryListViewModel(IEntryClient entryClient)
@@ -44,7 +44,6 @@ public partial class EntryListViewModel : IViewModel
 
         // TODO: implement faster loading
         DaySelected(DateTime.Now.Date);
-        ShowAllEntries(Events);
     }
 
     private EventCollection ConstructEventCollection(ICollection<EntryListModel> items)
@@ -65,7 +64,7 @@ public partial class EntryListViewModel : IViewModel
         // When deselecting the date, show all entries
         if (SelectedDate == null)
         {
-            ShowAllEntries(Events);
+            SelectedDayEntries = Items;
         }
         else
         {
@@ -92,13 +91,5 @@ public partial class EntryListViewModel : IViewModel
     private async Task GoToCreateAsync()
     {
         await Shell.Current.GoToAsync("//entries/create");
-    }
-
-    private void ShowAllEntries(EventCollection eventCollection)
-    {
-        foreach (var dayEvents in eventCollection.Values)
-        {
-            SelectedDayEntries = [.. SelectedDayEntries, .. (ICollection<EntryListModel>)dayEvents];
-        }
     }
 }
