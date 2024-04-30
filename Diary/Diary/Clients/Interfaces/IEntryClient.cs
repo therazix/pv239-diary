@@ -5,7 +5,7 @@ using Diary.Models.Pin;
 namespace Diary.Clients.Interfaces;
 public interface IEntryClient
 {
-    Task<ICollection<EntryListModel>> GetAllAsync();
+    Task<ICollection<EntryListModel>> GetAllAsync(EntryFilter? entryFilter = null);
 
     Task<EntryDetailModel?> GetByIdAsync(Guid id);
 

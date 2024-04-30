@@ -11,6 +11,7 @@ using Diary.Repositories.Interfaces;
 using Diary.Resources.Fonts;
 using Diary.Services;
 using Diary.Services.Interfaces;
+using Diary.ViewModels.Entry;
 using Diary.ViewModels.Interfaces;
 using Diary.ViewModels.Map;
 using Diary.Views;
