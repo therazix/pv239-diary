@@ -8,19 +8,23 @@ public class LabelRepository : RepositoryBase<LabelEntity>, ILabelRepository
     {
     }
 
+    public async override Task<ICollection<LabelEntity>> GetAllAsync()
+    {
+        var entities = await connection.Table<LabelEntity>().ToListAsync();
+        foreach (var entity in entities)
+        {
+            await LinkRelatedEntities(entity);
+        }
+
+        return entities;
+    }
+
     public async override Task<LabelEntity?> GetByIdAsync(Guid id)
     {
         var entity = await connection.Table<LabelEntity>().Where(e => e.Id == id).FirstOrDefaultAsync();
         if (entity != null)
         {
-            var entryIds = (await GetLabelEntriesByLabelId(id)).Select(e => e.EntryId).ToList();
-            var templateIds = (await GetLabelTemplatesByLabelId(id)).Select(e => e.TemplateId).ToList();
-
-            var entries = await connection.Table<EntryEntity>().Where(e => entryIds.Contains(e.Id)).ToListAsync();
-            var templates = await connection.Table<TemplateEntity>().Where(e => templateIds.Contains(e.Id)).ToListAsync();
-
-            entity.Entries = entries;
-            entity.Templates = templates;
+            await LinkRelatedEntities(entity);
         }
 
         return entity;
@@ -104,5 +108,17 @@ public class LabelRepository : RepositoryBase<LabelEntity>, ILabelRepository
     private async Task<ICollection<LabelTemplateEntity>> GetLabelTemplatesByLabelId(Guid id)
     {
         return await connection.Table<LabelTemplateEntity>().Where(e => e.LabelId == id).ToListAsync();
+    }
+
+    private async Task LinkRelatedEntities(LabelEntity entity)
+    {
+        var entryIds = (await GetLabelEntriesByLabelId(entity.Id)).Select(e => e.EntryId).ToList();
+        var templateIds = (await GetLabelTemplatesByLabelId(entity.Id)).Select(e => e.TemplateId).ToList();
+
+        var entries = await connection.Table<EntryEntity>().Where(e => entryIds.Contains(e.Id)).ToListAsync();
+        var templates = await connection.Table<TemplateEntity>().Where(e => templateIds.Contains(e.Id)).ToListAsync();
+
+        entity.Entries = entries;
+        entity.Templates = templates;
     }
 }

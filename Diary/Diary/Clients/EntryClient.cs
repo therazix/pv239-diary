@@ -2,6 +2,7 @@
 using Diary.Mappers;
 using Diary.Models.Entry;
 using Diary.Models.Mood;
+using Diary.Models.Pin;
 using Diary.Repositories.Interfaces;
 using static Diary.Enums.EntryFilterEnums;
 
@@ -69,5 +70,12 @@ public class EntryClient : IEntryClient
     {
         var entities = await _repository.GetEntriesByDateRange(dateFrom, dateTo);
         return entities.MapToMoodListModels();
+    }
+
+    public async Task<ICollection<PinModel>> GetAllLocationPinsAsync()
+    {
+        var entities = await _repository.GetAllAsync();
+        var entitiesWithLocation = entities.Where(e => e.Latitude != null && e.Longitude != null).ToList();
+        return entitiesWithLocation.MapToPinModels();
     }
 }

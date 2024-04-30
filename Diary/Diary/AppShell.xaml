@@ -1,125 +1,172 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Shell x:Class="Diary.AppShell"
-       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:local="clr-namespace:Diary"
-       xmlns:f="clr-namespace:Diary.Resources.Fonts"
-       xmlns:t="clr-namespace:Diary.Resources.Texts"
-       xmlns:labelviews="clr-namespace:Diary.Views.Label"
-       xmlns:entryviews="clr-namespace:Diary.Views.Entry"
-       xmlns:templateviews="clr-namespace:Diary.Views.Template"
-       xmlns:moodviews="clr-namespace:Diary.Views.Mood"
-       Shell.FlyoutBehavior="Flyout"
-       FlyoutBackground="{StaticResource Primary}"
-       Title="Diary">
+<Shell
+    x:Class="Diary.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:entryviews="clr-namespace:Diary.Views.Entry"
+    xmlns:f="clr-namespace:Diary.Resources.Fonts"
+    xmlns:importexportviews="clr-namespace:Diary.Views.ImportExport"
+    xmlns:labelviews="clr-namespace:Diary.Views.Label"
+    xmlns:local="clr-namespace:Diary"
+    xmlns:mapviews="clr-namespace:Diary.Views.Map"
+    xmlns:moodviews="clr-namespace:Diary.Views.Mood"
+    xmlns:t="clr-namespace:Diary.Resources.Texts"
+    xmlns:templateviews="clr-namespace:Diary.Views.Template"
+    Title="Diary"
+    FlyoutBackground="{StaticResource Primary}"
+    Shell.FlyoutBehavior="Flyout">
 
     <Shell.FlyoutHeader>
-        <Grid HorizontalOptions="Start"
-              ColumnDefinitions="Auto, *"
-              RowDefinitions="*, 1">
-            <Image HeightRequest="75"
-                   Grid.Column="0"
-                   HorizontalOptions="Start"
-                   Source="logo_no_background.png"
-                   Margin="10, 10, 10, 20" />
-            <Label Text="Your Diary"
-                   Grid.Column="1"
-                   VerticalOptions="Center"
-                   FontSize="Large"
-                   TextColor="{StaticResource PrimaryLightText}"
-                   FontFamily="PoppinsBold"
-                   Margin="10, 10, 0, 20" />
-            <Label Grid.Row="1"
-                   Grid.ColumnSpan="2"
-                   BackgroundColor="{StaticResource PrimaryLightText}" />
+        <Grid
+            ColumnDefinitions="Auto, *"
+            HorizontalOptions="Start"
+            RowDefinitions="*, 1">
+            <Image
+                Grid.Column="0"
+                Margin="10,10,10,20"
+                HeightRequest="75"
+                HorizontalOptions="Start"
+                Source="logo_no_background.png" />
+            <Label
+                Grid.Column="1"
+                Margin="10,10,0,20"
+                FontFamily="PoppinsBold"
+                FontSize="Large"
+                Text="Your Diary"
+                TextColor="{StaticResource PrimaryLightText}"
+                VerticalOptions="Center" />
+            <Label
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
+                BackgroundColor="{StaticResource PrimaryLightText}" />
         </Grid>
     </Shell.FlyoutHeader>
     <Shell.ItemTemplate>
         <DataTemplate>
-            <Grid Style="{StaticResource FloutItemStyle}"
-                  ColumnDefinitions="20, *"
-                  ColumnSpacing="15"
-                  Padding="20, 15, 15, 15">
+            <Grid
+                Padding="20,15,15,15"
+                ColumnDefinitions="20, *"
+                ColumnSpacing="15"
+                Style="{StaticResource FloutItemStyle}">
 
-                <Image Grid.Column="0"
-                       Source="{Binding FlyoutIcon}" />
+                <Image Grid.Column="0" Source="{Binding FlyoutIcon}" />
 
-                <Label Grid.Column="1"
-                       Text="{Binding Title}"
-                       VerticalOptions="Center"
-                       FontSize="Default"
-                       TextColor="{StaticResource PrimaryLightText}" />
+                <Label
+                    Grid.Column="1"
+                    FontSize="Default"
+                    Text="{Binding Title}"
+                    TextColor="{StaticResource PrimaryLightText}"
+                    VerticalOptions="Center" />
             </Grid>
         </DataTemplate>
     </Shell.ItemTemplate>
 
     <FlyoutItem Title="Labels">
         <FlyoutItem.Icon>
-            <FontImageSource Glyph="{Static f:FontAwesomeIcons.Tag}"
-                             FontFamily="{Static f:Fonts.FontAwesome}"
-                             Color="{StaticResource PrimaryLightText}" />
+            <FontImageSource
+                FontFamily="{Static f:Fonts.FontAwesome}"
+                Glyph="{Static f:FontAwesomeIcons.Tag}"
+                Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
-        <ShellContent Title="Labels"
-                      ContentTemplate="{DataTemplate labelviews:LabelListView}"
-                      Route="labels" />
+        <ShellContent
+            Title="Labels"
+            ContentTemplate="{DataTemplate labelviews:LabelListView}"
+            Route="labels" />
     </FlyoutItem>
     <FlyoutItem Title="Entries">
         <FlyoutItem.Icon>
-            <FontImageSource Glyph="{Static f:FontAwesomeIcons.Clipboard}"
-                             FontFamily="{Static f:Fonts.FontAwesome}"
-                             Color="{StaticResource PrimaryLightText}" />
+            <FontImageSource
+                FontFamily="{Static f:Fonts.FontAwesome}"
+                Glyph="{Static f:FontAwesomeIcons.Clipboard}"
+                Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
-        <ShellContent Title="Entries"
-                      ContentTemplate="{DataTemplate entryviews:EntryListView}"
-                      Route="entries" />
+        <ShellContent
+            Title="Entries"
+            ContentTemplate="{DataTemplate entryviews:EntryListView}"
+            Route="entries" />
     </FlyoutItem>
     <FlyoutItem Title="Templates">
         <FlyoutItem.Icon>
-            <FontImageSource Glyph="{Static f:FontAwesomeIcons.Ruler}"
-                             FontFamily="{Static f:Fonts.FontAwesome}"
-                             Color="{StaticResource PrimaryLightText}" />
+            <FontImageSource
+                FontFamily="{Static f:Fonts.FontAwesome}"
+                Glyph="{Static f:FontAwesomeIcons.Ruler}"
+                Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
-        <ShellContent Title="Templates"
-                      ContentTemplate="{DataTemplate templateviews:TemplateListView}"
-                      Route="templates" />
+        <ShellContent
+            Title="Templates"
+            ContentTemplate="{DataTemplate templateviews:TemplateListView}"
+            Route="templates" />
     </FlyoutItem>
     <FlyoutItem Title="{x:Static t:AppShellTexts.Gallery_FlyoutItem_Title}">
         <FlyoutItem.Icon>
-            <FontImageSource Glyph="{Static f:FontAwesomeIcons.Images}"
-                             FontFamily="{Static f:Fonts.FontAwesome}"
-                             Color="{StaticResource PrimaryLightText}" />
+            <FontImageSource
+                FontFamily="{Static f:Fonts.FontAwesome}"
+                Glyph="{Static f:FontAwesomeIcons.Images}"
+                Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
-        <ShellContent Title="{x:Static t:AppShellTexts.Gallery_FlyoutItem_Title}"
-                      ContentTemplate="{DataTemplate local:MainPage}"
-                      Route="MainPage" />
+        <ShellContent
+            Title="{x:Static t:AppShellTexts.Gallery_FlyoutItem_Title}"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage" />
     </FlyoutItem>
     <FlyoutItem Title="{x:Static t:AppShellTexts.Mood_FlyoutItem_Title}">
         <FlyoutItem.Icon>
-            <FontImageSource Glyph="{Static f:FontAwesomeIcons.Smile}"
-                             FontFamily="{Static f:Fonts.FontAwesome}"
-                             Color="{StaticResource PrimaryLightText}" />
+            <FontImageSource
+                FontFamily="{Static f:Fonts.FontAwesome}"
+                Glyph="{Static f:FontAwesomeIcons.Smile}"
+                Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
-        <ShellContent Title="{x:Static t:AppShellTexts.Mood_FlyoutItem_Title}"
-                      ContentTemplate="{DataTemplate moodviews:MoodListView}"
-                      Route="mood" />
+        <ShellContent
+            Title="{x:Static t:AppShellTexts.Mood_FlyoutItem_Title}"
+            ContentTemplate="{DataTemplate moodviews:MoodListView}"
+            Route="mood" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Import &amp; Export">
+        <FlyoutItem.Icon>
+            <FontImageSource
+                FontFamily="{Static f:Fonts.FontAwesome}"
+                Glyph="{Static f:FontAwesomeIcons.FileImport}"
+                Color="{StaticResource PrimaryLightText}" />
+        </FlyoutItem.Icon>
+        <ShellContent
+            Title="Import &amp; Export"
+            ContentTemplate="{DataTemplate importexportviews:ImportExportView}"
+            Route="importexport" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Map">
+        <FlyoutItem.Icon>
+            <FontImageSource
+                FontFamily="{Static f:Fonts.FontAwesome}"
+                Glyph="{Static f:FontAwesomeIcons.Map}"
+                Color="{StaticResource PrimaryLightText}" />
+        </FlyoutItem.Icon>
+        <ShellContent
+            Title="Map"
+            ContentTemplate="{DataTemplate mapviews:MapView}"
+            Route="map" />
     </FlyoutItem>
 
     <Shell.FlyoutFooterTemplate>
         <DataTemplate>
-            <Grid Style="{StaticResource FloutItemStyle}"
-                  ColumnDefinitions="21, *"
-                  ColumnSpacing="15"
-                  Padding="20, 15, 15, 15">
+            <Grid
+                Padding="20,15,15,15"
+                ColumnDefinitions="21, *"
+                ColumnSpacing="15"
+                Style="{StaticResource FloutItemStyle}">
 
-                <Label Grid.Column="0"
-                       Text="{Static f:FontAwesomeIcons.Cog}"
-                       FontFamily="{Static f:Fonts.FontAwesome}"
-                       TextColor="{StaticResource PrimaryLightText}"
-                       FontSize="Large" />
+                <Label
+                    Grid.Column="0"
+                    FontFamily="{Static f:Fonts.FontAwesome}"
+                    FontSize="Large"
+                    Text="{Static f:FontAwesomeIcons.Cog}"
+                    TextColor="{StaticResource PrimaryLightText}" />
 
-                <Label Text="Settings"
-                       Grid.Column="1"
-                       TextColor="GhostWhite" />
+                <Label
+                    Grid.Column="1"
+                    Text="Settings"
+                    TextColor="GhostWhite" />
             </Grid>
         </DataTemplate>
     </Shell.FlyoutFooterTemplate>

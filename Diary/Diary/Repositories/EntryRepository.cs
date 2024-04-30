@@ -8,15 +8,23 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
     {
     }
 
+    public async override Task<ICollection<EntryEntity>> GetAllAsync()
+    {
+        var entities = await connection.Table<EntryEntity>().ToListAsync();
+        foreach (var entity in entities)
+        {
+            await LinkRelatedEntities(entity);
+        }
+
+        return entities;
+    }
+
     public async override Task<EntryEntity?> GetByIdAsync(Guid id)
     {
         var entity = await connection.Table<EntryEntity>().Where(e => e.Id == id).FirstOrDefaultAsync();
         if (entity != null)
         {
-            var labelIds = (await GetLabelEntriesByEntryId(id)).Select(e => e.LabelId).ToList();
-            var labels = await connection.Table<LabelEntity>().Where(e => labelIds.Contains(e.Id)).ToListAsync();
-
-            entity.Labels = labels;
+            await LinkRelatedEntities(entity);
         }
 
         return entity;
@@ -84,5 +92,13 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
     private async Task<ICollection<LabelEntryEntity>> GetLabelEntriesByEntryId(Guid id)
     {
         return await connection.Table<LabelEntryEntity>().Where(e => e.EntryId == id).ToListAsync();
+    }
+
+    private async Task LinkRelatedEntities(EntryEntity entity)
+    {
+        var labelIds = (await GetLabelEntriesByEntryId(entity.Id)).Select(e => e.LabelId).ToList();
+        var labels = await connection.Table<LabelEntity>().Where(e => labelIds.Contains(e.Id)).ToListAsync();
+
+        entity.Labels = labels;
     }
 }

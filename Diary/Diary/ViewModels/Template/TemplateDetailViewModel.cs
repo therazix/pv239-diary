@@ -1,7 +1,9 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Models.Template;
+using Diary.ViewModels.Map;
 using PropertyChanged;
 
 namespace Diary.ViewModels.Template;
@@ -10,6 +12,7 @@ namespace Diary.ViewModels.Template;
 public partial class TemplateDetailViewModel : ViewModelBase
 {
     private readonly ITemplateClient _templateClient;
+    private readonly IPopupService _popupService;
 
     [DoNotNotify]
     public Guid Id { get; set; }
@@ -25,9 +28,13 @@ public partial class TemplateDetailViewModel : ViewModelBase
 
     public TemplateDetailModel? Template { get; set; }
 
-    public TemplateDetailViewModel(ITemplateClient templateClient)
+    public bool IsLocationSet { get; set; } = false;
+    public string LocationText { get; set; } = string.Empty;
+
+    public TemplateDetailViewModel(ITemplateClient templateClient, IPopupService popupService)
     {
         _templateClient = templateClient;
+        _popupService = popupService;
     }
 
     public override async Task OnAppearingAsync()
@@ -35,8 +42,10 @@ public partial class TemplateDetailViewModel : ViewModelBase
         Template = await _templateClient.GetByIdAsync(Id);
 
         ShowMood = Template?.Mood != 0;
-        ShowLocation = Template?.Latitude != null && Template?.Longitude != null && Template.Altitude != null;
+        ShowLocation = Template?.Latitude != null && Template?.Longitude != null;
         ShowLabels = Template?.Labels.Count > 0;
+
+        UpdateFormLocationInfo();
     }
 
     [RelayCommand]
@@ -46,5 +55,29 @@ public partial class TemplateDetailViewModel : ViewModelBase
         {
             await Shell.Current.GoToAsync("/edit", new Dictionary<string, object> { ["template"] = Template });
         }
+    }
+
+    [RelayCommand]
+    private async Task DisplayMapPopupAsync()
+    {
+        Location? userLocation = null;
+        if (await Helpers.LocationHelper.HasLocationPermission())
+        {
+            userLocation = await Helpers.LocationHelper.GetAnyLocationAsync();
+        }
+
+        Location? pinLocation = null;
+        if (Template != null && Template.Latitude != null && Template.Longitude != null)
+        {
+            pinLocation = new Location((double)Template.Latitude, (double)Template.Longitude);
+        }
+
+        await _popupService.ShowPopupAsync<MapPopupViewModel>(onPresenting: viewModel => viewModel.Initialize(pinLocation, userLocation, false));
+    }
+
+    private void UpdateFormLocationInfo()
+    {
+        IsLocationSet = Template != null && (Template.Latitude != null || Template.Longitude != null);
+        LocationText = IsLocationSet ? "" : "None";
     }
 }

@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<views:ContentPageBase x:Class="Diary.Views.Entry.EntryDetailView"
-                       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
-                       xmlns:models="clr-namespace:Diary.Models.Entry"
-                       xmlns:labelmodels="clr-namespace:Diary.Models.Label"
-                       xmlns:vm="clr-namespace:Diary.ViewModels.Entry"
-                       xmlns:texts="clr-namespace:Diary.Resources.Texts"
-                       xmlns:views="clr-namespace:Diary.Views"
-                       x:Name="Root"
-                       Title="Entry Detail"
-                       x:DataType="vm:EntryDetailViewModel">
+<views:ContentPageBase
+    x:Class="Diary.Views.Entry.EntryDetailView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+    xmlns:labelmodels="clr-namespace:Diary.Models.Label"
+    xmlns:models="clr-namespace:Diary.Models.Entry"
+    xmlns:texts="clr-namespace:Diary.Resources.Texts"
+    xmlns:views="clr-namespace:Diary.Views"
+    xmlns:vm="clr-namespace:Diary.ViewModels.Entry"
+    x:Name="Root"
+    Title="Entry Detail"
+    x:DataType="vm:EntryDetailViewModel">
 
     <Grid Padding="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -31,102 +30,109 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0"
-               Grid.Column="0"
-               Text="Title:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="0"
-               Grid.Column="1"
-               Text="{Binding Entry.Title}" />
+        <Label
+            Grid.Row="0"
+            Grid.Column="0"
+            FontAttributes="Bold"
+            Text="Title:" />
+        <Label
+            Grid.Row="0"
+            Grid.Column="1"
+            Text="{Binding Entry.Title}" />
 
-        <Label Grid.Row="1"
-               Grid.Column="0"
-               Text="Content:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="1"
-               Grid.Column="1"
-               Text="{Binding Entry.Content}" />
+        <Label
+            Grid.Row="1"
+            Grid.Column="0"
+            FontAttributes="Bold"
+            Text="Content:" />
+        <Label
+            Grid.Row="1"
+            Grid.Column="1"
+            Text="{Binding Entry.Content}" />
 
-        <Label Grid.Row="2"
-               Grid.Column="0"
-               Text="Created At:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="2"
-               Grid.Column="1"
-               Text="{Binding Entry.CreatedAt}" />
+        <Label
+            Grid.Row="2"
+            Grid.Column="0"
+            FontAttributes="Bold"
+            Text="Created At:" />
+        <Label
+            Grid.Row="2"
+            Grid.Column="1"
+            Text="{Binding Entry.CreatedAt}" />
 
-        <Label Grid.Row="3"
-               Grid.Column="0"
-               Text="Edited At:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="3"
-               Grid.Column="1"
-               Text="{Binding Entry.EditedAt}" />
+        <Label
+            Grid.Row="3"
+            Grid.Column="0"
+            FontAttributes="Bold"
+            Text="Edited At:" />
+        <Label
+            Grid.Row="3"
+            Grid.Column="1"
+            Text="{Binding Entry.EditedAt}" />
 
-        <Label Grid.Row="4"
-               Grid.Column="0"
-               Text="IsFavorite:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="4"
-               Grid.Column="1"
-               Text="{Binding Entry.IsFavorite}" />
+        <Label
+            Grid.Row="4"
+            Grid.Column="0"
+            FontAttributes="Bold"
+            Text="IsFavorite:" />
+        <Label
+            Grid.Row="4"
+            Grid.Column="1"
+            Text="{Binding Entry.IsFavorite}" />
 
-        <Label Grid.Row="5"
-               Grid.Column="0"
-               Text="Mood:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="5"
-               Grid.Column="1"
-               Text="{Binding Entry.Mood}" />
+        <Label
+            Grid.Row="5"
+            Grid.Column="0"
+            FontAttributes="Bold"
+            Text="Mood:" />
+        <Label
+            Grid.Row="5"
+            Grid.Column="1"
+            Text="{Binding Entry.Mood}" />
 
-        <Label Grid.Row="6"
-               Grid.Column="0"
-               Text="Latitude:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="6"
-               Grid.Column="1"
-               Text="{Binding Entry.Latitude}" />
+        <Label
+            Grid.Row="6"
+            Grid.Column="0"
+            FontAttributes="Bold"
+            Text="Location:" />
+        <Label
+            Grid.Row="6"
+            Grid.Column="1"
+            Text="{Binding LocationText}" />
+        <Button
+            Grid.Row="6"
+            Grid.Column="1"
+            Command="{Binding DisplayMapPopupCommand}"
+            IsVisible="{Binding IsLocationSet}"
+            Text="Show Map" />
 
-        <Label Grid.Row="7"
-               Grid.Column="0"
-               Text="Longitude:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="7"
-               Grid.Column="1"
-               Text="{Binding Entry.Longitude}" />
-
-        <Label Grid.Row="8"
-               Grid.Column="0"
-               Text="Altitude:"
-               FontAttributes="Bold" />
-        <Label Grid.Row="8"
-               Grid.Column="1"
-               Text="{Binding Entry.Altitude}" />
-
-        <Label Grid.Row="9"
-               Grid.Column="0"
-               Text="Labels:"
-               FontAttributes="Bold" />
-        <CollectionView Grid.Row="9"
-                        Grid.Column="1"
-                        ItemsSource="{Binding Entry.Labels}">
+        <Label
+            Grid.Row="7"
+            Grid.Column="0"
+            FontAttributes="Bold"
+            Text="Labels:" />
+        <CollectionView
+            Grid.Row="7"
+            Grid.Column="1"
+            ItemsSource="{Binding Entry.Labels}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="labelmodels:LabelListModel">
-                    <StackLayout Orientation="Horizontal"
-                                 Spacing="10">
-                        <BoxView WidthRequest="20"
-                                 HeightRequest="20"
-                                 BackgroundColor="{Binding Color}" />
+                    <StackLayout Orientation="Horizontal" Spacing="10">
+                        <BoxView
+                            BackgroundColor="{Binding Color}"
+                            HeightRequest="20"
+                            WidthRequest="20" />
                         <Label Text="{Binding Name}" />
                     </StackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Grid.Row="10"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Text="Edit"
-                Command="{Binding GoToEditCommand}" />
+        <Button
+            Grid.Row="8"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Command="{Binding GoToEditCommand}"
+            Text="Edit" />
     </Grid>
 </views:ContentPageBase>

@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Maps;
+using CommunityToolkit.Maui.Storage;
 using Diary.Clients;
 using Diary.Clients.Interfaces;
 using Diary.Commands;
@@ -11,9 +13,12 @@ using Diary.Services;
 using Diary.Services.Interfaces;
 using Diary.ViewModels.Entry;
 using Diary.ViewModels.Interfaces;
+using Diary.ViewModels.Map;
 using Diary.Views;
 using Diary.Views.Entry;
+using Diary.Views.ImportExport;
 using Diary.Views.Label;
+using Diary.Views.Map;
 using Diary.Views.Template;
 using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
@@ -29,6 +34,11 @@ namespace Diary
                 .UseMauiApp<App>()
                 .UseMicrocharts()
                 .UseMauiCommunityToolkit()
+#if ANDROID || IOS
+                .UseMauiMaps()
+#elif WINDOWS
+                .UseMauiCommunityToolkitMaps(Constants.BingMapsApiKey)
+#endif
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("FontAwesome-Solid.ttf", Fonts.FontAwesome);
@@ -43,6 +53,7 @@ namespace Diary
             ConfigureClients(builder.Services);
             ConfigureViewModels(builder.Services);
             ConfigureViews(builder.Services);
+            ConfigurePopups(builder.Services);
 
 
 #if DEBUG
@@ -60,10 +71,12 @@ namespace Diary
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(_ => SecureStorage.Default);
             services.AddSingleton<IGlobalExceptionService, GlobalExceptionService>();
             services.AddSingleton<IGlobalExceptionServiceInitializer, GlobalExceptionServiceInitializer>();
             services.AddSingleton<ICommandFactory, CommandFactory>();
+            services.AddSingleton<IFilePicker>(FilePicker.Default);
+            services.AddSingleton<IFileSaver>(FileSaver.Default);
+            services.AddSingleton<IImportExportService, ImportExportService>();
         }
 
         private static void ConfigureRepositories(IServiceCollection services)
@@ -100,6 +113,11 @@ namespace Diary
                 .WithTransientLifetime());
         }
 
+        private static void ConfigurePopups(IServiceCollection services)
+        {
+            services.AddTransientPopup<MapPopupView, MapPopupViewModel>();
+        }
+
         private static void RegisterRoutes()
         {
             Routing.RegisterRoute("//labels/edit", typeof(LabelEditView));
@@ -112,15 +130,13 @@ namespace Diary
             Routing.RegisterRoute("//templates/detail", typeof(TemplateDetailView));
             Routing.RegisterRoute("//templates/edit", typeof(TemplateEditView));
             Routing.RegisterRoute("//templates/create", typeof(TemplateCreateView));
+
+            Routing.RegisterRoute("//importexport", typeof(ImportExportView));
         }
 
         private static async Task SetupDatabaseAsync(MauiApp app)
         {
-            var secureStorage = app.Services.GetRequiredService<ISecureStorage>();
-            //secureStorage.Remove(Constants.FirstRunKey);
-            var isFirstRun = await secureStorage.GetAsync(Constants.FirstRunKey);
-
-            if (string.IsNullOrEmpty(isFirstRun))
+            if (!File.Exists(Constants.DatabasePath))
             {
                 var directory = Path.GetDirectoryName(Constants.DatabasePath);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
@@ -141,8 +157,6 @@ namespace Diary
                 await labelTemplateRepository.CreateTableAsync();
 
                 await DataSeedService.SeedAsync(entryRepository, labelRepository, templateRepository);
-
-                await secureStorage.SetAsync(Constants.FirstRunKey, "false");
             }
         }
     }

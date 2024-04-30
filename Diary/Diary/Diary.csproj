@@ -78,6 +78,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
+		<PackageReference Include="CommunityToolkit.Maui.Maps" Version="2.0.1" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="Microcharts.Maui" Version="1.0.0" />
@@ -85,8 +86,10 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.20" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.20" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="8.0.20" />
 		<PackageReference Include="Mixbox" Version="2.0.0" />
 		<PackageReference Include="Plugin.Maui.Calendar" Version="1.1.6" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
 		<PackageReference Include="Riok.Mapperly" Version="3.5.0" />
 		<PackageReference Include="Scrutor" Version="4.2.2" />
@@ -105,6 +108,9 @@
 	  </Compile>
 	  <Compile Update="Views\Entry\EntryListView.xaml.cs">
 	    <DependentUpon>EntryListView.xaml</DependentUpon>
+	</Compile>
+	  <Compile Update="Views\Map\MapPopupView.xaml.cs">
+	    <DependentUpon>MapPopupView.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -137,6 +143,9 @@
 	  <MauiXaml Update="Views\Entry\EntryListView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\ImportExport\ImportExportView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Label\LabelCreateView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -144,6 +153,12 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Label\LabelListView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Map\MapPopupView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Map\MapView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Mood\MoodListView.xaml">

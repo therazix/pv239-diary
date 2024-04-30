@@ -1,5 +1,6 @@
 ﻿using Diary.Models.Entry;
 using Diary.Models.Mood;
+using Diary.Models.Pin;
 
 namespace Diary.Clients.Interfaces;
 public interface IEntryClient
@@ -15,4 +16,6 @@ public interface IEntryClient
     Task<ICollection<MoodListModel>> GetMoodFromAllEntries();
 
     Task<ICollection<MoodListModel>> GetMoodFromEntriesByDateRange(DateTime dateFrom, DateTime dateTo);
+
+    Task<ICollection<PinModel>> GetAllLocationPinsAsync();
 }

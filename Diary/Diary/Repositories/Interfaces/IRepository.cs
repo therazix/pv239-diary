@@ -18,5 +18,5 @@ public interface IRepository<T> where T : EntityBase, new()
 
     Task DeleteAsync(ICollection<T> entities);
 
-    Task<bool> Exists(Guid id);
+    Task<bool> ExistsAsync(Guid id);
 }

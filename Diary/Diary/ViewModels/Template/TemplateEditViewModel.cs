@@ -1,9 +1,11 @@
-﻿using CommunityToolkit.Maui.Core.Extensions;
+﻿using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Models.Label;
 using Diary.Models.Template;
+using Diary.ViewModels.Map;
 using System.Collections.ObjectModel;
 
 namespace Diary.ViewModels.Template;
@@ -13,6 +15,7 @@ public partial class TemplateEditViewModel : ViewModelBase
 {
     private readonly ITemplateClient _templateClient;
     private readonly ILabelClient _labelClient;
+    private readonly IPopupService _popupService;
 
     [ObservableProperty]
     private bool _presetMood;
@@ -27,11 +30,15 @@ public partial class TemplateEditViewModel : ViewModelBase
 
     public ObservableCollection<object> SelectedLabels { get; set; }
 
-    public TemplateEditViewModel(ITemplateClient templateClient, ILabelClient labelClient)
+    public bool IsLocationSet { get; set; } = false;
+    public string LocationText { get; set; } = string.Empty;
+    public Color LocationTextColor { get; set; } = Color.FromArgb("#FF000000");
+
+    public TemplateEditViewModel(ITemplateClient templateClient, ILabelClient labelClient, IPopupService popupService)
     {
         _templateClient = templateClient;
         _labelClient = labelClient;
-
+        _popupService = popupService;
         SelectedLabels = new ObservableCollection<object>();
         Labels = new ObservableCollection<LabelListModel>();
     }
@@ -39,11 +46,12 @@ public partial class TemplateEditViewModel : ViewModelBase
     public override async Task OnAppearingAsync()
     {
         PresetMood = Template.Mood != 0;
-        PresetLocation = Template.Latitude != null && Template.Longitude != null && Template.Altitude != null;
+        PresetLocation = Template.Latitude != null && Template.Longitude != null;
 
         var labels = await _labelClient.GetAllAsync();
         SelectedLabels = new ObservableCollection<object>(labels.Where(l => Template.Labels.Select(el => el.Id).Contains(l.Id)));
         Labels = labels.ToObservableCollection();
+        UpdateFormLocationInfo();
     }
 
     [RelayCommand]
@@ -66,12 +74,56 @@ public partial class TemplateEditViewModel : ViewModelBase
         {
             Template.Latitude = null;
             Template.Longitude = null;
-            Template.Altitude = null;
         }
 
         Template.Labels = new ObservableCollection<LabelListModel>(SelectedLabels.Select(l => (LabelListModel)l));
 
         await _templateClient.SetAsync(Template);
         await Shell.Current.GoToAsync("//templates");
+    }
+
+    [RelayCommand]
+    private Task ClearLocationAsync()
+    {
+        if (Template != null)
+        {
+            Template.Latitude = null;
+            Template.Longitude = null;
+        }
+        UpdateFormLocationInfo();
+        return Task.CompletedTask;
+    }
+
+    [RelayCommand]
+    private async Task DisplayMapPopupAsync()
+    {
+        Location? userLocation = null;
+        if (await Helpers.LocationHelper.HasLocationPermission())
+        {
+            userLocation = await Helpers.LocationHelper.GetAnyLocationAsync();
+        }
+
+        Location? pinLocation = null;
+        if (Template != null && Template.Latitude != null && Template.Longitude != null)
+        {
+            pinLocation = new Location((double)Template.Latitude, (double)Template.Longitude);
+        }
+
+        var result = await _popupService.ShowPopupAsync<MapPopupViewModel>(onPresenting: viewModel => viewModel.Initialize(pinLocation, userLocation));
+
+        if (Template != null && result is Location locationResult)
+        {
+            Template.Latitude = locationResult.Latitude;
+            Template.Longitude = locationResult.Longitude;
+        }
+        UpdateFormLocationInfo();
+    }
+
+    private void UpdateFormLocationInfo()
+    {
+        IsLocationSet = Template != null && (Template.Latitude != null || Template.Longitude != null);
+        LocationText = IsLocationSet ? "Set" : "None";
+        // TODO: Use a converter or predefined colors
+        LocationTextColor = IsLocationSet ? Color.FromArgb("#FF1B9100") : Color.FromArgb("#FF000000");
     }
 }
