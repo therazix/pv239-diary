@@ -8,9 +8,11 @@ public static class Constants
 
     public static string MediaPath => Path.Combine(AppFolder, "media");
 
+    public static string TempPath => Path.Combine(Path.GetTempPath(), "Diary");
+
     public const string FirstRunKey = "FirstRun";
 
-    public const string DefaultImportExportFileName = "DiaryData.json";
+    public const string DefaultExportFileName = "DiaryExport.zip";
 
     public const string MapDateTimeFormat = "dd/MM/y H:mm";
 
