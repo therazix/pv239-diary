@@ -1,4 +1,5 @@
 ﻿using Diary.Models.Label;
+using Diary.Models.Media;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -18,4 +19,5 @@ public record EntryDetailModel : ModelBase
     public double? Longitude { get; set; }
     public int TimeMachineNotificationId { get; set; }
     public ObservableCollection<LabelListModel> Labels { get; set; } = new();
+    public ObservableCollection<MediaModel> Media { get; set; } = new();
 }

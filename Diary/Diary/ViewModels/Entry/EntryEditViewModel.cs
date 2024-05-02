@@ -2,8 +2,11 @@
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
+using Diary.Enums;
+using Diary.Helpers;
 using Diary.Models.Entry;
 using Diary.Models.Label;
+using Diary.Models.Media;
 using Diary.ViewModels.Map;
 using System.Collections.ObjectModel;
 
@@ -14,7 +17,9 @@ public partial class EntryEditViewModel : ViewModelBase
 {
     private readonly IEntryClient _entryClient;
     private readonly ILabelClient _labelClient;
+    private readonly IMediaClient _mediaClient;
     private readonly IPopupService _popupService;
+    private readonly IMediaPicker _mediaPicker;
 
     public EntryDetailModel Entry { get; set; } = null!;
 
@@ -26,11 +31,14 @@ public partial class EntryEditViewModel : ViewModelBase
     public string LocationText { get; set; } = string.Empty;
     public Color LocationTextColor { get; set; } = Color.FromArgb("#FF000000");
 
-    public EntryEditViewModel(IEntryClient entryClient, ILabelClient labelClient, IPopupService popupService)
+    public EntryEditViewModel(IEntryClient entryClient, ILabelClient labelClient, IMediaClient mediaClient, IPopupService popupService, IMediaPicker mediaPicker)
     {
         _entryClient = entryClient;
         _labelClient = labelClient;
+        _mediaClient = mediaClient;
         _popupService = popupService;
+        _mediaPicker = mediaPicker;
+
         SelectedLabels = new ObservableCollection<object>();
         Labels = new ObservableCollection<LabelListModel>();
     }
@@ -64,6 +72,35 @@ public partial class EntryEditViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private async Task AddImageAsync()
+    {
+        var fileResult = await _mediaPicker.PickPhotoAsync();
+        await LoadMedia(fileResult, MediaType.Image);
+    }
+
+    [RelayCommand]
+    private async Task AddVideoAsync()
+    {
+        var fileResult = await _mediaPicker.PickVideoAsync();
+        await LoadMedia(fileResult, MediaType.Video);
+    }
+
+    [RelayCommand]
+    private Task RemoveMediaAsync(string fileName)
+    {
+        if (Entry != null)
+        {
+            var media = Entry.Media.FirstOrDefault(m => m.FileName == fileName);
+            if (media != null)
+            {
+                Entry.Media.Remove(media);
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    [RelayCommand]
     private Task ClearLocationAsync()
     {
         if (Entry != null)
@@ -79,9 +116,9 @@ public partial class EntryEditViewModel : ViewModelBase
     private async Task DisplayMapPopupAsync()
     {
         Location? userLocation = null;
-        if (await Helpers.LocationHelper.HasLocationPermission())
+        if (await LocationHelper.HasLocationPermission())
         {
-            userLocation = await Helpers.LocationHelper.GetAnyLocationAsync();
+            userLocation = await LocationHelper.GetAnyLocationAsync();
         }
 
         Location? pinLocation = null;
@@ -106,5 +143,17 @@ public partial class EntryEditViewModel : ViewModelBase
         LocationText = IsLocationSet ? "Set" : "None";
         // TODO: Use a converter or predefined colors
         LocationTextColor = IsLocationSet ? Color.FromArgb("#FF1B9100") : Color.FromArgb("#FF000000");
+    }
+
+    private async Task LoadMedia(FileResult? fileResult, MediaType mediaType)
+    {
+        if (Entry != null && fileResult != null)
+        {
+            var fileName = await _mediaClient.SaveFileAsync(fileResult);
+            if (!Entry.Media.Select(i => i.FileName).Contains(fileName))
+            {
+                Entry.Media.Add(new MediaModel() { FileName = fileName, MediaType = mediaType });
+            }
+        }
     }
 }
