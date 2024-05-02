@@ -66,8 +66,9 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         }
         entity.EditedAt = DateTime.Now;
 
-        // Get existing labels that are connected to the entry
+        // Get existing labels and media that are connected to the entry
         var existingLabels = await GetLabelEntriesByEntryIdAsync(entity.Id);
+        var existingMedia = await GetMediaByEntryIdAsync(entity.Id);
 
         // Map label entities to 'link' entities
         var labelsToAdd = entity.Labels.Select(label => new LabelEntryEntity()
@@ -77,16 +78,30 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
             LabelId = label.Id,
         });
 
+        foreach (var media in entity.Media)
+        {
+            media.Id = Guid.NewGuid();
+            media.EntryId = entity.Id;
+        }
+
         var labelEntriesToAdd = labelsToAdd.ExceptBy(existingLabels.Select(e => e.LabelId), e => e.LabelId).ToList();
         var labelEntriesToDelete = existingLabels.ExceptBy(labelsToAdd.Select(e => e.LabelId), e => e.LabelId).ToList();
+
+        var mediaToAdd = entity.Media.ExceptBy(existingMedia.Select(e => e.FileName), e => e.FileName).ToList();
+        var mediaToDelete = existingMedia.ExceptBy(entity.Media.Select(e => e.FileName), e => e.FileName).ToList();
 
         await connection.RunInTransactionAsync(tran =>
         {
             tran.InsertOrReplace(entity);
             tran.InsertAll(labelEntriesToAdd);
+            tran.InsertAll(mediaToAdd);
             foreach (var labelEntryToDelete in labelEntriesToDelete)
             {
                 tran.Delete(labelEntryToDelete);
+            }
+            foreach (var media in mediaToDelete)
+            {
+                tran.Delete(media);
             }
         });
 
@@ -96,11 +111,16 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
     public async override Task DeleteAsync(EntryEntity entity)
     {
         var labelEntriesToDelete = await GetLabelEntriesByEntryIdAsync(entity.Id);
+        var mediaToDelete = await GetMediaByEntryIdAsync(entity.Id);
         await connection.RunInTransactionAsync(tran =>
         {
             foreach (var labelEntryToDelete in labelEntriesToDelete)
             {
                 tran.Delete(labelEntryToDelete);
+            }
+            foreach (var media in mediaToDelete)
+            {
+                tran.Delete(media);
             }
             tran.Delete(entity);
         });
@@ -121,11 +141,15 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         return await connection.Table<LabelEntryEntity>().Where(e => e.EntryId == id).ToListAsync();
     }
 
+    private async Task<ICollection<MediaEntity>> GetMediaByEntryIdAsync(Guid id)
+    {
+        return await connection.Table<MediaEntity>().Where(e => e.EntryId == id).ToListAsync();
+    }
+
     private async Task LinkRelatedEntitiesAsync(EntryEntity entity)
     {
         var labelIds = (await GetLabelEntriesByEntryIdAsync(entity.Id)).Select(e => e.LabelId).ToList();
-        var labels = await connection.Table<LabelEntity>().Where(e => labelIds.Contains(e.Id)).ToListAsync();
-
-        entity.Labels = labels;
+        entity.Labels = await connection.Table<LabelEntity>().Where(e => labelIds.Contains(e.Id)).ToListAsync();
+        entity.Media = await GetMediaByEntryIdAsync(entity.Id);
     }
 }

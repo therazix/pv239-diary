@@ -24,5 +24,8 @@ namespace Diary.Entities
 
         [Ignore]
         public ICollection<LabelEntity> Labels { get; set; } = new List<LabelEntity>();
+
+        [Ignore]
+        public ICollection<MediaEntity> Media { get; set; } = new List<MediaEntity>();
     }
 }

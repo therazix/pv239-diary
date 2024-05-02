@@ -12,16 +12,18 @@ using static Diary.Enums.EntryFilterEnums;
 namespace Diary.Clients;
 public class EntryClient : IEntryClient
 {
-    private readonly IEntryRepository _repository;
+    private readonly IEntryRepository _entryRepository;
+    private readonly IMediaRepository _mediaRepository;
 
-    public EntryClient(IEntryRepository repository)
+    public EntryClient(IEntryRepository entryRepository, IMediaRepository mediaRepository)
     {
-        _repository = repository;
+        _entryRepository = entryRepository;
+        _mediaRepository = mediaRepository;
     }
 
     public async Task<ICollection<EntryListModel>> GetAllAsync(EntryFilter? entryFilter = null)
     {
-        var entities = await _repository.GetAllAsync();
+        var entities = await _entryRepository.GetAllAsync();
 
         foreach (var entity in entities)
         {
@@ -45,9 +47,9 @@ public class EntryClient : IEntryClient
         return entities.MapToListModels();
     }
 
-    public async Task<ICollection<EntryListModel>> GetByDayFromPreviousYears(DateTime date) 
+    public async Task<ICollection<EntryListModel>> GetByDayFromPreviousYears(DateTime date)
     {
-        var entities = await _repository.GetByDayFromPreviousYearsAsync(date);
+        var entities = await _entryRepository.GetByDayFromPreviousYearsAsync(date);
 
         foreach (var entity in entities)
         {
@@ -61,14 +63,14 @@ public class EntryClient : IEntryClient
 
     public async Task<EntryDetailModel?> GetByIdAsync(Guid id)
     {
-        var entity = await _repository.GetByIdAsync(id);
+        var entity = await _entryRepository.GetByIdAsync(id);
         return entity?.MapToDetailModel();
     }
 
     public async Task<EntryDetailModel> SetAsync(EntryDetailModel model)
     {
         var entity = model.MapToEntity();
-        var savedEntity = await _repository.SetAsync(entity);
+        var savedEntity = await _entryRepository.SetAsync(entity);
 
 #if ANDROID
         await ScheduleTimeMachineNotification(savedEntity);
@@ -80,9 +82,10 @@ public class EntryClient : IEntryClient
     {
         var entity = model.MapToEntity();
 
-        await _repository.DeleteAsync(entity);
+        await _entryRepository.DeleteAsync(entity);
+        await _mediaRepository.DeleteUnusedMediaAsync();
 
-        var entriesWithTheSameTimeMachineNotificationId = await _repository.GetByTimeMachineNotificationIdAsync(entity.TimeMachineNotificationId);
+        var entriesWithTheSameTimeMachineNotificationId = await _entryRepository.GetByTimeMachineNotificationIdAsync(entity.TimeMachineNotificationId);
 
         if (entriesWithTheSameTimeMachineNotificationId.Count == 0)
         {
@@ -92,19 +95,19 @@ public class EntryClient : IEntryClient
 
     public async Task<ICollection<MoodListModel>> GetMoodFromAllEntries()
     {
-        var entities = await _repository.GetAllAsync();
+        var entities = await _entryRepository.GetAllAsync();
         return entities.MapToMoodListModels();
     }
 
     public async Task<ICollection<MoodListModel>> GetMoodFromEntriesByDateRange(DateTime dateFrom, DateTime dateTo)
     {
-        var entities = await _repository.GetEntriesByDateRangeAsync(dateFrom, dateTo);
+        var entities = await _entryRepository.GetEntriesByDateRangeAsync(dateFrom, dateTo);
         return entities.MapToMoodListModels();
     }
 
     public async Task<ICollection<PinModel>> GetAllLocationPinsAsync()
     {
-        var entities = await _repository.GetAllAsync();
+        var entities = await _entryRepository.GetAllAsync();
         var entitiesWithLocation = entities.Where(e => e.Latitude != null && e.Longitude != null).ToList();
         return entitiesWithLocation.MapToPinModels();
     }
@@ -116,7 +119,7 @@ public class EntryClient : IEntryClient
             await LocalNotificationCenter.Current.RequestNotificationPermission();
         }
 
-        var entriesWithTheSameTimeMachineNotificationId = await _repository.GetByTimeMachineNotificationIdAsync(entity.TimeMachineNotificationId);
+        var entriesWithTheSameTimeMachineNotificationId = await _entryRepository.GetByTimeMachineNotificationIdAsync(entity.TimeMachineNotificationId);
 
         TimeSpan repeatInterval;
         DateTime notificationDate = entity.CreatedAt.AddYears(1);

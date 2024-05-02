@@ -34,6 +34,7 @@ namespace Diary
                 .UseMauiApp<App>()
                 .UseMicrocharts()
                 .UseMauiCommunityToolkit()
+                .UseMauiCommunityToolkitMediaElement()
                 .UseLocalNotification()
 #if ANDROID || IOS
                 .UseMauiMaps()
@@ -65,6 +66,8 @@ namespace Diary
 
             var app = builder.Build();
 
+            SetupDirectories();
+
             Task.Run(async () => await SetupDatabaseAsync(app)).GetAwaiter().GetResult();
 
             return app;
@@ -77,11 +80,13 @@ namespace Diary
             services.AddSingleton<ICommandFactory, CommandFactory>();
             services.AddSingleton<IFilePicker>(FilePicker.Default);
             services.AddSingleton<IFileSaver>(FileSaver.Default);
+            services.AddSingleton<IMediaPicker>(MediaPicker.Default);
             services.AddSingleton<IImportExportService, ImportExportService>();
         }
 
         private static void ConfigureRepositories(IServiceCollection services)
         {
+            services.AddSingleton<IMediaRepository, MediaRepository>();
             services.AddSingleton<IEntryRepository, EntryRepository>();
             services.AddSingleton<ILabelRepository, LabelRepository>();
             services.AddSingleton<ITemplateRepository, TemplateRepository>();
@@ -91,6 +96,7 @@ namespace Diary
 
         private static void ConfigureClients(IServiceCollection services)
         {
+            services.AddSingleton<IMediaClient, MediaClient>();
             services.AddSingleton<IEntryClient, EntryClient>();
             services.AddSingleton<ILabelClient, LabelClient>();
             services.AddSingleton<ITemplateClient, TemplateClient>();
@@ -137,22 +143,32 @@ namespace Diary
             Routing.RegisterRoute("//importexport", typeof(ImportExportView));
         }
 
+        private static void SetupDirectories()
+        {
+            SetupDirectory(Constants.AppFolder);
+            SetupDirectory(Constants.MediaPath);
+        }
+
+        private static void SetupDirectory(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
+
         private static async Task SetupDatabaseAsync(MauiApp app)
         {
             if (!File.Exists(Constants.DatabasePath))
             {
-                var directory = Path.GetDirectoryName(Constants.DatabasePath);
-                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
-
+                var mediaRepository = app.Services.GetRequiredService<IMediaRepository>();
                 var entryRepository = app.Services.GetRequiredService<IEntryRepository>();
                 var labelRepository = app.Services.GetRequiredService<ILabelRepository>();
                 var templateRepository = app.Services.GetRequiredService<ITemplateRepository>();
                 var labelEntryRepository = app.Services.GetRequiredService<ILabelEntryRepository>();
                 var labelTemplateRepository = app.Services.GetRequiredService<ILabelTemplateRepository>();
 
+                await mediaRepository.CreateTableAsync();
                 await entryRepository.CreateTableAsync();
                 await labelRepository.CreateTableAsync();
                 await templateRepository.CreateTableAsync();
