@@ -1,4 +1,8 @@
-﻿using Diary.Services.Interfaces;
+﻿using Diary.Clients.Interfaces;
+using Diary.Helpers;
+using Diary.Services.Interfaces;
+using Plugin.LocalNotification;
+using Plugin.LocalNotification.EventArgs;
 
 namespace Diary;
 public partial class App : Application
@@ -12,6 +16,19 @@ public partial class App : Application
         InitializeComponent();
 
         MainPage = new AppShell();
+
+        LocalNotificationCenter.Current.NotificationActionTapped += Current_NotificationActionTapped;
+    }
+
+    private async void Current_NotificationActionTapped(NotificationActionEventArgs e)
+    {
+        var deliveredNotifications = await LocalNotificationCenter.Current.GetDeliveredNotificationList();
+        var notificationIds = deliveredNotifications.Select(n => n.NotificationId);
+
+        if (notificationIds.Contains(NotificationHelper.GetNotificationIdFromCreationDate(DateTime.Now)))
+        {
+            await Shell.Current.GoToAsync("//entries/timeMachine");
+        }
     }
 
     protected override void OnStart()

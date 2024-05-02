@@ -88,6 +88,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="8.0.20" />
 		<PackageReference Include="Mixbox" Version="2.0.0" />
+		<PackageReference Include="Plugin.LocalNotification" Version="11.1.2" />
 		<PackageReference Include="Plugin.Maui.Calendar" Version="1.1.6" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
@@ -105,6 +106,9 @@
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>AppShellTexts.resx</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Entry\TimeMachineView.xaml.cs">
+	    <DependentUpon>TimeMachineView.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\Entry\EntryListView.xaml.cs">
 	    <DependentUpon>EntryListView.xaml</DependentUpon>
@@ -138,6 +142,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Entry\EntryEditView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Entry\TimeMachineView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Entry\EntryListView.xaml">

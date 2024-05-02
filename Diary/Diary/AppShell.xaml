@@ -61,18 +61,6 @@
         </DataTemplate>
     </Shell.ItemTemplate>
 
-    <FlyoutItem Title="Labels">
-        <FlyoutItem.Icon>
-            <FontImageSource
-                FontFamily="{Static f:Fonts.FontAwesome}"
-                Glyph="{Static f:FontAwesomeIcons.Tag}"
-                Color="{StaticResource PrimaryLightText}" />
-        </FlyoutItem.Icon>
-        <ShellContent
-            Title="Labels"
-            ContentTemplate="{DataTemplate labelviews:LabelListView}"
-            Route="labels" />
-    </FlyoutItem>
     <FlyoutItem Title="Entries">
         <FlyoutItem.Icon>
             <FontImageSource
@@ -85,6 +73,18 @@
             ContentTemplate="{DataTemplate entryviews:EntryListView}"
             Route="entries" />
     </FlyoutItem>
+    <FlyoutItem Title="Time machine">
+        <FlyoutItem.Icon>
+            <FontImageSource
+                FontFamily="{Static f:Fonts.FontAwesome}"
+                Glyph="{Static f:FontAwesomeIcons.Clock}"
+                Color="{StaticResource PrimaryLightText}" />
+        </FlyoutItem.Icon>
+        <ShellContent
+            Title="Time machine"
+            ContentTemplate="{DataTemplate entryviews:TimeMachineView}"
+            Route="TimeMachine" />
+    </FlyoutItem>
     <FlyoutItem Title="Templates">
         <FlyoutItem.Icon>
             <FontImageSource
@@ -96,6 +96,18 @@
             Title="Templates"
             ContentTemplate="{DataTemplate templateviews:TemplateListView}"
             Route="templates" />
+    </FlyoutItem>
+    <FlyoutItem Title="Labels">
+        <FlyoutItem.Icon>
+            <FontImageSource
+                FontFamily="{Static f:Fonts.FontAwesome}"
+                Glyph="{Static f:FontAwesomeIcons.Tag}"
+                Color="{StaticResource PrimaryLightText}" />
+        </FlyoutItem.Icon>
+        <ShellContent
+            Title="Labels"
+            ContentTemplate="{DataTemplate labelviews:LabelListView}"
+            Route="labels" />
     </FlyoutItem>
     <FlyoutItem Title="{x:Static t:AppShellTexts.Gallery_FlyoutItem_Title}">
         <FlyoutItem.Icon>
