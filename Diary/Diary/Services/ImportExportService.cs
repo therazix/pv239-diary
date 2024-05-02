@@ -2,6 +2,10 @@
 using Diary.Repositories.Interfaces;
 using Diary.Services.Interfaces;
 using Newtonsoft.Json;
+using SharpCompress.Archives;
+using SharpCompress.Archives.Zip;
+using SharpCompress.Common;
+using SharpCompress.Writers;
 
 namespace Diary.Services;
 public class ImportExportService : IImportExportService
@@ -9,33 +13,98 @@ public class ImportExportService : IImportExportService
     private readonly IEntryRepository _entryRepository;
     private readonly ILabelRepository _labelRepository;
     private readonly ITemplateRepository _templateRepository;
+    private readonly string _importDir;
+    private readonly string _importMediaDir;
+    private readonly string _importDataFileName;
+    private readonly string _exportDir;
+    private readonly string _exportMediaDir;
+    private readonly string _exportDataFileName;
 
     public ImportExportService(IEntryRepository entryRepository, ILabelRepository labelRepository, ITemplateRepository templateRepository)
     {
         _entryRepository = entryRepository;
         _labelRepository = labelRepository;
         _templateRepository = templateRepository;
+
+        _importDir = Path.Combine(Constants.TempPath, "import");
+        _importMediaDir = Path.Combine(_importDir, "media");
+        _importDataFileName = Path.Combine(_importDir, "data.json");
+
+        _exportDir = Path.Combine(Constants.TempPath, "export");
+        _exportMediaDir = Path.Combine(_exportDir, "media");
+        _exportDataFileName = Path.Combine(_exportDir, "data.json");
     }
 
-    public async Task<string> ExportAsync()
+
+    public async Task<MemoryStream> ExportAsync()
+    {
+        RecreateDirectories();
+        await ExportDataFile(_exportDataFileName);
+        CopyMediaFiles(Constants.MediaPath, _exportMediaDir);
+        return CreateZip();
+    }
+
+    public async Task ImportAsync(string filePath)
+    {
+        RecreateDirectories();
+        ExtractZip(filePath);
+        await ImportDataFile(_importDataFileName);
+        CopyMediaFiles(_importMediaDir, Constants.MediaPath);
+    }
+
+    private void RecreateDirectories()
+    {
+        if (Directory.Exists(_exportDir))
+        {
+            Directory.Delete(_exportDir, true);
+        }
+        Directory.CreateDirectory(_exportDir);
+
+        if (Directory.Exists(_importDir))
+        {
+            Directory.Delete(_importDir, true);
+        }
+        Directory.CreateDirectory(_importDir);
+    }
+
+    private void CopyMediaFiles(string sourceDir, string targetDir)
+    {
+        if (!Directory.Exists(targetDir))
+        {
+            Directory.CreateDirectory(targetDir);
+        }
+
+        foreach (var file in Directory.GetFiles(sourceDir))
+        {
+            var destFile = Path.Combine(targetDir, Path.GetFileName(file));
+            File.Copy(file, destFile, true);
+        }
+    }
+
+    private async Task ExportDataFile(string filePath)
     {
         var entries = await _entryRepository.GetAllAsync();
         var labels = await _labelRepository.GetAllAsync();
         var templates = await _templateRepository.GetAllAsync();
 
-        var export = new ImportExportEntity()
+        var data = new ImportExportEntity()
         {
             Entries = entries,
             Labels = labels,
             Templates = templates
         };
 
-        return JsonConvert.SerializeObject(export, Formatting.Indented);
+        using StreamWriter file = File.CreateText(filePath);
+        JsonSerializer serializer = new JsonSerializer();
+        serializer.Serialize(file, data);
     }
 
-    public async Task ImportAsync(string content)
+    private async Task ImportDataFile(string filePath)
     {
-        var import = JsonConvert.DeserializeObject<ImportExportEntity>(content);
+        using StreamReader file = File.OpenText(filePath);
+
+        JsonSerializer serializer = new JsonSerializer();
+        var import = serializer.Deserialize(file, typeof(ImportExportEntity)) as ImportExportEntity;
 
         if (import != null)
         {
@@ -56,6 +125,33 @@ public class ImportExportService : IImportExportService
                 await _templateRepository.SetAsync(template);
             }
         }
+    }
+
+    private MemoryStream CreateZip()
+    {
+        var memoryStream = new MemoryStream();
+        using var archive = ZipArchive.Create();
+
+        var dirName = Path.GetFileName(_exportMediaDir.TrimEnd(Path.DirectorySeparatorChar));
+        foreach (var filePath in Directory.GetFiles(_exportMediaDir))
+        {
+            var fileName = Path.GetFileName(filePath);
+            archive.AddEntry($"{dirName}\\{fileName}", filePath);
+        }
+        archive.AddEntry(Path.GetFileName(_exportDataFileName), _exportDataFileName);
+        archive.SaveTo(memoryStream, new WriterOptions(CompressionType.Deflate)
+        {
+            LeaveStreamOpen = true
+        });
+        memoryStream.Position = 0;
+
+        return memoryStream;
+    }
+
+    private void ExtractZip(string filePath)
+    {
+        using var archive = ZipArchive.Open(filePath);
+        archive.ExtractToDirectory(_importDir);
     }
 
     private void ReplaceIdProps<T>(Dictionary<Guid, Guid> idMap, T entity) where T : EntityBase
@@ -96,7 +192,6 @@ public class ImportExportService : IImportExportService
             {
                 ReplaceIdProps(idMap, template);
             }
-
             ReplaceIdProps(idMap, label);
         }
 
@@ -105,6 +200,10 @@ public class ImportExportService : IImportExportService
             foreach (var label in entry.Labels)
             {
                 ReplaceIdProps(idMap, label);
+            }
+            foreach (var media in entry.Media)
+            {
+                ReplaceIdProps(idMap, media);
             }
             ReplaceIdProps(idMap, entry);
         }

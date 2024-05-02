@@ -147,6 +147,7 @@ namespace Diary
         {
             SetupDirectory(Constants.AppFolder);
             SetupDirectory(Constants.MediaPath);
+            SetupDirectory(Constants.TempPath);
         }
 
         private static void SetupDirectory(string path)
