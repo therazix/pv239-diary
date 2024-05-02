@@ -7,6 +7,8 @@ public interface IEntryClient
 {
     Task<ICollection<EntryListModel>> GetAllAsync(EntryFilter? entryFilter = null);
 
+    Task<ICollection<EntryListModel>> GetByDayFromPreviousYears(DateTime date);
+
     Task<EntryDetailModel?> GetByIdAsync(Guid id);
 
     Task<Guid> SetAsync(EntryDetailModel model);

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase
+    x:Class="Diary.Views.Entry.TimeMachineView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+    xmlns:models="clr-namespace:Diary.Models.Entry"
+    xmlns:plugin="clr-namespace:Plugin.Maui.Calendar.Controls;assembly=Plugin.Maui.Calendar"
+    xmlns:texts="clr-namespace:Diary.Resources.Texts"
+    xmlns:views="clr-namespace:Diary.Views"
+    xmlns:vm="clr-namespace:Diary.ViewModels.Entry"
+    x:Name="Root"
+    Title="Time machine"
+    x:DataType="vm:TimeMachineViewModel">
+    <Grid Margin="15,0,15,5" RowDefinitions="Auto, *">
+        <Label
+            Grid.Row="0"
+            Margin="0,15,0,15"
+            FontSize="Medium"
+            HorizontalOptions="CenterAndExpand"
+            Style="{StaticResource LabelStripe}"
+            Text="{Binding HeadingText}" />
+        <ScrollView Grid.Row="1">
+            <StackLayout BindableLayout.ItemsSource="{Binding Entries}" Orientation="Vertical">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:EntryListModel">
+                        <StackLayout>
+                            <StackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.GoToDetailCommand, Source={x:Reference Root}}" CommandParameter="{Binding Id}" />
+                            </StackLayout.GestureRecognizers>
+                            <BoxView
+                                Margin="0,0,0,15"
+                                HeightRequest="1"
+                                VerticalOptions="End"
+                                Color="{AppThemeBinding Light={StaticResource PrimaryDark},
+                                                        Dark={StaticResource PrimaryLight}}" />
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    FontAttributes="Bold"
+                                    HorizontalOptions="Start"
+                                    Text="{Binding Title}"
+                                    TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                                Dark={StaticResource PrimaryLightText}}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    HorizontalOptions="End"
+                                    Text="{Binding CreatedAt, StringFormat='{0:D}'}"
+                                    TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                                Dark={StaticResource PrimaryLightText}}"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Margin="0,0,0,15"
+                                HorizontalOptions="Start"
+                                Text="{Binding Content}"
+                                TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                            Dark={StaticResource PrimaryLightText}}"
+                                VerticalOptions="Center" />
+
+                        </StackLayout>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</views:ContentPageBase>

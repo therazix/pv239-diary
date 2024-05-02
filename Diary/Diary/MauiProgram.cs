@@ -11,7 +11,6 @@ using Diary.Repositories.Interfaces;
 using Diary.Resources.Fonts;
 using Diary.Services;
 using Diary.Services.Interfaces;
-using Diary.ViewModels.Entry;
 using Diary.ViewModels.Interfaces;
 using Diary.ViewModels.Map;
 using Diary.Views;
@@ -22,6 +21,7 @@ using Diary.Views.Map;
 using Diary.Views.Template;
 using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
+using Plugin.LocalNotification;
 
 namespace Diary
 {
@@ -34,6 +34,7 @@ namespace Diary
                 .UseMauiApp<App>()
                 .UseMicrocharts()
                 .UseMauiCommunityToolkit()
+                .UseLocalNotification()
 #if ANDROID || IOS
                 .UseMauiMaps()
 #elif WINDOWS
@@ -126,6 +127,8 @@ namespace Diary
             Routing.RegisterRoute("//entries/detail", typeof(EntryDetailView));
             Routing.RegisterRoute("//entries/edit", typeof(EntryEditView));
             Routing.RegisterRoute("//entries/create", typeof(EntryCreateView));
+            Routing.RegisterRoute("//entries/timeMachine", typeof(TimeMachineView));
+            Routing.RegisterRoute("//entries/timeMachine/detail", typeof(EntryDetailView));
 
             Routing.RegisterRoute("//templates/detail", typeof(TemplateDetailView));
             Routing.RegisterRoute("//templates/edit", typeof(TemplateEditView));

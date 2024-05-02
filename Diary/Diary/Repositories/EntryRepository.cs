@@ -1,4 +1,5 @@
 ﻿using Diary.Entities;
+using Diary.Helpers;
 using Diary.Repositories.Interfaces;
 
 namespace Diary.Repositories;
@@ -19,6 +20,34 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         return entities;
     }
 
+    public async Task<ICollection<EntryEntity>> GetByDayFromPreviousYears(DateTime date)
+    {
+        var dayLastYear = date.AddYears(-1);
+
+        var entities = await GetEntriesByDateRange(dayLastYear, dayLastYear);
+
+        foreach (var entity in entities)
+        {
+            await LinkRelatedEntities(entity);
+        }
+
+        return entities;
+    }
+
+    public async Task<ICollection<EntryEntity>> GetByTimeMachineNotificationId(int timeMachineNotificationId)
+    {
+        var entities = await connection.Table<EntryEntity>()
+            .Where(e => e.TimeMachineNotificationId == timeMachineNotificationId)
+            .ToListAsync();
+
+        foreach (var entity in entities)
+        {
+            await LinkRelatedEntities(entity);
+        }
+
+        return entities;
+    }
+
     public async override Task<EntryEntity?> GetByIdAsync(Guid id)
     {
         var entity = await connection.Table<EntryEntity>().Where(e => e.Id == id).FirstOrDefaultAsync();
@@ -30,12 +59,13 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         return entity;
     }
 
-    public async override Task<Guid> SetAsync(EntryEntity entity)
+    public async new Task<EntryEntity> SetAsync(EntryEntity entity)
     {
         if (entity.Id == Guid.Empty)
         {
             entity.Id = Guid.NewGuid();
             entity.CreatedAt = DateTime.Now;
+            entity.TimeMachineNotificationId = NotificationHelper.GetNotificationIdFromCreationDate(entity.CreatedAt);
         }
         entity.EditedAt = DateTime.Now;
 
@@ -63,7 +93,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
             }
         });
 
-        return entity.Id;
+        return entity;
     }
 
     public async override Task DeleteAsync(EntryEntity entity)
