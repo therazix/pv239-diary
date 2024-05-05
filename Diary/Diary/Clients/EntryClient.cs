@@ -71,6 +71,7 @@ public class EntryClient : IEntryClient
     {
         var entity = model.MapToEntity();
         var savedEntity = await _entryRepository.SetAsync(entity);
+        await _mediaRepository.DeleteUnusedMediaAsync();
 
 #if ANDROID
         await ScheduleTimeMachineNotification(savedEntity);
