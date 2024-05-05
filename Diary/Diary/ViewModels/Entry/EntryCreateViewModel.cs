@@ -100,7 +100,7 @@ public partial class EntryCreateViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private Task RemoveMediaAsync(string fileName)
+    private void RemoveMedia(string fileName)
     {
         if (Entry != null)
         {
@@ -110,12 +110,10 @@ public partial class EntryCreateViewModel : ViewModelBase
                 Entry.Media.Remove(media);
             }
         }
-
-        return Task.CompletedTask;
     }
 
     [RelayCommand]
-    private Task ClearLocationAsync()
+    private void ClearLocation()
     {
         if (Entry != null)
         {
@@ -123,7 +121,6 @@ public partial class EntryCreateViewModel : ViewModelBase
             Entry.Longitude = null;
         }
         UpdateFormLocationInfo();
-        return Task.CompletedTask;
     }
 
     [RelayCommand]
