@@ -13,7 +13,9 @@ public static partial class MediaMapper
         return new MediaModel()
         {
             FileName = entity.FileName,
+            OriginalFileName = entity.OriginalFileName,
             MediaType = Enum.Parse<MediaType>(entity.MediaType),
+            Description = entity.Description,
         };
     }
     public static partial ICollection<MediaModel> MapToModels(this ICollection<MediaEntity> entities);
@@ -23,7 +25,9 @@ public static partial class MediaMapper
         return new MediaEntity()
         {
             FileName = model.FileName,
+            OriginalFileName = model.OriginalFileName,
             MediaType = model.MediaType.ToString(),
+            Description = model.Description,
         };
     }
     public static partial ICollection<MediaEntity> MapToEntites(this ICollection<MediaModel> models);
