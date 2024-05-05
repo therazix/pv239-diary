@@ -70,7 +70,7 @@ public partial class TemplateCreateViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private Task ClearLocationAsync()
+    private void ClearLocation()
     {
         if (Template != null)
         {
@@ -78,7 +78,6 @@ public partial class TemplateCreateViewModel : ViewModelBase
             Template.Longitude = null;
         }
         UpdateFormLocationInfo();
-        return Task.CompletedTask;
     }
 
     [RelayCommand]
