@@ -235,7 +235,12 @@ public partial class EntryCreateViewModel : ViewModelBase
             var fileName = await _mediaClient.SaveFileAsync(fileResult);
             if (!Entry.Media.Select(i => i.FileName).Contains(fileName))
             {
-                Entry.Media.Add(new MediaModel() { FileName = fileName, MediaType = mediaType });
+                Entry.Media.Add(new MediaModel()
+                {
+                    FileName = fileName,
+                    OriginalFileName = fileResult.FileName,
+                    MediaType = mediaType
+                });
             }
         }
     }
