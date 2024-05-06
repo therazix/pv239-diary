@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
+using Diary.Helpers;
 using Diary.Models.Entry;
 using Diary.ViewModels.Map;
 using PropertyChanged;
@@ -28,6 +29,7 @@ public partial class EntryDetailViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
         Entry = await _entryClient.GetByIdAsync(Id);
         UpdateFormLocationInfo();
     }

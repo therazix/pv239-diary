@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Commands.Interfaces;
+using Diary.Helpers;
 using Diary.Models.Template;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -24,6 +25,7 @@ public partial class TemplateListViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
         Items = (await _templateClient.GetAllAsync()).ToObservableCollection();
     }
 

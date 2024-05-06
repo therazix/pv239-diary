@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.Input;
+using Diary.Helpers;
 using Diary.Services.Interfaces;
 
 namespace Diary.ViewModels.ImportExport;
@@ -30,7 +31,12 @@ public partial class ImportExportViewModel : ViewModelBase
     [RelayCommand]
     private async Task ExportAsync()
     {
-        var stream = await _importExportService.ExportAsync();
+        MemoryStream stream;
+        using (new BusyIndicator(this))
+        {
+            stream = await _importExportService.ExportAsync();
+        }
+
         var fileSaverResult = await _fileSaver.SaveAsync(Constants.DefaultExportFileName, stream);
 
         var toast = Toast.Make(fileSaverResult.IsSuccessful ? "Successfully exported" : fileSaverResult.Exception.Message);
@@ -54,7 +60,10 @@ public partial class ImportExportViewModel : ViewModelBase
             {
                 if (result.FileName.EndsWith("zip", StringComparison.OrdinalIgnoreCase))
                 {
-                    await _importExportService.ImportAsync(result.FullPath);
+                    using (new BusyIndicator(this))
+                    {
+                        await _importExportService.ImportAsync(result.FullPath);
+                    }
                     toastMessage = "Successfully imported";
                 }
             }

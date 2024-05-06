@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
+using Diary.Helpers;
 using Diary.Models.Label;
 using Diary.Models.Template;
 using Diary.ViewModels.Map;
@@ -36,6 +37,8 @@ public partial class TemplateCreateViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
+
         Template = new TemplateDetailModel()
         {
             Id = Guid.Empty
@@ -59,6 +62,7 @@ public partial class TemplateCreateViewModel : ViewModelBase
                 Template.Longitude = null;
             }
 
+            using var _ = new BusyIndicator(this);
             Template.Labels = new ObservableCollection<LabelListModel>(SelectedLabels.Select(l => (LabelListModel)l));
             await _templateClient.SetAsync(Template);
         }

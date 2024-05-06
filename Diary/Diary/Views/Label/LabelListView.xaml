@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<views:ContentPageBase x:Class="Diary.Views.Label.LabelListView"
-                       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
-                       xmlns:models="clr-namespace:Diary.Models.Label"
-                       xmlns:vm="clr-namespace:Diary.ViewModels.Label"
-                       xmlns:texts="clr-namespace:Diary.Resources.Texts"
-                       xmlns:views="clr-namespace:Diary.Views"
-                       xmlns:converters="clr-namespace:Diary.Converters"
-                       x:Name="Root"
-                       Title="Labels"
-                       x:DataType="vm:LabelListViewModel">
+<views:ContentPageBase
+    x:Class="Diary.Views.Label.LabelListView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:Diary.Converters"
+    xmlns:dict="clr-namespace:Diary.Resources.Dictionaries"
+    xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+    xmlns:models="clr-namespace:Diary.Models.Label"
+    xmlns:texts="clr-namespace:Diary.Resources.Texts"
+    xmlns:views="clr-namespace:Diary.Views"
+    xmlns:vm="clr-namespace:Diary.ViewModels.Label"
+    x:Name="Root"
+    Title="Labels"
+    x:DataType="vm:LabelListViewModel"
+    ControlTemplate="{StaticResource ContentTemplate}"
+    IsBusy="{Binding IsBusy}">
     <views:ContentPageBase.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <dict:BaseResourceDictionary />
+            </ResourceDictionary.MergedDictionaries>
             <converters:StringToColorConverter x:Key="StringToColorConverter" />
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
@@ -23,47 +30,47 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <CollectionView Grid.Row="0"
-                        ItemsSource="{Binding Items}">
+        <CollectionView Grid.Row="0" ItemsSource="{Binding Items}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:LabelListModel">
-                    <Grid Padding="10"
-                          ColumnSpacing="10">
+                    <Grid Padding="10" ColumnSpacing="10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="40" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.GoToDetailCommand}"
-                                                  CommandParameter="{Binding Id}" />
+                            <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.GoToDetailCommand}" CommandParameter="{Binding Id}" />
                         </Grid.GestureRecognizers>
-                        <BoxView Grid.Column="0"
-                                 WidthRequest="30"
-                                 HeightRequest="30"
-                                 VerticalOptions="Center"
-                                 Color="{Binding Color, Converter={StaticResource StringToColorConverter}}" />
-                        <Label Grid.Column="1"
-                               Text="{Binding Name}"
-                               TextColor="Black"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Start" />
+                        <BoxView
+                            Grid.Column="0"
+                            HeightRequest="30"
+                            VerticalOptions="Center"
+                            WidthRequest="30"
+                            Color="{Binding Color, Converter={StaticResource StringToColorConverter}}" />
+                        <Label
+                            Grid.Column="1"
+                            HorizontalOptions="Start"
+                            Text="{Binding Name}"
+                            TextColor="Black"
+                            VerticalOptions="Center" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Grid.Row="1"
-                HorizontalOptions="End"
-                VerticalOptions="End"
-                Margin="0,0,20,20"
-                WidthRequest="60"
-                HeightRequest="60"
-                CornerRadius="30"
-                BackgroundColor="#007AFF"
-                Text="+"
-                TextColor="White"
-                FontSize="24"
-                FontAttributes="Bold"
-                Command="{Binding GoToCreateCommand}" />
+        <Button
+            Grid.Row="1"
+            Margin="0,0,20,20"
+            BackgroundColor="#007AFF"
+            Command="{Binding GoToCreateCommand}"
+            CornerRadius="30"
+            FontAttributes="Bold"
+            FontSize="24"
+            HeightRequest="60"
+            HorizontalOptions="End"
+            Text="+"
+            TextColor="White"
+            VerticalOptions="End"
+            WidthRequest="60" />
     </Grid>
 </views:ContentPageBase>

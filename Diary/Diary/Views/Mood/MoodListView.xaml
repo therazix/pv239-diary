@@ -11,7 +11,9 @@
     xmlns:views="clr-namespace:Diary.Views"
     xmlns:vm="clr-namespace:Diary.ViewModels.Mood"
     Title="Mood"
-    x:DataType="vm:MoodListViewModel">
+    x:DataType="vm:MoodListViewModel"
+    ControlTemplate="{StaticResource ContentTemplate}"
+    IsBusy="{Binding IsBusy}">
 
     <ScrollView>
         <StackLayout>

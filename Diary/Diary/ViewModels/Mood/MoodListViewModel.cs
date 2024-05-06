@@ -43,6 +43,7 @@ public partial class MoodListViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
         await InitializeChartsAsync();
     }
 

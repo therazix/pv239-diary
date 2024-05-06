@@ -6,6 +6,8 @@ namespace Diary.ViewModels;
 
 public abstract partial class ViewModelBase : ObservableObject, IViewModel
 {
+    public bool IsBusy { get; set; }
+
     public virtual Task OnAppearingAsync()
     {
         return Task.CompletedTask;

@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Enums;
+using Diary.Helpers;
 using Diary.Models.Entry;
 using Diary.Models.Label;
 using Diary.Models.Media;
@@ -54,6 +55,8 @@ public partial class EntryCreateViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
+
         Entry = new EntryDetailModel()
         {
             Id = Guid.Empty
@@ -73,6 +76,7 @@ public partial class EntryCreateViewModel : ViewModelBase
     {
         if (Entry != null)
         {
+            using var _ = new BusyIndicator(this);
             Entry.Labels = new ObservableCollection<LabelListModel>(SelectedLabels.Select(l => (LabelListModel)l));
             await _entryClient.SetAsync(Entry);
         }
@@ -226,6 +230,7 @@ public partial class EntryCreateViewModel : ViewModelBase
     {
         if (Entry != null && fileResult != null)
         {
+            using var _ = new BusyIndicator(this);
             var fileName = await _mediaClient.SaveFileAsync(fileResult);
             if (!Entry.Media.Select(i => i.FileName).Contains(fileName))
             {
