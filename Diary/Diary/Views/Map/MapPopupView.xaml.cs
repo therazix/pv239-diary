@@ -34,8 +34,11 @@ public partial class MapPopupView : Popup
         var window = Application.Current?.Windows[0];
         if (window != null)
         {
-            double width = window.Width * 0.9;
-            double height = window.Height * 0.9;
+            var widthMultiplier = DeviceInfo.Current.Idiom == DeviceIdiom.Phone ? 1.0 : 0.9;
+            var heightMultiplier = DeviceInfo.Current.Idiom == DeviceIdiom.Phone ? 1.0 : 0.9;
+
+            double width = window.Width * widthMultiplier;
+            double height = window.Height * heightMultiplier;
 
             this.Size = new Size(width, height);
         }
