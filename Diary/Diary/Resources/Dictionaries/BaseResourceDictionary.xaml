@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary
+    x:Class="Diary.Resources.Dictionaries.BaseResourceDictionary"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ControlTemplate x:Key="ContentTemplate">
+        <Grid>
+            <ContentPresenter />
+            <Frame
+                BackgroundColor="Gray"
+                IsVisible="{TemplateBinding IsBusy}"
+                Opacity="0.5" />
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                IsRunning="{TemplateBinding IsBusy}"
+                VerticalOptions="Center" />
+        </Grid>
+    </ControlTemplate>
+</ResourceDictionary>

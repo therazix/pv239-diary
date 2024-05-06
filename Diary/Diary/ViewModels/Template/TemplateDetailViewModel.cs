@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
+using Diary.Helpers;
 using Diary.Models.Template;
 using Diary.ViewModels.Map;
 using PropertyChanged;
@@ -33,6 +34,8 @@ public partial class TemplateDetailViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
+
         Template = await _templateClient.GetByIdAsync(Id);
 
         ShowMood = Template?.Mood != 0;

@@ -11,7 +11,9 @@
     xmlns:vm="clr-namespace:Diary.ViewModels.Entry"
     x:Name="Root"
     Title="Entries"
-    x:DataType="vm:EntryListViewModel">
+    x:DataType="vm:EntryListViewModel"
+    ControlTemplate="{StaticResource ContentTemplate}"
+    IsBusy="{Binding IsBusy}">
 
     <Grid
         Padding="15,0,15,15"

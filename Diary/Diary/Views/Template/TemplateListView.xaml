@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:Diary.Converters"
+    xmlns:dict="clr-namespace:Diary.Resources.Dictionaries"
     xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
     xmlns:models="clr-namespace:Diary.Models.Template"
     xmlns:texts="clr-namespace:Diary.Resources.Texts"
@@ -11,10 +12,15 @@
     xmlns:vm="clr-namespace:Diary.ViewModels.Template"
     x:Name="Root"
     Title="Templates"
-    x:DataType="vm:TemplateListViewModel">
+    x:DataType="vm:TemplateListViewModel"
+    ControlTemplate="{StaticResource ContentTemplate}"
+    IsBusy="{Binding IsBusy}">
 
     <views:ContentPageBase.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <dict:BaseResourceDictionary />
+            </ResourceDictionary.MergedDictionaries>
             <converters:IntToMoodIconConverter x:Key="IntToMoodIconConverter" />
             <converters:IntToMoodColorConverter x:Key="IntToMoodColorConverter" />
         </ResourceDictionary>

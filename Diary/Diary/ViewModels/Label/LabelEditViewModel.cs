@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
+using Diary.Helpers;
 using Diary.Models.Label;
 using PropertyChanged;
 
@@ -22,6 +23,7 @@ public partial class LabelEditViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
         Label = await _labelClient.GetByIdAsync(Id);
     }
 
@@ -40,6 +42,7 @@ public partial class LabelEditViewModel : ViewModelBase
     {
         if (Label != null)
         {
+            using var _ = new BusyIndicator(this);
             await _labelClient.SetAsync(Label);
         }
         await Shell.Current.GoToAsync("../");

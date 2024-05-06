@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Enums;
+using Diary.Helpers;
 using Diary.Models.Entry;
 using Plugin.Maui.Calendar.Models;
 using System.Collections.ObjectModel;
@@ -24,6 +25,8 @@ public partial class EntryListViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
+
         var entryFilter = new EntryFilter
         {
             OrderByProperty = EntryFilterEnums.OrderByProperty.CreatedAt,

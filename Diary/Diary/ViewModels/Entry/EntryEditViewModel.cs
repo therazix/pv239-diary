@@ -42,6 +42,8 @@ public partial class EntryEditViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
+
         var labels = await _labelClient.GetAllAsync();
         SelectedLabels = new ObservableCollection<object>(labels.Where(l => Entry.Labels.Select(el => el.Id).Contains(l.Id)));
         Labels = labels.ToObservableCollection();
@@ -62,9 +64,12 @@ public partial class EntryEditViewModel : ViewModelBase
     [RelayCommand]
     private async Task SaveAsync()
     {
-        Entry.Labels = new ObservableCollection<LabelListModel>(SelectedLabels.Select(l => (LabelListModel)l));
+        using (new BusyIndicator(this))
+        {
+            Entry.Labels = new ObservableCollection<LabelListModel>(SelectedLabels.Select(l => (LabelListModel)l));
+            await _entryClient.SetAsync(Entry);
+        }
 
-        await _entryClient.SetAsync(Entry);
         await Shell.Current.GoToAsync("//entries");
     }
 
@@ -143,6 +148,7 @@ public partial class EntryEditViewModel : ViewModelBase
     {
         if (Entry != null && fileResult != null)
         {
+            using var _ = new BusyIndicator(this);
             var fileName = await _mediaClient.SaveFileAsync(fileResult);
             if (!Entry.Media.Select(i => i.FileName).Contains(fileName))
             {
