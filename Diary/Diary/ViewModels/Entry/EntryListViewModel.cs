@@ -1,36 +1,28 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Enums;
 using Diary.Models.Entry;
-using Diary.ViewModels.Interfaces;
 using Plugin.Maui.Calendar.Models;
+using System.Collections.ObjectModel;
 
 namespace Diary.ViewModels.Entry;
 
-[INotifyPropertyChanged]
-public partial class EntryListViewModel : IViewModel
+public partial class EntryListViewModel : ViewModelBase
 {
     private readonly IEntryClient _entryClient;
 
-    [ObservableProperty]
-    private EventCollection _events = [];
-
-    [ObservableProperty]
-    private ICollection<EntryListModel>? _items;
-
-    [ObservableProperty]
-    private ICollection<EntryListModel>? _selectedDayEntries = [];
-
+    public EventCollection Events { get; set; } = [];
+    public ObservableCollection<EntryListModel>? Items { get; set; }
+    public ObservableCollection<EntryListModel>? SelectedDayEntries { get; set; } = [];
     public string? SelectedDate { get; set; } = null;
-
 
     public EntryListViewModel(IEntryClient entryClient)
     {
         _entryClient = entryClient;
     }
 
-    public async Task OnAppearingAsync()
+    public override async Task OnAppearingAsync()
     {
         var entryFilter = new EntryFilter
         {
@@ -38,7 +30,7 @@ public partial class EntryListViewModel : IViewModel
             OrderByDirection = EntryFilterEnums.OrderByDirection.Desc
         };
 
-        Items = await _entryClient.GetAllAsync(entryFilter);
+        Items = (await _entryClient.GetAllAsync(entryFilter)).ToObservableCollection();
 
         Events = ConstructEventCollection(Items);
 
@@ -72,7 +64,8 @@ public partial class EntryListViewModel : IViewModel
 
             if (dayHasEvents)
             {
-                SelectedDayEntries = (ICollection<EntryListModel>)dayEvents;
+                var selectedDayEntries = (ICollection<EntryListModel>)dayEvents;
+                SelectedDayEntries = selectedDayEntries.ToObservableCollection();
             }
             else
             {

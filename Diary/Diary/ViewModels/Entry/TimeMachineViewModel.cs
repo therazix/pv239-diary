@@ -1,18 +1,13 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Models.Entry;
-using Diary.ViewModels.Interfaces;
 
 namespace Diary.ViewModels.Entry;
 
-[INotifyPropertyChanged]
-public partial class TimeMachineViewModel : IViewModel
+public partial class TimeMachineViewModel : ViewModelBase
 {
     private readonly IEntryClient _entryClient;
-
     public string HeadingText { get; set; } = "Time machine is loading...";
-
     public ICollection<EntryListModel>? Entries { get; set; }
 
     public TimeMachineViewModel(IEntryClient entryClient)
@@ -20,7 +15,7 @@ public partial class TimeMachineViewModel : IViewModel
         _entryClient = entryClient;
     }
 
-    public async Task OnAppearingAsync()
+    public override async Task OnAppearingAsync()
     {
         Entries = await _entryClient.GetByDayFromPreviousYears(DateTime.Now);
         HeadingText = Entries.Count > 0 ? "This day in the past..." : "Time machine has nothing to show today...";

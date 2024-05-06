@@ -22,11 +22,8 @@ public partial class EntryEditViewModel : ViewModelBase
     private readonly IMediaPicker _mediaPicker;
 
     public EntryDetailModel Entry { get; set; } = null!;
-
     public ObservableCollection<LabelListModel> Labels { get; set; }
-
     public ObservableCollection<object> SelectedLabels { get; set; }
-
     public bool IsLocationSet { get; set; } = false;
     public string LocationText { get; set; } = string.Empty;
     public Color LocationTextColor { get; set; } = Color.FromArgb("#FF000000");

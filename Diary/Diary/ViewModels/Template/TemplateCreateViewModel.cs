@@ -16,13 +16,9 @@ public partial class TemplateCreateViewModel : ViewModelBase
     private readonly IPopupService _popupService;
 
     public bool PresetMood { get; set; } = true;
-
     public bool PresetLocation { get; set; } = true;
-
     public TemplateDetailModel? Template { get; set; }
-
     public ObservableCollection<LabelListModel> Labels { get; set; }
-
     public ObservableCollection<object> SelectedLabels { get; set; }
 
     public bool IsLocationSet { get; set; } = false;

@@ -1,17 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Converters;
 using Diary.Helpers;
 using Diary.Models.Mood;
-using Diary.ViewModels.Interfaces;
 using Microcharts;
 using Scrtwpns.Mixbox;
 
 namespace Diary.ViewModels.Mood;
 
-[INotifyPropertyChanged]
-public partial class MoodListViewModel : IViewModel
+public partial class MoodListViewModel : ViewModelBase
 {
     private readonly IEntryClient _entryClient;
     private readonly IntToMoodColorConverter _intToMoodColorConverter = new();
@@ -26,23 +23,12 @@ public partial class MoodListViewModel : IViewModel
     private DateTime _monthRadarChartDayFrom => new(_monthRadarChartDayTo.Year, _monthRadarChartDayTo.Month, 1);
     private DateTime _monthRadarChartDayTo;
 
-    [ObservableProperty]
-    private DateTime _averageMoodFrom;
-
-    [ObservableProperty]
-    private DateTime _averageMoodTo;
-
-    [ObservableProperty]
-    private string _monthRadarChartDayFromText;
-
-    [ObservableProperty]
-    private LineChart _weekLineChart;
-
-    [ObservableProperty]
-    private RadarChart _monthRadarChart;
-
-    [ObservableProperty]
-    private PointChart _averageMoodPointChart;
+    public DateTime AverageMoodFrom { get; set; }
+    public DateTime AverageMoodTo { get; set; }
+    public string MonthRadarChartDayFromText { get; set; }
+    public LineChart WeekLineChart { get; set; }
+    public RadarChart MonthRadarChart { get; set; }
+    public PointChart AverageMoodPointChart { get; set; }
 
     public MoodListViewModel(IEntryClient entryClient)
     {
@@ -55,7 +41,7 @@ public partial class MoodListViewModel : IViewModel
         AverageMoodTo = _monthRadarChartDayTo;
     }
 
-    public async Task OnAppearingAsync()
+    public override async Task OnAppearingAsync()
     {
         await InitializeChartsAsync();
     }

@@ -17,7 +17,6 @@ public partial class EntryDetailViewModel : ViewModelBase
     public Guid Id { get; set; }
 
     public EntryDetailModel? Entry { get; set; }
-
     public bool IsLocationSet { get; set; } = false;
     public string LocationText { get; set; } = string.Empty;
 
