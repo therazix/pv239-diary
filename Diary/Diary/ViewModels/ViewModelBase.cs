@@ -4,9 +4,7 @@ using Diary.ViewModels.Interfaces;
 
 namespace Diary.ViewModels;
 
-
-[INotifyPropertyChanged]
-public abstract partial class ViewModelBase : IViewModel
+public abstract partial class ViewModelBase : ObservableObject, IViewModel
 {
     public virtual Task OnAppearingAsync()
     {

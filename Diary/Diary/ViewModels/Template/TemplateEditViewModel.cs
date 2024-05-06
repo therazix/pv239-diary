@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Models.Label;
@@ -17,17 +16,11 @@ public partial class TemplateEditViewModel : ViewModelBase
     private readonly ILabelClient _labelClient;
     private readonly IPopupService _popupService;
 
-    [ObservableProperty]
-    private bool _presetMood;
-
-    [ObservableProperty]
-    private bool _presetLocation;
-
+    public bool PresetMood { get; set; }
+    public bool PresetLocation { get; set; }
 
     public TemplateDetailModel Template { get; set; } = null!;
-
     public ObservableCollection<LabelListModel> Labels { get; set; }
-
     public ObservableCollection<object> SelectedLabels { get; set; }
 
     public bool IsLocationSet { get; set; } = false;

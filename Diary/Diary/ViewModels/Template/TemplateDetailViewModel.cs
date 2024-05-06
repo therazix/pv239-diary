@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Models.Template;
@@ -17,14 +16,9 @@ public partial class TemplateDetailViewModel : ViewModelBase
     [DoNotNotify]
     public Guid Id { get; set; }
 
-    [ObservableProperty]
-    private bool _showMood;
-
-    [ObservableProperty]
-    private bool _showLocation;
-
-    [ObservableProperty]
-    private bool _showLabels;
+    public bool ShowMood { get; set; }
+    public bool ShowLocation { get; set; }
+    public bool ShowLabels { get; set; }
 
     public TemplateDetailModel? Template { get; set; }
 

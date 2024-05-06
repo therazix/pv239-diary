@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Enums;
@@ -22,15 +21,10 @@ public partial class EntryCreateViewModel : ViewModelBase
     private readonly IPopupService _popupService;
     private readonly IMediaPicker _mediaPicker;
 
-    [ObservableProperty]
-    private TemplateDetailModel? _selectedTemplate;
-
+    public TemplateDetailModel? SelectedTemplate { get; set; }
     public EntryDetailModel? Entry { get; set; }
-
     public ObservableCollection<LabelListModel> Labels { get; set; }
-
     public ObservableCollection<object> SelectedLabels { get; set; }
-
     public ObservableCollection<TemplateDetailModel> Templates { get; set; }
 
     public bool IsLocationSet { get; set; } = false;
