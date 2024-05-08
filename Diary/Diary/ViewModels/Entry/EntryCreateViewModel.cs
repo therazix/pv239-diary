@@ -110,9 +110,9 @@ public partial class EntryCreateViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task InsertTemplateContent()
+    private async Task InsertTemplateContentAsync()
     {
-        if (!await ConfirmSelectionIfDataLossPossible())
+        if (!await ConfirmSelectionIfDataLossPossibleAsync())
         {
             return;
         }
@@ -141,7 +141,7 @@ public partial class EntryCreateViewModel : ViewModelBase
         UpdateFormLocationInfo();
     }
 
-    private async Task<bool> ConfirmSelectionIfDataLossPossible()
+    private async Task<bool> ConfirmSelectionIfDataLossPossibleAsync()
     {
         bool hasEntryContent = !string.IsNullOrWhiteSpace(Entry?.Content);
         bool hasTemplateContent = !string.IsNullOrWhiteSpace(SelectedTemplate?.Content);

@@ -57,7 +57,7 @@ public partial class MoodListViewModel : IViewModel
 
     public async Task OnAppearingAsync()
     {
-        await InitializeCharts();
+        await InitializeChartsAsync();
     }
 
     [RelayCommand]
@@ -71,7 +71,7 @@ public partial class MoodListViewModel : IViewModel
     }
 
     [RelayCommand]
-    private async Task WeekLineChartNext()
+    private async Task WeekLineChartNextAsync()
     {
         _weekLineChartDayFrom = _weekLineChartDayFrom.AddDays(7);
 
@@ -81,7 +81,7 @@ public partial class MoodListViewModel : IViewModel
     }
 
     [RelayCommand]
-    private async Task MonthRadarChartPrevious()
+    private async Task MonthRadarChartPreviousAsync()
     {
         _monthRadarChartDayTo = _monthRadarChartDayTo.AddMonths(-1);
 
@@ -91,7 +91,7 @@ public partial class MoodListViewModel : IViewModel
     }
 
     [RelayCommand]
-    private async Task MonthRadarChartNext()
+    private async Task MonthRadarChartNextAsync()
     {
         _monthRadarChartDayTo = _monthRadarChartDayTo.AddMonths(1);
 
@@ -101,14 +101,14 @@ public partial class MoodListViewModel : IViewModel
     }
 
     [RelayCommand]
-    private async Task ChangeAverageMoodChartRange()
+    private async Task ChangeAverageMoodChartRangeAsync()
     {
         var moodEntries = await _entryClient.GetMoodFromEntriesByDateRange(AverageMoodFrom, AverageMoodTo);
 
         SetAverageMoodPointChart(moodEntries);
     }
 
-    private async Task InitializeCharts()
+    private async Task InitializeChartsAsync()
     {
         var moodEntriesMonth = await _entryClient.GetMoodFromEntriesByDateRange(_monthRadarChartDayFrom, _monthRadarChartDayTo);
         var moodEntriesWeek = moodEntriesMonth

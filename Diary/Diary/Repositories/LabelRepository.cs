@@ -13,7 +13,7 @@ public class LabelRepository : RepositoryBase<LabelEntity>, ILabelRepository
         var entities = await connection.Table<LabelEntity>().ToListAsync();
         foreach (var entity in entities)
         {
-            await LinkRelatedEntities(entity);
+            await LinkRelatedEntitiesAsync(entity);
         }
 
         return entities;
@@ -24,7 +24,7 @@ public class LabelRepository : RepositoryBase<LabelEntity>, ILabelRepository
         var entity = await connection.Table<LabelEntity>().Where(e => e.Id == id).FirstOrDefaultAsync();
         if (entity != null)
         {
-            await LinkRelatedEntities(entity);
+            await LinkRelatedEntitiesAsync(entity);
         }
 
         return entity;
@@ -38,8 +38,8 @@ public class LabelRepository : RepositoryBase<LabelEntity>, ILabelRepository
         }
 
         // Get existing entries and templates that are connected to the label
-        var existingEntries = await GetLabelEntriesByLabelId(entity.Id);
-        var existingTemplates = await GetLabelTemplatesByLabelId(entity.Id);
+        var existingEntries = await GetLabelEntriesByLabelIdAsync(entity.Id);
+        var existingTemplates = await GetLabelTemplatesByLabelIdAsync(entity.Id);
 
         // Map entry and template entities to 'link' entities
         var entriesToAdd = entity.Entries.Select(entry => new LabelEntryEntity()
@@ -84,8 +84,8 @@ public class LabelRepository : RepositoryBase<LabelEntity>, ILabelRepository
 
     public async override Task DeleteAsync(LabelEntity entity)
     {
-        var labelEntriesToDelete = await GetLabelEntriesByLabelId(entity.Id);
-        var labelTemplatesToDelete = await GetLabelTemplatesByLabelId(entity.Id);
+        var labelEntriesToDelete = await GetLabelEntriesByLabelIdAsync(entity.Id);
+        var labelTemplatesToDelete = await GetLabelTemplatesByLabelIdAsync(entity.Id);
         await connection.RunInTransactionAsync(tran =>
         {
             foreach (var labelEntryToDelete in labelEntriesToDelete)
@@ -100,20 +100,20 @@ public class LabelRepository : RepositoryBase<LabelEntity>, ILabelRepository
         });
     }
 
-    private async Task<ICollection<LabelEntryEntity>> GetLabelEntriesByLabelId(Guid id)
+    private async Task<ICollection<LabelEntryEntity>> GetLabelEntriesByLabelIdAsync(Guid id)
     {
         return await connection.Table<LabelEntryEntity>().Where(e => e.LabelId == id).ToListAsync();
     }
 
-    private async Task<ICollection<LabelTemplateEntity>> GetLabelTemplatesByLabelId(Guid id)
+    private async Task<ICollection<LabelTemplateEntity>> GetLabelTemplatesByLabelIdAsync(Guid id)
     {
         return await connection.Table<LabelTemplateEntity>().Where(e => e.LabelId == id).ToListAsync();
     }
 
-    private async Task LinkRelatedEntities(LabelEntity entity)
+    private async Task LinkRelatedEntitiesAsync(LabelEntity entity)
     {
-        var entryIds = (await GetLabelEntriesByLabelId(entity.Id)).Select(e => e.EntryId).ToList();
-        var templateIds = (await GetLabelTemplatesByLabelId(entity.Id)).Select(e => e.TemplateId).ToList();
+        var entryIds = (await GetLabelEntriesByLabelIdAsync(entity.Id)).Select(e => e.EntryId).ToList();
+        var templateIds = (await GetLabelTemplatesByLabelIdAsync(entity.Id)).Select(e => e.TemplateId).ToList();
 
         var entries = await connection.Table<EntryEntity>().Where(e => entryIds.Contains(e.Id)).ToListAsync();
         var templates = await connection.Table<TemplateEntity>().Where(e => templateIds.Contains(e.Id)).ToListAsync();
