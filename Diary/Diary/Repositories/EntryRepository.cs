@@ -61,7 +61,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         return entity;
     }
 
-    public async new Task<EntryEntity> SetAsync(EntryEntity entity)
+    public async override Task<EntryEntity> SetAsync(EntryEntity entity)
     {
         if (entity.Id == Guid.Empty)
         {

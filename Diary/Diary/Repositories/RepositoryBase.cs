@@ -31,7 +31,7 @@ public class RepositoryBase<T> where T : EntityBase, new()
         return await connection.Table<T>().Where(e => e.Id == id).FirstOrDefaultAsync();
     }
 
-    public virtual async Task<Guid> SetAsync(T entity)
+    public virtual async Task<T> SetAsync(T entity)
     {
         if (entity.Id == Guid.Empty)
         {
@@ -47,7 +47,7 @@ public class RepositoryBase<T> where T : EntityBase, new()
             await connection.InsertAsync(entity);
         }
 
-        return entity.Id;
+        return entity;
     }
 
     public virtual async Task DeleteAsync(T entity)

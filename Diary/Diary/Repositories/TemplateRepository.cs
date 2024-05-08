@@ -30,7 +30,7 @@ public class TemplateRepository : RepositoryBase<TemplateEntity>, ITemplateRepos
         return entity;
     }
 
-    public async override Task<Guid> SetAsync(TemplateEntity entity)
+    public async override Task<TemplateEntity> SetAsync(TemplateEntity entity)
     {
         if (entity.Id == Guid.Empty)
         {
@@ -61,7 +61,7 @@ public class TemplateRepository : RepositoryBase<TemplateEntity>, ITemplateRepos
             }
         });
 
-        return entity.Id;
+        return entity;
     }
 
     public async override Task DeleteAsync(TemplateEntity entity)

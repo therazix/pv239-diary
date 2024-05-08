@@ -30,7 +30,7 @@ public class LabelRepository : RepositoryBase<LabelEntity>, ILabelRepository
         return entity;
     }
 
-    public async override Task<Guid> SetAsync(LabelEntity entity)
+    public async override Task<LabelEntity> SetAsync(LabelEntity entity)
     {
         if (entity.Id == Guid.Empty)
         {
@@ -79,7 +79,7 @@ public class LabelRepository : RepositoryBase<LabelEntity>, ILabelRepository
             }
         });
 
-        return entity.Id;
+        return entity;
     }
 
     public async override Task DeleteAsync(LabelEntity entity)

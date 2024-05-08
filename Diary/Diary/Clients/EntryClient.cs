@@ -64,7 +64,7 @@ public class EntryClient : IEntryClient
         return entity?.MapToDetailModel();
     }
 
-    public async Task<Guid> SetAsync(EntryDetailModel model)
+    public async Task<EntryDetailModel> SetAsync(EntryDetailModel model)
     {
         var entity = model.MapToEntity();
         var savedEntity = await _repository.SetAsync(entity);
@@ -72,7 +72,7 @@ public class EntryClient : IEntryClient
 #if ANDROID
         await ScheduleTimeMachineNotification(savedEntity);
 #endif
-        return savedEntity.Id;
+        return savedEntity.MapToDetailModel();
     }
 
     public async Task DeleteAsync(EntryDetailModel model)
