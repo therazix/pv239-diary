@@ -7,7 +7,7 @@ public interface ILabelClient
 
     Task<LabelDetailModel?> GetByIdAsync(Guid id);
 
-    Task<Guid> SetAsync(LabelDetailModel model);
+    Task<LabelDetailModel> SetAsync(LabelDetailModel model);
 
     Task DeleteAsync(LabelDetailModel model);
 }

@@ -11,7 +11,7 @@ public interface IEntryClient
 
     Task<EntryDetailModel?> GetByIdAsync(Guid id);
 
-    Task<Guid> SetAsync(EntryDetailModel model);
+    Task<EntryDetailModel> SetAsync(EntryDetailModel model);
 
     Task DeleteAsync(EntryDetailModel model);
 

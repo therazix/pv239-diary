@@ -26,10 +26,12 @@ public class LabelClient : ILabelClient
         return entity?.MapToDetailModel();
     }
 
-    public async Task<Guid> SetAsync(LabelDetailModel model)
+    public async Task<LabelDetailModel> SetAsync(LabelDetailModel model)
     {
         var entity = model.MapToEntity();
-        return await _repository.SetAsync(entity);
+        var savedEntity = await _repository.SetAsync(entity);
+
+        return savedEntity.MapToDetailModel();
     }
 
     public async Task DeleteAsync(LabelDetailModel model)

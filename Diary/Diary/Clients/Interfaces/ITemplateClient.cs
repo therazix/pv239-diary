@@ -9,7 +9,7 @@ public interface ITemplateClient
 
     Task<TemplateDetailModel?> GetByIdAsync(Guid id);
 
-    Task<Guid> SetAsync(TemplateDetailModel model);
+    Task<TemplateDetailModel> SetAsync(TemplateDetailModel model);
 
     Task DeleteAsync(TemplateDetailModel model);
 }

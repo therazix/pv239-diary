@@ -8,6 +8,4 @@ public interface IEntryRepository : IRepository<EntryEntity>
     Task<ICollection<EntryEntity>> GetByDayFromPreviousYearsAsync(DateTime date);
 
     Task<ICollection<EntryEntity>> GetByTimeMachineNotificationIdAsync(int timeMachineNotificationId);
-    
-    new Task<EntryEntity> SetAsync(EntryEntity entity);
 }
