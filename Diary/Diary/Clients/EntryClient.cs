@@ -46,7 +46,7 @@ public class EntryClient : IEntryClient
 
     public async Task<ICollection<EntryListModel>> GetByDayFromPreviousYears(DateTime date) 
     {
-        var entities = await _repository.GetByDayFromPreviousYears(date);
+        var entities = await _repository.GetByDayFromPreviousYearsAsync(date);
 
         foreach (var entity in entities)
         {
@@ -89,7 +89,7 @@ public class EntryClient : IEntryClient
 
     public async Task<ICollection<MoodListModel>> GetMoodFromEntriesByDateRange(DateTime dateFrom, DateTime dateTo)
     {
-        var entities = await _repository.GetEntriesByDateRange(dateFrom, dateTo);
+        var entities = await _repository.GetEntriesByDateRangeAsync(dateFrom, dateTo);
         return entities.MapToMoodListModels();
     }
 
@@ -102,7 +102,7 @@ public class EntryClient : IEntryClient
 
     private async Task ScheduleTimeMachineNotification(EntryEntity entity)
     {
-        var entriesWithTheSameTimeMachineNotificationId = await _repository.GetByTimeMachineNotificationId(entity.TimeMachineNotificationId);
+        var entriesWithTheSameTimeMachineNotificationId = await _repository.GetByTimeMachineNotificationIdAsync(entity.TimeMachineNotificationId);
 
         TimeSpan repeatInterval;
         DateTime notificationDate = entity.CreatedAt.AddYears(1);

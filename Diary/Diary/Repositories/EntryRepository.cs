@@ -14,13 +14,13 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         var entities = await connection.Table<EntryEntity>().ToListAsync();
         foreach (var entity in entities)
         {
-            await LinkRelatedEntities(entity);
+            await LinkRelatedEntitiesAsync(entity);
         }
 
         return entities;
     }
 
-    public async Task<ICollection<EntryEntity>> GetByDayFromPreviousYears(DateTime date)
+    public async Task<ICollection<EntryEntity>> GetByDayFromPreviousYearsAsync(DateTime date)
     {
         var dayLastYear = date.AddYears(-1);
 
@@ -28,13 +28,13 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
 
         foreach (var entity in entities)
         {
-            await LinkRelatedEntities(entity);
+            await LinkRelatedEntitiesAsync(entity);
         }
 
         return entities;
     }
 
-    public async Task<ICollection<EntryEntity>> GetByTimeMachineNotificationId(int timeMachineNotificationId)
+    public async Task<ICollection<EntryEntity>> GetByTimeMachineNotificationIdAsync(int timeMachineNotificationId)
     {
         var entities = await connection.Table<EntryEntity>()
             .Where(e => e.TimeMachineNotificationId == timeMachineNotificationId)
@@ -42,7 +42,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
 
         foreach (var entity in entities)
         {
-            await LinkRelatedEntities(entity);
+            await LinkRelatedEntitiesAsync(entity);
         }
 
         return entities;
@@ -53,7 +53,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         var entity = await connection.Table<EntryEntity>().Where(e => e.Id == id).FirstOrDefaultAsync();
         if (entity != null)
         {
-            await LinkRelatedEntities(entity);
+            await LinkRelatedEntitiesAsync(entity);
         }
 
         return entity;
@@ -70,7 +70,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         entity.EditedAt = DateTime.Now;
 
         // Get existing labels that are connected to the entry
-        var existingLabels = await GetLabelEntriesByEntryId(entity.Id);
+        var existingLabels = await GetLabelEntriesByEntryIdAsync(entity.Id);
 
         // Map label entities to 'link' entities
         var labelsToAdd = entity.Labels.Select(label => new LabelEntryEntity()
@@ -98,7 +98,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
 
     public async override Task DeleteAsync(EntryEntity entity)
     {
-        var labelEntriesToDelete = await GetLabelEntriesByEntryId(entity.Id);
+        var labelEntriesToDelete = await GetLabelEntriesByEntryIdAsync(entity.Id);
         await connection.RunInTransactionAsync(tran =>
         {
             foreach (var labelEntryToDelete in labelEntriesToDelete)
@@ -109,7 +109,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         });
     }
 
-    public async Task<ICollection<EntryEntity>> GetEntriesByDateRange(DateTime dateFrom, DateTime dateTo)
+    public async Task<ICollection<EntryEntity>> GetEntriesByDateRangeAsync(DateTime dateFrom, DateTime dateTo)
     {
         dateFrom = new DateTime(dateFrom.Year, dateFrom.Month, dateFrom.Day, 0, 0, 0);
         dateTo = new DateTime(dateTo.Year, dateTo.Month, dateTo.Day, 23, 59, 59);
@@ -119,14 +119,14 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
             .ToListAsync();
     }
 
-    private async Task<ICollection<LabelEntryEntity>> GetLabelEntriesByEntryId(Guid id)
+    private async Task<ICollection<LabelEntryEntity>> GetLabelEntriesByEntryIdAsync(Guid id)
     {
         return await connection.Table<LabelEntryEntity>().Where(e => e.EntryId == id).ToListAsync();
     }
 
-    private async Task LinkRelatedEntities(EntryEntity entity)
+    private async Task LinkRelatedEntitiesAsync(EntryEntity entity)
     {
-        var labelIds = (await GetLabelEntriesByEntryId(entity.Id)).Select(e => e.LabelId).ToList();
+        var labelIds = (await GetLabelEntriesByEntryIdAsync(entity.Id)).Select(e => e.LabelId).ToList();
         var labels = await connection.Table<LabelEntity>().Where(e => labelIds.Contains(e.Id)).ToListAsync();
 
         entity.Labels = labels;
