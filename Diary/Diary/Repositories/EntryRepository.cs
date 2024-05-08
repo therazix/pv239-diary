@@ -22,9 +22,11 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
 
     public async Task<ICollection<EntryEntity>> GetByDayFromPreviousYearsAsync(DateTime date)
     {
-        var dayLastYear = date.AddYears(-1);
+        var entities = await GetAllAsync();
 
-        var entities = await GetEntriesByDateRange(dayLastYear, dayLastYear);
+        entities = entities
+            .Where(e => e.CreatedAt.Month == date.Month && e.CreatedAt.Day == date.Day && e.CreatedAt.Year < date.Year)
+            .ToList();
 
         foreach (var entity in entities)
         {
