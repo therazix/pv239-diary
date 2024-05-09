@@ -9,7 +9,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
     {
     }
 
-    public async override Task<ICollection<EntryEntity>> GetAllAsync()
+    public override async Task<ICollection<EntryEntity>> GetAllAsync()
     {
         var entities = await connection.Table<EntryEntity>().ToListAsync();
         foreach (var entity in entities)
@@ -45,7 +45,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         return entities;
     }
 
-    public async override Task<EntryEntity?> GetByIdAsync(Guid id)
+    public override async Task<EntryEntity?> GetByIdAsync(Guid id)
     {
         var entity = await connection.Table<EntryEntity>().Where(e => e.Id == id).FirstOrDefaultAsync();
         if (entity != null)
@@ -56,7 +56,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         return entity;
     }
 
-    public async override Task<EntryEntity> SetAsync(EntryEntity entity)
+    public override async Task<EntryEntity> SetAsync(EntryEntity entity)
     {
         if (entity.Id == Guid.Empty)
         {
@@ -108,7 +108,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         return entity;
     }
 
-    public async override Task DeleteAsync(EntryEntity entity)
+    public override async Task DeleteAsync(EntryEntity entity)
     {
         var labelEntriesToDelete = await GetLabelEntriesByEntryIdAsync(entity.Id);
         var mediaToDelete = await GetMediaByEntryIdAsync(entity.Id);

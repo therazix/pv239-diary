@@ -8,7 +8,7 @@ public class LabelRepository : RepositoryBase<LabelEntity>, ILabelRepository
     {
     }
 
-    public async override Task<ICollection<LabelEntity>> GetAllAsync()
+    public override async Task<ICollection<LabelEntity>> GetAllAsync()
     {
         var entities = await connection.Table<LabelEntity>().ToListAsync();
         foreach (var entity in entities)
@@ -19,7 +19,7 @@ public class LabelRepository : RepositoryBase<LabelEntity>, ILabelRepository
         return entities;
     }
 
-    public async override Task<LabelEntity?> GetByIdAsync(Guid id)
+    public override async Task<LabelEntity?> GetByIdAsync(Guid id)
     {
         var entity = await connection.Table<LabelEntity>().Where(e => e.Id == id).FirstOrDefaultAsync();
         if (entity != null)
@@ -30,7 +30,7 @@ public class LabelRepository : RepositoryBase<LabelEntity>, ILabelRepository
         return entity;
     }
 
-    public async override Task<LabelEntity> SetAsync(LabelEntity entity)
+    public override async Task<LabelEntity> SetAsync(LabelEntity entity)
     {
         if (entity.Id == Guid.Empty)
         {
@@ -82,7 +82,7 @@ public class LabelRepository : RepositoryBase<LabelEntity>, ILabelRepository
         return entity;
     }
 
-    public async override Task DeleteAsync(LabelEntity entity)
+    public override async Task DeleteAsync(LabelEntity entity)
     {
         var labelEntriesToDelete = await GetLabelEntriesByLabelIdAsync(entity.Id);
         var labelTemplatesToDelete = await GetLabelTemplatesByLabelIdAsync(entity.Id);
