@@ -25,11 +25,6 @@ public class EntryClient : IEntryClient
     {
         var entities = await _entryRepository.GetAllAsync();
 
-        foreach (var entity in entities)
-        {
-            entity.Title = !string.IsNullOrEmpty(entity.Title) ? entity.Title : "No title";
-        }
-
         if (entryFilter?.OrderByProperty != null)
         {
             var orderByPropertyName = GetEnumDisplayName(entryFilter.OrderByProperty);
@@ -50,12 +45,6 @@ public class EntryClient : IEntryClient
     public async Task<ICollection<EntryListModel>> GetByDayFromPreviousYearsAsync(DateTime date)
     {
         var entities = await _entryRepository.GetByDayFromPreviousYearsAsync(date);
-
-        foreach (var entity in entities)
-        {
-            entity.Title = !string.IsNullOrEmpty(entity.Title) ? entity.Title : "No title";
-        }
-
         entities = entities.OrderByDescending(e => e.CreatedAt).ToList();
 
         return entities.MapToListModels();

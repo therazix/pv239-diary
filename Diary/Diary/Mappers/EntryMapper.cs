@@ -1,5 +1,4 @@
 ﻿using Diary.Entities;
-using Diary.Helpers;
 using Diary.Models.Entry;
 using Diary.Models.Mood;
 using Diary.Models.Pin;
@@ -13,6 +12,7 @@ public static partial class EntryMapper
     public static partial EntryDetailModel MapToDetailModel(this EntryEntity entity);
     public static partial ICollection<EntryDetailModel> MapToDetailModels(this ICollection<EntryEntity> entities);
 
+    [MapProperty(nameof(EntryEntity.Title), nameof(EntryListModel.Title), Use = nameof(MapEmptyTitleToDefaultTitle))]
     [MapProperty(nameof(EntryEntity.Content), nameof(EntryListModel.Content), Use = nameof(MapContentToContentSubstring))]
     [MapProperty(nameof(EntryEntity.Media), nameof(EntryListModel.MediaCount), Use = nameof(MapMediaToMediaCount))]
     public static partial EntryListModel MapToListModel(this EntryEntity entity);
@@ -51,6 +51,9 @@ public static partial class EntryMapper
     public static partial EntryEntity MapToEntity(this EntryListModel model);
 
     public static partial EntryEntity MapToEntity(this EntryDetailModel model);
+
+    [UserMapping(Default = false)]
+    private static string MapEmptyTitleToDefaultTitle(string? title) => string.IsNullOrEmpty(title) ? "No title" : title;
 
     [UserMapping(Default = false)]
     private static string MapContentToContentSubstring(string content) => content[..Math.Min(content.Length, 50)];
