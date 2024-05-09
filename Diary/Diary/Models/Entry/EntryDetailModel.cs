@@ -16,5 +16,6 @@ public record EntryDetailModel : ModelBase
     public int Mood { get; set; } = 1;
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
+    public int TimeMachineNotificationId { get; set; }
     public ObservableCollection<LabelListModel> Labels { get; set; } = new();
 }

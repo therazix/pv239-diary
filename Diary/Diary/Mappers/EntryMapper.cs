@@ -47,12 +47,8 @@ public static partial class EntryMapper
     [MapperIgnoreTarget(nameof(EntryEntity.Labels))]
     public static partial EntryEntity MapToEntity(this EntryListModel model);
 
-    [MapProperty(nameof(EntryDetailModel.CreatedAt), nameof(EntryEntity.TimeMachineNotificationId), Use = nameof(MapDateToTimeMachineNotificationId))]
     public static partial EntryEntity MapToEntity(this EntryDetailModel model);
 
     [UserMapping(Default = false)]
     private static string MapContentToContentSubstring(string content) => content[..Math.Min(content.Length,50)];
-
-    [UserMapping(Default = false)]
-    private static int MapDateToTimeMachineNotificationId(DateTime date) => NotificationHelper.GetNotificationIdFromCreationDate(date);
 }
