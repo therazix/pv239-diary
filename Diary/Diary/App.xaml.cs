@@ -22,12 +22,15 @@ public partial class App : Application
 
     private async void Current_NotificationActionTapped(NotificationActionEventArgs e)
     {
-        var deliveredNotifications = await LocalNotificationCenter.Current.GetDeliveredNotificationList();
-        var notificationIds = deliveredNotifications.Select(n => n.NotificationId);
-
-        if (notificationIds.Contains(NotificationHelper.GetNotificationIdFromCreationDate(DateTime.Now)))
+        if (e.IsTapped)
         {
-            await Shell.Current.GoToAsync("//entries/timeMachine");
+            var deliveredNotifications = await LocalNotificationCenter.Current.GetDeliveredNotificationList();
+            var notificationIds = deliveredNotifications.Select(n => n.NotificationId);
+
+            if (notificationIds.Contains(NotificationHelper.GetNotificationIdFromCreationDate(DateTime.Now)))
+            {
+                await Shell.Current.GoToAsync("//entries/timeMachine");
+            }
         }
     }
 

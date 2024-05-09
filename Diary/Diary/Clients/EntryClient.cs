@@ -6,6 +6,7 @@ using Diary.Models.Mood;
 using Diary.Models.Pin;
 using Diary.Repositories.Interfaces;
 using Plugin.LocalNotification;
+using Plugin.LocalNotification.AndroidOption;
 using static Diary.Enums.EntryFilterEnums;
 
 namespace Diary.Clients;
@@ -78,7 +79,15 @@ public class EntryClient : IEntryClient
     public async Task DeleteAsync(EntryDetailModel model)
     {
         var entity = model.MapToEntity();
+
         await _repository.DeleteAsync(entity);
+
+        var entriesWithTheSameTimeMachineNotificationId = await _repository.GetByTimeMachineNotificationIdAsync(entity.TimeMachineNotificationId);
+
+        if (entriesWithTheSameTimeMachineNotificationId.Count == 0)
+        {
+            LocalNotificationCenter.Current.Cancel(entity.TimeMachineNotificationId);
+        }
     }
 
     public async Task<ICollection<MoodListModel>> GetMoodFromAllEntries()
@@ -102,6 +111,11 @@ public class EntryClient : IEntryClient
 
     private async Task ScheduleTimeMachineNotification(EntryEntity entity)
     {
+        if (await LocalNotificationCenter.Current.AreNotificationsEnabled() == false)
+        {
+            await LocalNotificationCenter.Current.RequestNotificationPermission();
+        }
+
         var entriesWithTheSameTimeMachineNotificationId = await _repository.GetByTimeMachineNotificationIdAsync(entity.TimeMachineNotificationId);
 
         TimeSpan repeatInterval;
@@ -109,16 +123,12 @@ public class EntryClient : IEntryClient
 
         if (entity.CreatedAt.Month == 2 && entity.CreatedAt.Day == 29)
         {
-            repeatInterval = TimeSpan.FromDays(365*3 + 366);
             notificationDate = entity.CreatedAt.AddYears(4);
-        }
-        else if (DateTime.IsLeapYear(entity.CreatedAt.Year) && entity.CreatedAt > new DateTime(entity.CreatedAt.Year, 2, 28))
-        {
-            repeatInterval = TimeSpan.FromDays(366);
+            repeatInterval = TimeSpan.FromDays(365 * 3 + 366);
         }
         else
         {
-            repeatInterval = TimeSpan.FromDays(365);
+            repeatInterval = notificationDate - entity.CreatedAt;
         }
 
         var request = new NotificationRequest
@@ -126,13 +136,14 @@ public class EntryClient : IEntryClient
             NotificationId = entity.TimeMachineNotificationId,
             Title = "Diary Time Machine",
             Description = $"You have already written {entriesWithTheSameTimeMachineNotificationId.Count} entries on this day in the past.",
-            BadgeNumber = entriesWithTheSameTimeMachineNotificationId.Count,
 
             Schedule = new NotificationRequestSchedule
             {
                 NotifyTime = notificationDate,
-                NotifyRepeatInterval = repeatInterval
-            }
+                NotifyRepeatInterval = repeatInterval,
+                RepeatType = NotificationRepeat.TimeInterval
+            },
+            Android = { Priority = AndroidPriority.High }
         };
 
         // Remove scheduled notification with out-of-date number of diary entries written on the same day
