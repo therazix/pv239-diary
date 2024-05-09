@@ -31,10 +31,10 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         return entities;
     }
 
-    public async Task<ICollection<EntryEntity>> GetByTimeMachineNotificationIdAsync(int timeMachineNotificationId)
+    public async Task<ICollection<EntryEntity>> GetByNotificationIdAsync(int notificationId)
     {
         var entities = await connection.Table<EntryEntity>()
-            .Where(e => e.TimeMachineNotificationId == timeMachineNotificationId)
+            .Where(e => e.NotificationId == notificationId)
             .ToListAsync();
 
         foreach (var entity in entities)
@@ -62,7 +62,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         {
             entity.Id = Guid.NewGuid();
             entity.CreatedAt = DateTime.Now;
-            entity.TimeMachineNotificationId = NotificationHelper.GetNotificationIdFromCreationDate(entity.CreatedAt);
+            entity.NotificationId = NotificationHelper.GetNotificationIdFromCreationDate(entity.CreatedAt);
         }
         entity.EditedAt = DateTime.Now;
 

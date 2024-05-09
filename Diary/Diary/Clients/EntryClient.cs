@@ -75,11 +75,11 @@ public class EntryClient : IEntryClient
         await _entryRepository.DeleteAsync(entity);
         await _mediaRepository.DeleteUnusedMediaAsync();
 
-        var entriesWithTheSameTimeMachineNotificationId = await _entryRepository.GetByTimeMachineNotificationIdAsync(entity.TimeMachineNotificationId);
+        var entriesWithTheSameNotificationId = await _entryRepository.GetByNotificationIdAsync(entity.NotificationId);
 
-        if (entriesWithTheSameTimeMachineNotificationId.Count == 0)
+        if (entriesWithTheSameNotificationId.Count == 0)
         {
-            LocalNotificationCenter.Current.Cancel(entity.TimeMachineNotificationId);
+            LocalNotificationCenter.Current.Cancel(entity.NotificationId);
         }
     }
 
@@ -109,7 +109,7 @@ public class EntryClient : IEntryClient
             await LocalNotificationCenter.Current.RequestNotificationPermission();
         }
 
-        var entriesWithTheSameTimeMachineNotificationId = await _entryRepository.GetByTimeMachineNotificationIdAsync(entity.TimeMachineNotificationId);
+        var entriesWithTheSameNotificationId = await _entryRepository.GetByNotificationIdAsync(entity.NotificationId);
 
         TimeSpan repeatInterval;
         DateTime notificationDate = entity.CreatedAt.AddYears(1);
@@ -126,9 +126,9 @@ public class EntryClient : IEntryClient
 
         var request = new NotificationRequest
         {
-            NotificationId = entity.TimeMachineNotificationId,
+            NotificationId = entity.NotificationId,
             Title = "Diary Time Machine",
-            Description = $"You have already written {entriesWithTheSameTimeMachineNotificationId.Count} entries on this day in the past.",
+            Description = $"You have already written {entriesWithTheSameNotificationId.Count} entries on this day in the past.",
 
             Schedule = new NotificationRequestSchedule
             {
@@ -140,7 +140,7 @@ public class EntryClient : IEntryClient
         };
 
         // Remove scheduled notification with out-of-date number of diary entries written on the same day
-        LocalNotificationCenter.Current.Cancel([entity.TimeMachineNotificationId]);
+        LocalNotificationCenter.Current.Cancel([entity.NotificationId]);
 
         await LocalNotificationCenter.Current.Show(request);
     }
