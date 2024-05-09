@@ -51,7 +51,7 @@
             <Label HorizontalOptions="Center" Text="{Binding MonthRadarChartDayFromText}" />
             <microcharts:ChartView
                 Chart="{Binding MonthRadarChart}"
-                HeightRequest="250"
+                HeightRequest="300"
                 HorizontalOptions="FillAndExpand" />
 
             <Grid ColumnDefinitions="*,*">

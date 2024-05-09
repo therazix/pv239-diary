@@ -6,7 +6,7 @@ namespace Diary.Converters
 {
     public class IntToMoodColorConverter : BaseConverterOneWay<int, Color>
     {
-        private static readonly string _defaultColorString = "#FF56E74A";
+        private static readonly string _defaultColorString = "#FF000000";
         private static readonly Color _defaultColor = ColorHelper.GetTextColorForCurrentTheme();
 
         public override Color ConvertFrom(int value, CultureInfo? culture = null)
