@@ -28,11 +28,6 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
             .Where(e => e.CreatedAt.Month == date.Month && e.CreatedAt.Day == date.Day && e.CreatedAt.Year < date.Year)
             .ToList();
 
-        foreach (var entity in entities)
-        {
-            await LinkRelatedEntitiesAsync(entity);
-        }
-
         return entities;
     }
 
