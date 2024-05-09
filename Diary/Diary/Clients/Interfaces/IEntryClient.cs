@@ -7,7 +7,7 @@ public interface IEntryClient
 {
     Task<ICollection<EntryListModel>> GetAllAsync(EntryFilter? entryFilter = null);
 
-    Task<ICollection<EntryListModel>> GetByDayFromPreviousYears(DateTime date);
+    Task<ICollection<EntryListModel>> GetByDayFromPreviousYearsAsync(DateTime date);
 
     Task<EntryDetailModel?> GetByIdAsync(Guid id);
 
@@ -15,9 +15,9 @@ public interface IEntryClient
 
     Task DeleteAsync(EntryDetailModel model);
 
-    Task<ICollection<MoodListModel>> GetMoodFromAllEntries();
+    Task<ICollection<MoodListModel>> GetMoodFromAllEntriesAsync();
 
-    Task<ICollection<MoodListModel>> GetMoodFromEntriesByDateRange(DateTime dateFrom, DateTime dateTo);
+    Task<ICollection<MoodListModel>> GetMoodFromEntriesByDateRangeAsync(DateTime dateFrom, DateTime dateTo);
 
     Task<ICollection<PinModel>> GetAllLocationPinsAsync();
 }

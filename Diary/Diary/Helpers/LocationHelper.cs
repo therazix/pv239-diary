@@ -2,7 +2,7 @@
 
 public static class LocationHelper
 {
-    public static async Task<bool> HasLocationPermission()
+    public static async Task<bool> HasLocationPermissionAsync()
     {
         try
         {

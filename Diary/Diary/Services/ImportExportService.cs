@@ -39,7 +39,7 @@ public class ImportExportService : IImportExportService
     public async Task<MemoryStream> ExportAsync()
     {
         RecreateDirectories();
-        await ExportDataFile(_exportDataFileName);
+        await ExportDataFileAsync(_exportDataFileName);
         CopyMediaFiles(Constants.MediaPath, _exportMediaDir);
         return CreateZip();
     }
@@ -48,7 +48,7 @@ public class ImportExportService : IImportExportService
     {
         RecreateDirectories();
         ExtractZip(filePath);
-        await ImportDataFile(_importDataFileName);
+        await ImportDataFileAsync(_importDataFileName);
         CopyMediaFiles(_importMediaDir, Constants.MediaPath);
     }
 
@@ -81,7 +81,7 @@ public class ImportExportService : IImportExportService
         }
     }
 
-    private async Task ExportDataFile(string filePath)
+    private async Task ExportDataFileAsync(string filePath)
     {
         var entries = await _entryRepository.GetAllAsync();
         var labels = await _labelRepository.GetAllAsync();
@@ -99,7 +99,7 @@ public class ImportExportService : IImportExportService
         serializer.Serialize(file, data);
     }
 
-    private async Task ImportDataFile(string filePath)
+    private async Task ImportDataFileAsync(string filePath)
     {
         using StreamReader file = File.OpenText(filePath);
 
