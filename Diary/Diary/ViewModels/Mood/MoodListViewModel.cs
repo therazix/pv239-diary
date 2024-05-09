@@ -48,7 +48,7 @@ public partial class MoodListViewModel : IViewModel
     {
         _entryClient = entryClient;
 
-        _weekLineChartDayFrom = DateTime.Today.AddDays(DateTime.Today.DayOfWeek == 0 ? -6 : (int)DateTime.Today.DayOfWeek - 1);
+        _weekLineChartDayFrom = DateTime.Today.AddDays(DateTime.Today.DayOfWeek == 0 ? -6 : -(int)DateTime.Today.DayOfWeek + 1);
         _monthRadarChartDayTo = new(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
 
         AverageMoodFrom = _monthRadarChartDayFrom;
