@@ -47,7 +47,7 @@ public class EntryClient : IEntryClient
         return entities.MapToListModels();
     }
 
-    public async Task<ICollection<EntryListModel>> GetByDayFromPreviousYears(DateTime date)
+    public async Task<ICollection<EntryListModel>> GetByDayFromPreviousYearsAsync(DateTime date)
     {
         var entities = await _entryRepository.GetByDayFromPreviousYearsAsync(date);
 
@@ -74,7 +74,7 @@ public class EntryClient : IEntryClient
         await _mediaRepository.DeleteUnusedMediaAsync();
 
 #if ANDROID
-        await ScheduleTimeMachineNotification(savedEntity);
+        await ScheduleTimeMachineNotificationAsync(savedEntity);
 #endif
         return savedEntity.MapToDetailModel();
     }
@@ -94,13 +94,13 @@ public class EntryClient : IEntryClient
         }
     }
 
-    public async Task<ICollection<MoodListModel>> GetMoodFromAllEntries()
+    public async Task<ICollection<MoodListModel>> GetMoodFromAllEntriesAsync()
     {
         var entities = await _entryRepository.GetAllAsync();
         return entities.MapToMoodListModels();
     }
 
-    public async Task<ICollection<MoodListModel>> GetMoodFromEntriesByDateRange(DateTime dateFrom, DateTime dateTo)
+    public async Task<ICollection<MoodListModel>> GetMoodFromEntriesByDateRangeAsync(DateTime dateFrom, DateTime dateTo)
     {
         var entities = await _entryRepository.GetEntriesByDateRangeAsync(dateFrom, dateTo);
         return entities.MapToMoodListModels();
@@ -113,7 +113,7 @@ public class EntryClient : IEntryClient
         return entitiesWithLocation.MapToPinModels();
     }
 
-    private async Task ScheduleTimeMachineNotification(EntryEntity entity)
+    private async Task ScheduleTimeMachineNotificationAsync(EntryEntity entity)
     {
         if (await LocalNotificationCenter.Current.AreNotificationsEnabled() == false)
         {

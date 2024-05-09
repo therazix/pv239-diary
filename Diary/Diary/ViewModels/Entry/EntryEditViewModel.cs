@@ -77,14 +77,14 @@ public partial class EntryEditViewModel : ViewModelBase
     private async Task AddImageAsync()
     {
         var fileResult = await _mediaPicker.PickPhotoAsync();
-        await LoadMedia(fileResult, MediaType.Image);
+        await LoadMediaAsync(fileResult, MediaType.Image);
     }
 
     [RelayCommand]
     private async Task AddVideoAsync()
     {
         var fileResult = await _mediaPicker.PickVideoAsync();
-        await LoadMedia(fileResult, MediaType.Video);
+        await LoadMediaAsync(fileResult, MediaType.Video);
     }
 
     [RelayCommand]
@@ -115,7 +115,7 @@ public partial class EntryEditViewModel : ViewModelBase
     private async Task DisplayMapPopupAsync()
     {
         Location? userLocation = null;
-        if (await LocationHelper.HasLocationPermission())
+        if (await LocationHelper.HasLocationPermissionAsync())
         {
             userLocation = await LocationHelper.GetAnyLocationAsync();
         }
@@ -144,7 +144,7 @@ public partial class EntryEditViewModel : ViewModelBase
         LocationTextColor = IsLocationSet ? Color.FromArgb("#FF1B9100") : Color.FromArgb("#FF000000");
     }
 
-    private async Task LoadMedia(FileResult? fileResult, MediaType mediaType)
+    private async Task LoadMediaAsync(FileResult? fileResult, MediaType mediaType)
     {
         if (Entry != null && fileResult != null)
         {

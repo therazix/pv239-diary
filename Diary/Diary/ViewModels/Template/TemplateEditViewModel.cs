@@ -96,7 +96,7 @@ public partial class TemplateEditViewModel : ViewModelBase
     private async Task DisplayMapPopupAsync()
     {
         Location? userLocation = null;
-        if (await Helpers.LocationHelper.HasLocationPermission())
+        if (await Helpers.LocationHelper.HasLocationPermissionAsync())
         {
             userLocation = await Helpers.LocationHelper.GetAnyLocationAsync();
         }

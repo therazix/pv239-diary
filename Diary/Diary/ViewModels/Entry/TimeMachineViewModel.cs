@@ -17,7 +17,7 @@ public partial class TimeMachineViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
-        Entries = await _entryClient.GetByDayFromPreviousYears(DateTime.Now);
+        Entries = await _entryClient.GetByDayFromPreviousYearsAsync(DateTime.Now);
         HeadingText = Entries.Count > 0 ? "This day in the past..." : "Time machine has nothing to show today...";
     }
 
