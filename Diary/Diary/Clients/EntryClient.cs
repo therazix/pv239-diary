@@ -5,6 +5,7 @@ using Diary.Models.Entry;
 using Diary.Models.Mood;
 using Diary.Models.Pin;
 using Diary.Repositories.Interfaces;
+using Diary.Services;
 using Plugin.LocalNotification;
 using Plugin.LocalNotification.AndroidOption;
 using static Diary.Enums.EntryFilterEnums;
@@ -56,11 +57,17 @@ public class EntryClient : IEntryClient
         return entity?.MapToDetailModel();
     }
 
+    /// <summary>
+    /// Sets the entry in the database. If the entry already exists, it will be updated.
+    /// If the entry is linked to any media, the links will be updated.
+    /// Media files are also updated to reflect the changes.
+    /// </summary>
     public async Task<EntryDetailModel> SetAsync(EntryDetailModel model)
     {
         var entity = model.MapToEntity();
         var savedEntity = await _entryRepository.SetAsync(entity);
-        await _mediaRepository.DeleteUnusedMediaAsync();
+        await _mediaRepository.DeleteIfUnusedAsync(entity.Media);
+        await MediaFileService.DeleteUnusedFilesAsync(_mediaRepository);
 
 #if ANDROID
         await ScheduleTimeMachineNotificationAsync(savedEntity);
@@ -68,12 +75,17 @@ public class EntryClient : IEntryClient
         return savedEntity.MapToDetailModel();
     }
 
+    /// <summary>
+    /// Deletes the entry from database. If the entry is linked to any media, the links will be removed.
+    /// Media files are also updated to reflect the changes.
+    /// </summary>
     public async Task DeleteAsync(EntryDetailModel model)
     {
         var entity = model.MapToEntity();
 
         await _entryRepository.DeleteAsync(entity);
-        await _mediaRepository.DeleteUnusedMediaAsync();
+        await _mediaRepository.DeleteIfUnusedAsync(entity.Media);
+        await MediaFileService.DeleteUnusedFilesAsync(_mediaRepository);
 
         var entriesWithTheSameNotificationId = await _entryRepository.GetByNotificationIdAsync(entity.NotificationId);
 

@@ -4,7 +4,8 @@ namespace Diary.Repositories.Interfaces;
 
 public interface IMediaRepository : IRepository<MediaEntity>
 {
-    Task<string> SaveFileAsync(FileResult fileResult);
-    void DeleteFile(string fileName);
-    Task DeleteUnusedMediaAsync();
+    Task<MediaEntity?> GetByFileNameAsync(string fileName);
+    Task DeleteIfUnusedAsync(MediaEntity entity);
+    Task DeleteIfUnusedAsync(ICollection<MediaEntity> entities);
+    Task<bool> ExistsAsync(string fileName);
 }

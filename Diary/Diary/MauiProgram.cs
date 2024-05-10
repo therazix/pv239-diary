@@ -92,6 +92,7 @@ namespace Diary
             services.AddSingleton<ITemplateRepository, TemplateRepository>();
             services.AddSingleton<ILabelEntryRepository, LabelEntryRepository>();
             services.AddSingleton<ILabelTemplateRepository, LabelTemplateRepository>();
+            services.AddSingleton<IEntryMediaRepository, EntryMediaRepository>();
         }
 
         private static void ConfigureClients(IServiceCollection services)
@@ -168,6 +169,7 @@ namespace Diary
                 var templateRepository = app.Services.GetRequiredService<ITemplateRepository>();
                 var labelEntryRepository = app.Services.GetRequiredService<ILabelEntryRepository>();
                 var labelTemplateRepository = app.Services.GetRequiredService<ILabelTemplateRepository>();
+                var entryMediaRepository = app.Services.GetRequiredService<IEntryMediaRepository>();
 
                 await mediaRepository.CreateTableAsync();
                 await entryRepository.CreateTableAsync();
@@ -175,6 +177,7 @@ namespace Diary
                 await templateRepository.CreateTableAsync();
                 await labelEntryRepository.CreateTableAsync();
                 await labelTemplateRepository.CreateTableAsync();
+                await entryMediaRepository.CreateTableAsync();
 
                 await DataSeedService.SeedAsync(entryRepository, labelRepository, templateRepository);
             }
