@@ -9,6 +9,7 @@
     xmlns:labelviews="clr-namespace:Diary.Views.Label"
     xmlns:local="clr-namespace:Diary"
     xmlns:mapviews="clr-namespace:Diary.Views.Map"
+    xmlns:mediaviews="clr-namespace:Diary.Views.Media"
     xmlns:moodviews="clr-namespace:Diary.Views.Mood"
     xmlns:t="clr-namespace:Diary.Resources.Texts"
     xmlns:templateviews="clr-namespace:Diary.Views.Template"
@@ -118,8 +119,8 @@
         </FlyoutItem.Icon>
         <ShellContent
             Title="{x:Static t:AppShellTexts.Gallery_FlyoutItem_Title}"
-            ContentTemplate="{DataTemplate local:MainPage}"
-            Route="MainPage" />
+            ContentTemplate="{DataTemplate mediaviews:MediaListView}"
+            Route="media" />
     </FlyoutItem>
     <FlyoutItem Title="{x:Static t:AppShellTexts.Mood_FlyoutItem_Title}">
         <FlyoutItem.Icon>
