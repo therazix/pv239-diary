@@ -8,6 +8,7 @@ using Diary.Models.Entry;
 using Diary.Models.Label;
 using Diary.Models.Media;
 using Diary.Models.Template;
+using Diary.Services;
 using Diary.ViewModels.Map;
 using System.Collections.ObjectModel;
 
@@ -105,6 +106,7 @@ public partial class EntryCreateViewModel : ViewModelBase
             var media = Entry.Media.FirstOrDefault(m => m.FileName == fileName);
             if (media != null)
             {
+                _mediaClient.DeleteIfUnusedAsync(media);
                 Entry.Media.Remove(media);
             }
         }
@@ -231,15 +233,17 @@ public partial class EntryCreateViewModel : ViewModelBase
         if (Entry != null && fileResult != null)
         {
             using var _ = new BusyIndicator(this);
-            var fileName = await _mediaClient.SaveFileAsync(fileResult);
+            var fileName = await MediaFileService.SaveAsync(fileResult);
             if (!Entry.Media.Select(i => i.FileName).Contains(fileName))
             {
-                Entry.Media.Add(new MediaModel()
+                var media = new MediaModel()
                 {
                     FileName = fileName,
                     OriginalFileName = fileResult.FileName,
                     MediaType = mediaType
-                });
+                };
+                media = await _mediaClient.SetIfNewAsync(media);
+                Entry.Media.Add(media);
             }
         }
     }
