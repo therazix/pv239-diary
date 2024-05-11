@@ -96,7 +96,7 @@ public partial class EntryEditViewModel : ViewModelBase
             var media = Entry.Media.FirstOrDefault(m => m.FileName == fileName);
             if (media != null)
             {
-                _mediaClient.DeleteIfUnusedAsync(media);
+                _mediaClient.DeleteIfUnusedAsync(media, [Entry.Id]);
                 Entry.Media.Remove(media);
             }
         }
