@@ -76,12 +76,13 @@ public class MediaClient : IMediaClient
 
     /// <summary>
     /// Deletes the media from database if it is not linked to any entries.
+    /// If <c>entriesToIgnore</c> is set, this method will act like the entity is not linked to those entries.
     /// Media files are also updated to reflect the changes.
     /// </summary>
-    public async Task DeleteIfUnusedAsync(MediaModel model)
+    public async Task DeleteIfUnusedAsync(MediaModel model, ICollection<Guid>? entriesToIgnore = null)
     {
         var entity = model.MapToEntity();
-        await _repository.DeleteIfUnusedAsync(entity);
+        await _repository.DeleteIfUnusedAsync(entity, entriesToIgnore);
         await MediaFileService.DeleteUnusedFilesAsync(_repository);
     }
 

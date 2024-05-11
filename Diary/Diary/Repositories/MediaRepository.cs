@@ -93,24 +93,44 @@ public class MediaRepository : RepositoryBase<MediaEntity>, IMediaRepository
 
     /// <summary>
     /// Deletes the media entity if it is not linked to any entries.
+    /// If <c>entriesToIgnore</c> is set, this method will act like
+    /// the entity is not linked to those entries.
     /// </summary>
-    public async Task DeleteIfUnusedAsync(MediaEntity entity)
+    public async Task DeleteIfUnusedAsync(MediaEntity entity, ICollection<Guid>? entriesToIgnore = null)
     {
-        var entryMediaToDelete = await GetEntryMediaByMediaIdAsync(entity.Id);
-        if (entryMediaToDelete.Count == 0)
+        var connected = await GetEntryMediaByMediaIdAsync(entity.Id);
+        var ignore = new List<EntryMediaEntity>();
+
+        if (entriesToIgnore != null)
         {
-            await connection.DeleteAsync(entity);
+            ignore = connected.Where(e => entriesToIgnore.Contains(e.EntryId)).ToList();
+            connected = connected.Where(e => !entriesToIgnore.Contains(e.EntryId)).ToList();
+        }
+
+        if (connected.Count == 0)
+        {
+            await connection.RunInTransactionAsync(tran =>
+            {
+                foreach (var entryMedia in ignore)
+                {
+                    // We also need to delete potential ignored EntryMediaEntities
+                    tran.Delete(entryMedia);
+                }
+                tran.Delete(entity);
+            });
         }
     }
 
     /// <summary>
     /// Deletes the media entities if they are not linked to any entries.
+    /// If <c>entriesToIgnore</c> is set, this method will act like
+    /// the entities are not linked to those entries.
     /// </summary>
-    public async Task DeleteIfUnusedAsync(ICollection<MediaEntity> entities)
+    public async Task DeleteIfUnusedAsync(ICollection<MediaEntity> entities, ICollection<Guid>? entriesToIgnore = null)
     {
         foreach (var entity in entities)
         {
-            await DeleteIfUnusedAsync(entity);
+            await DeleteIfUnusedAsync(entity, entriesToIgnore);
         }
     }
 
