@@ -1,0 +1,199 @@
+<toolkit:Popup
+    x:Class="Diary.Views.Entry.FilterSortPopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:Diary.Converters"
+    xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+    xmlns:labelmodels="clr-namespace:Diary.Models.Label"
+    xmlns:moodmodels="clr-namespace:Diary.Models.Mood"
+    xmlns:texts="clr-namespace:Diary.Resources.Texts"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:views="clr-namespace:Diary.Views"
+    xmlns:vm="clr-namespace:Diary.ViewModels.Entry"
+    x:DataType="vm:FilterSortPopupViewModel">
+    <Grid RowDefinitions="*, Auto">
+        <Grid.Resources>
+            <ResourceDictionary>
+                <converters:IntToMoodIconConverter x:Key="IntToMoodIconConverter" />
+                <converters:IntToMoodColorConverter x:Key="IntToMoodColorConverter" />
+            </ResourceDictionary>
+        </Grid.Resources>
+        <!--  Set background color of popup using BoxView  -->
+        <BoxView
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            BackgroundColor="{AppThemeBinding Dark={StaticResource DarkBackground},
+                                              Light={StaticResource LightBackground}}"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand" />
+        <VerticalStackLayout Grid.Row="0" Padding="15">
+            <Label
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                Text="Filter"
+                TextColor="{AppThemeBinding Dark={StaticResource PrimaryLightText},
+                                            Light={StaticResource PrimaryDarkText}}" />
+
+            <Grid
+                Padding="0,15,0,0"
+                ColumnDefinitions="Auto, Auto"
+                ColumnSpacing="10"
+                RowDefinitions="Auto, Auto, Auto, Auto">
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Filter by date?" />
+                <Switch
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    IsToggled="{Binding FilterByDate}">
+                    <Switch.Behaviors>
+                        <toolkit:EventToCommandBehavior Command="{Binding ToggleDateFilteringCommand}" EventName="Toggled" />
+                    </Switch.Behaviors>
+                </Switch>
+
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Created from:" />
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    FontAttributes="Bold"
+                    Text="Created to:" />
+                <DatePicker
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Margin="0,5,0,0"
+                    Date="{Binding EntryFilter.DateFrom}"
+                    IsEnabled="{Binding FilterByDate}" />
+                <DatePicker
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Margin="0,5,0,0"
+                    Date="{Binding EntryFilter.DateTo}"
+                    IsEnabled="{Binding FilterByDate}" />
+            </Grid>
+
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Mood:" />
+            <CollectionView
+                Margin="0,5,0,0"
+                ItemsSource="{Binding Moods}"
+                SelectedItems="{Binding EntryFilter.MoodsToShow}"
+                SelectionMode="Multiple">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="moodmodels:MoodSelectionModel">
+                        <Grid Padding="10" ColumnDefinitions="*,*,*,*,*">
+                            <Border BackgroundColor="{Binding Mood, Converter={StaticResource IntToMoodColorConverter}}" StrokeShape="RoundRectangle 10,10,10,10">
+                                <Label
+                                    Padding="10,5"
+                                    BackgroundColor="{Binding Mood, Converter={StaticResource IntToMoodColorConverter}}"
+                                    FontFamily="{Static fonts:Fonts.FontAwesome}"
+                                    FontSize="25"
+                                    HorizontalOptions="CenterAndExpand"
+                                    Text="{Binding Mood, Converter={StaticResource IntToMoodIconConverter}}"
+                                    TextColor="{StaticResource PrimaryLightText}" />
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Labels:" />
+            <CollectionView
+                Margin="0,5,0,0"
+                ItemsSource="{Binding Labels}"
+                SelectedItems="{Binding EntryFilter.LabelsToShow}"
+                SelectionMode="Multiple">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="labelmodels:LabelListModel">
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <BoxView
+                                BackgroundColor="{Binding Color}"
+                                HeightRequest="20"
+                                WidthRequest="20" />
+                            <Label Text="{Binding Name}" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label
+                Margin="0,20,0,0"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                Text="Entry order"
+                TextColor="{AppThemeBinding Dark={StaticResource PrimaryLightText},
+                                            Light={StaticResource PrimaryDarkText}}" />
+
+            <Grid
+                ColumnDefinitions="Auto, Auto"
+                ColumnSpacing="10"
+                RowDefinitions="Auto, Auto">
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Text="Order by:"
+                    TextColor="{AppThemeBinding Dark={StaticResource PrimaryLightText},
+                                                Light={StaticResource PrimaryDarkText}}"
+                    WidthRequest="125" />
+                <Picker
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="0,5,0,0"
+                    ItemsSource="{Binding OrderByProperties}"
+                    SelectedItem="{Binding EntryFilter.OrderByProperty}" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Text="Order by direction:"
+                    TextColor="{AppThemeBinding Dark={StaticResource PrimaryLightText},
+                                                Light={StaticResource PrimaryDarkText}}"
+                    WidthRequest="150" />
+                <Picker
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="0,5,0,0"
+                    ItemsSource="{Binding OrderByDirections}"
+                    SelectedItem="{Binding EntryFilter.OrderByDirection}" />
+            </Grid>
+        </VerticalStackLayout>
+
+        <Grid
+            Grid.Row="1"
+            Padding="15"
+            ColumnDefinitions="Auto, *"
+            ColumnSpacing="10">
+            <Button
+                Grid.Column="0"
+                Margin="0,20,0,0"
+                BackgroundColor="{StaticResource Gray600}"
+                Clicked="OnCancelButtonClicked"
+                CornerRadius="10"
+                FontAttributes="Bold"
+                Text="Cancel"
+                TextColor="White" />
+            <Button
+                Grid.Column="1"
+                Margin="0,20,0,0"
+                BackgroundColor="{StaticResource PrimaryLight}"
+                Clicked="OnApplyFilterButtonClicked"
+                CornerRadius="10"
+                FontAttributes="Bold"
+                FontSize="Small"
+                Text="Apply filter"
+                TextColor="White" />
+        </Grid>
+    </Grid>
+</toolkit:Popup>

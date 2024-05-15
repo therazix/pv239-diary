@@ -1,39 +1,55 @@
-﻿using CommunityToolkit.Maui.Core.Extensions;
+﻿using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Enums;
 using Diary.Helpers;
 using Diary.Models.Entry;
+using Diary.Models.Label;
 using Plugin.Maui.Calendar.Models;
-using System.Collections.ObjectModel;
 
 namespace Diary.ViewModels.Entry;
 
 public partial class EntryListViewModel : ViewModelBase
 {
     private readonly IEntryClient _entryClient;
+    private readonly ILabelClient _labelClient;
+    private readonly IPopupService _popupService;
 
-    public EventCollection Events { get; set; } = [];
-    public ObservableCollection<EntryListModel>? Items { get; set; }
-    public ObservableCollection<EntryListModel>? SelectedDayEntries { get; set; } = [];
+    private ICollection<LabelListModel> _labels;
+    private EntryFilter _entryFilter { get; set; } = new();
+
+
+    [ObservableProperty]
+    private EventCollection _events = [];
+
+    [ObservableProperty]
+    private ICollection<EntryListModel>? _items;
+
+    [ObservableProperty]
+    private ICollection<EntryListModel>? _selectedDayEntries = [];
+
     public string? SelectedDate { get; set; } = null;
 
-    public EntryListViewModel(IEntryClient entryClient)
+    public EntryListViewModel(IEntryClient entryClient, ILabelClient labelClient, IPopupService popupService)
     {
         _entryClient = entryClient;
+        _labelClient = labelClient;
+        _popupService = popupService;
     }
 
     public override async Task OnAppearingAsync()
     {
         using var _ = new BusyIndicator(this);
+        _labels = await _labelClient.GetAllAsync();
 
-        var entryFilter = new EntryFilter
+        _entryFilter = new EntryFilter
         {
             OrderByProperty = EntryFilterEnums.OrderByProperty.CreatedAt,
-            OrderByDirection = EntryFilterEnums.OrderByDirection.Desc
+            OrderByDirection = EntryFilterEnums.OrderByDirection.Descending,
         };
 
-        Items = (await _entryClient.GetAllAsync(entryFilter)).ToObservableCollection();
+        Items = await _entryClient.GetAllAsync(_entryFilter);
 
         Events = ConstructEventCollection(Items);
 
@@ -67,8 +83,7 @@ public partial class EntryListViewModel : ViewModelBase
 
             if (dayHasEvents)
             {
-                var selectedDayEntries = (ICollection<EntryListModel>)dayEvents;
-                SelectedDayEntries = selectedDayEntries.ToObservableCollection();
+                SelectedDayEntries = (ICollection<EntryListModel>)dayEvents;
             }
             else
             {
@@ -87,5 +102,20 @@ public partial class EntryListViewModel : ViewModelBase
     private async Task GoToCreateAsync()
     {
         await Shell.Current.GoToAsync("//entries/create");
+    }
+
+    [RelayCommand]
+    private async Task DisplayFilterSortPopupAsync()
+    {
+        var result = await _popupService.ShowPopupAsync<FilterSortPopupViewModel>(onPresenting: viewModel => viewModel.Initialize(_entryFilter, _labels));
+
+        if (result is EntryFilter entryFilter)
+        {
+            _entryFilter = entryFilter;
+
+            Items = await _entryClient.GetAllAsync(_entryFilter);
+            Events = ConstructEventCollection(Items);
+            SelectedDayEntries = Items;
+        }
     }
 }
