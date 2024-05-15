@@ -11,6 +11,7 @@ using Diary.Repositories.Interfaces;
 using Diary.Resources.Fonts;
 using Diary.Services;
 using Diary.Services.Interfaces;
+using Diary.ViewModels.Entry;
 using Diary.ViewModels.Interfaces;
 using Diary.ViewModels.Map;
 using Diary.Views;
@@ -117,6 +118,7 @@ namespace Diary
         private static void ConfigurePopups(IServiceCollection services)
         {
             services.AddTransientPopup<MapPopupView, MapPopupViewModel>();
+            services.AddTransientPopup<FilterSortPopupView, FilterSortPopupViewModel>();
         }
 
         private static void RegisterRoutes()

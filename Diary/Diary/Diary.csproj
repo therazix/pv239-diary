@@ -144,6 +144,9 @@
 	  <MauiXaml Update="Views\Entry\EntryEditView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\Entry\FilterSortPopupView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Entry\TimeMachineView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

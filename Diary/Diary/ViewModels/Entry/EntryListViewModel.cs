@@ -1,8 +1,10 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Enums;
 using Diary.Models.Entry;
+using Diary.Models.Label;
 using Diary.ViewModels.Interfaces;
 using Plugin.Maui.Calendar.Models;
 
@@ -12,6 +14,12 @@ namespace Diary.ViewModels.Entry;
 public partial class EntryListViewModel : IViewModel
 {
     private readonly IEntryClient _entryClient;
+    private readonly ILabelClient _labelClient;
+    private readonly IPopupService _popupService;
+
+    private ICollection<LabelListModel> _labels;
+    private EntryFilter _entryFilter { get; set; } = new();
+
 
     [ObservableProperty]
     private EventCollection _events = [];
@@ -24,21 +32,24 @@ public partial class EntryListViewModel : IViewModel
 
     public string? SelectedDate { get; set; } = null;
 
-
-    public EntryListViewModel(IEntryClient entryClient)
+    public EntryListViewModel(IEntryClient entryClient, ILabelClient labelClient, IPopupService popupService)
     {
         _entryClient = entryClient;
+        _labelClient = labelClient;
+        _popupService = popupService;
     }
 
     public async Task OnAppearingAsync()
     {
-        var entryFilter = new EntryFilter
+        _labels = await _labelClient.GetAllAsync();
+
+        _entryFilter = new EntryFilter
         {
             OrderByProperty = EntryFilterEnums.OrderByProperty.CreatedAt,
-            OrderByDirection = EntryFilterEnums.OrderByDirection.Desc
+            OrderByDirection = EntryFilterEnums.OrderByDirection.Descending,
         };
 
-        Items = await _entryClient.GetAllAsync(entryFilter);
+        Items = await _entryClient.GetAllAsync(_entryFilter);
 
         Events = ConstructEventCollection(Items);
 
@@ -91,5 +102,20 @@ public partial class EntryListViewModel : IViewModel
     private async Task GoToCreateAsync()
     {
         await Shell.Current.GoToAsync("//entries/create");
+    }
+
+    [RelayCommand]
+    private async Task DisplayFilterSortPopupAsync()
+    {
+        var result = await _popupService.ShowPopupAsync<FilterSortPopupViewModel>(onPresenting: viewModel => viewModel.Initialize(_entryFilter, _labels));
+
+        if (result is EntryFilter entryFilter)
+        {
+            _entryFilter = entryFilter;
+
+            Items = await _entryClient.GetAllAsync(_entryFilter);
+            Events = ConstructEventCollection(Items);
+            SelectedDayEntries = Items;
+        }
     }
 }
