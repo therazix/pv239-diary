@@ -35,8 +35,8 @@ namespace Diary
                 .UseMicrocharts()
                 .UseMauiCommunityToolkit()
                 .UseMauiCommunityToolkitMediaElement()
+#if ANDROID
                 .UseLocalNotification()
-#if ANDROID || IOS
                 .UseMauiMaps()
 #elif WINDOWS
                 .UseMauiCommunityToolkitMaps(Constants.BingMapsApiKey)
