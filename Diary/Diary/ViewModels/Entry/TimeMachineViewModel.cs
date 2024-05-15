@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
+using Diary.Helpers;
 using Diary.Models.Entry;
 
 namespace Diary.ViewModels.Entry;
@@ -17,6 +18,7 @@ public partial class TimeMachineViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        var _ = new BusyIndicator(this);
         Entries = await _entryClient.GetByDayFromPreviousYearsAsync(DateTime.Now);
         HeadingText = Entries.Count > 0 ? "This day in the past..." : "Time machine has nothing to show today...";
     }
