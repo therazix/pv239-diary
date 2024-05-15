@@ -2,6 +2,7 @@
 using Diary.Entities;
 using Diary.Mappers;
 using Diary.Models.Entry;
+using Diary.Models.Label;
 using Diary.Models.Mood;
 using Diary.Models.Pin;
 using Diary.Repositories.Interfaces;
@@ -26,17 +27,41 @@ public class EntryClient : IEntryClient
     {
         var entities = await _entryRepository.GetAllAsync();
 
+        if (entryFilter?.LabelsToShow?.Count > 0)
+        {
+            entities = entities
+                .Where(e => e.Labels.Any(l => entryFilter.LabelsToShow.Select(lts => ((LabelListModel)lts).Id).Contains(l.Id)))
+                .ToList();
+        }
+
+        if (entryFilter?.MoodsToShow?.Count > 0)
+        {
+            entities = entities
+                .Where(e => entryFilter.MoodsToShow.Select(mts => ((MoodSelectionModel)mts).Mood).Contains(e.Mood))
+                .ToList();
+        }
+
+        if (entryFilter?.DateFrom != null)
+        {
+            entities = entities.Where(e => e.CreatedAt >= entryFilter.DateFrom).ToList();
+        }
+
+        if (entryFilter?.DateTo != null)
+        {
+            entities = entities.Where(e => e.CreatedAt < entryFilter.DateTo.Value.AddDays(1)).ToList();
+        }
+
         if (entryFilter?.OrderByProperty != null)
         {
             var orderByPropertyName = GetEnumDisplayName(entryFilter.OrderByProperty);
 
-            if (entryFilter.OrderByDirection == OrderByDirection.Desc)
+            if (entryFilter.OrderByDirection == OrderByDirection.Descending)
             {
-                entities = entities.OrderByDescending(e => e.GetType().GetProperty(orderByPropertyName)).ToList();
+                entities = entities.OrderByDescending(e => e.GetType().GetProperty(orderByPropertyName)?.GetValue(e)).ToList();
             }
             else
             {
-                entities = entities.OrderBy(e => e.GetType().GetProperty(orderByPropertyName)).ToList();
+                entities = entities.OrderBy(e => e.GetType().GetProperty(orderByPropertyName)?.GetValue(e)).ToList();
             }
         }
 

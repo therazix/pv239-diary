@@ -19,8 +19,8 @@ namespace Diary.Enums
 
         public enum OrderByDirection
         {
-            Asc,
-            Desc,
+            Ascending,
+            Descending,
         }
 
         public static string GetEnumDisplayName(Enum value)
