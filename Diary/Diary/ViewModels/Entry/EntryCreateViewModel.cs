@@ -10,6 +10,7 @@ using Diary.Models.Media;
 using Diary.Models.Template;
 using Diary.Services;
 using Diary.ViewModels.Map;
+using Diary.ViewModels.Media;
 using System.Collections.ObjectModel;
 
 namespace Diary.ViewModels.Entry;
@@ -82,6 +83,12 @@ public partial class EntryCreateViewModel : ViewModelBase
             await _entryClient.SetAsync(Entry);
         }
         await Shell.Current.GoToAsync("../");
+    }
+
+    [RelayCommand]
+    private async Task DisplayMediaPopupAsync(Guid id)
+    {
+        await _popupService.ShowPopupAsync<MediaPopupViewModel>(onPresenting: async viewModel => await viewModel.InitializeAsync(id));
     }
 
     [RelayCommand]

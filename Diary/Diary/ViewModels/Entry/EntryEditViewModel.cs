@@ -9,6 +9,7 @@ using Diary.Models.Label;
 using Diary.Models.Media;
 using Diary.Services;
 using Diary.ViewModels.Map;
+using Diary.ViewModels.Media;
 using System.Collections.ObjectModel;
 
 namespace Diary.ViewModels.Entry;
@@ -72,6 +73,12 @@ public partial class EntryEditViewModel : ViewModelBase
         }
 
         await Shell.Current.GoToAsync("//entries");
+    }
+
+    [RelayCommand]
+    private async Task DisplayMediaPopupAsync(Guid id)
+    {
+        await _popupService.ShowPopupAsync<MediaPopupViewModel>(onPresenting: async viewModel => await viewModel.InitializeAsync(id));
     }
 
     [RelayCommand]
