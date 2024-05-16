@@ -4,6 +4,7 @@ using Diary.Clients.Interfaces;
 using Diary.Helpers;
 using Diary.Models.Entry;
 using Diary.ViewModels.Map;
+using Diary.ViewModels.Media;
 using PropertyChanged;
 
 namespace Diary.ViewModels.Entry;
@@ -42,6 +43,13 @@ public partial class EntryDetailViewModel : ViewModelBase
             await Shell.Current.GoToAsync("/edit", new Dictionary<string, object> { ["entry"] = Entry });
         }
     }
+
+    [RelayCommand]
+    private async Task DisplayMediaPopupAsync(Guid id)
+    {
+        await _popupService.ShowPopupAsync<MediaPopupViewModel>(onPresenting: async viewModel => await viewModel.InitializeAsync(id));
+    }
+
 
     [RelayCommand]
     private async Task DisplayMapPopupAsync()
