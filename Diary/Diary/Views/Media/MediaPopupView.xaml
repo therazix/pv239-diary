@@ -1,0 +1,63 @@
+<toolkit:Popup
+    x:Class="Diary.Views.Media.MediaPopupView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:Diary.Controls"
+    xmlns:converters="clr-namespace:Diary.Converters"
+    xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+    xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
+    xmlns:models="clr-namespace:Diary.Models.Media"
+    xmlns:selectors="clr-namespace:Diary.Selectors"
+    xmlns:sensors="clr-namespace:Microsoft.Maui.Devices.Sensors;assembly=Microsoft.Maui.Essentials"
+    xmlns:texts="clr-namespace:Diary.Resources.Texts"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:views="clr-namespace:Diary.Views"
+    xmlns:vm="clr-namespace:Diary.ViewModels.Media"
+    x:DataType="vm:MediaPopupViewModel">
+
+    <Grid Padding="0">
+        <Grid.Resources>
+            <ResourceDictionary>
+                <converters:MediaNameToPathConverter x:Key="MediaNameToPathConverter" />
+            </ResourceDictionary>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Button
+            Grid.Row="0"
+            Grid.Column="0"
+            BackgroundColor="#80000000"
+            Clicked="OnCloseButtonClicked"
+            FontFamily="{Static fonts:Fonts.FontAwesome}"
+            FontSize="Large"
+            HorizontalOptions="End"
+            Text="{Static fonts:FontAwesomeIcons.LongArrowLeft}"
+            TextColor="White" />
+
+        <controls:PinchZoom
+            Grid.Row="1"
+            Grid.Column="0"
+            IsVisible="{Binding IsImage}">
+            <controls:PinchZoom.Content>
+                <Image Aspect="AspectFit" Source="{Binding Media.FileName, Converter={StaticResource MediaNameToPathConverter}}" />
+            </controls:PinchZoom.Content>
+        </controls:PinchZoom>
+
+        <toolkit:MediaElement
+            Grid.Row="1"
+            Grid.Column="0"
+            Aspect="AspectFit"
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsVideo}"
+            ShouldShowPlaybackControls="True"
+            Source="{Binding Media.FileName, Converter={StaticResource MediaNameToPathConverter}}"
+            VerticalOptions="CenterAndExpand" />
+    </Grid>
+
+</toolkit:Popup>

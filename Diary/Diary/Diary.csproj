@@ -180,6 +180,9 @@
 	  <MauiXaml Update="Views\Media\MediaListView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\Media\MediaPopupView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Mood\MoodListView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
