@@ -3,7 +3,6 @@
     x:Class="Diary.Views.Label.LabelListView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:converters="clr-namespace:Diary.Converters"
     xmlns:dict="clr-namespace:Diary.Resources.Dictionaries"
     xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
     xmlns:models="clr-namespace:Diary.Models.Label"
@@ -20,7 +19,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <dict:BaseResourceDictionary />
             </ResourceDictionary.MergedDictionaries>
-            <converters:StringToColorConverter x:Key="StringToColorConverter" />
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
 
@@ -46,7 +44,7 @@
                             HeightRequest="30"
                             VerticalOptions="Center"
                             WidthRequest="30"
-                            Color="{Binding Color, Converter={StaticResource StringToColorConverter}}" />
+                            Color="{Binding Color}" />
                         <Label
                             Grid.Column="1"
                             HorizontalOptions="Start"
