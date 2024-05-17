@@ -7,6 +7,7 @@ using Riok.Mapperly.Abstractions;
 namespace Diary.Mappers;
 
 [Mapper]
+[UseStaticMapper(typeof(LabelMapper))]
 public static partial class EntryMapper
 {
     public static partial EntryDetailModel MapToDetailModel(this EntryEntity entity);
