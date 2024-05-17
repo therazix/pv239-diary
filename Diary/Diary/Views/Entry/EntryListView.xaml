@@ -3,6 +3,7 @@
     x:Class="Diary.Views.Entry.EntryListView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:Diary.Converters"
     xmlns:controls="clr-namespace:Diary.Controls"
     xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
     xmlns:models="clr-namespace:Diary.Models.Entry"
@@ -20,6 +21,11 @@
         Padding="15,0,15,15"
         ColumnDefinitions="*"
         RowDefinitions="Auto, *, Auto">
+        <Grid.Resources>
+            <ResourceDictionary>
+                <converters:BoolToFilterBackgroundColorConverter x:Key="BoolToFilterBackgroundColorConverter" />
+            </ResourceDictionary>
+        </Grid.Resources>
         <plugin:Calendar
             Grid.Row="0"
             ArrowsBackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
@@ -125,7 +131,7 @@
                 Grid.Column="1"
                 Margin="0,20,0,0"
                 Padding="7"
-                BackgroundColor="{StaticResource Primary}"
+                BackgroundColor="{Binding FilterSet, Converter={StaticResource BoolToFilterBackgroundColorConverter}}"
                 Command="{Binding DisplayFilterSortPopupCommand}"
                 ContentLayout="Left, 15"
                 FontSize="15"

@@ -6,6 +6,7 @@ using Diary.Enums;
 using Diary.Helpers;
 using Diary.Models.Entry;
 using Diary.Models.Label;
+using Newtonsoft.Json;
 using Plugin.Maui.Calendar.Models;
 
 namespace Diary.ViewModels.Entry;
@@ -19,7 +20,6 @@ public partial class EntryListViewModel : ViewModelBase
     private ICollection<LabelListModel> _labels;
     private EntryFilter _entryFilter { get; set; } = new();
 
-
     [ObservableProperty]
     private EventCollection _events = [];
 
@@ -28,6 +28,9 @@ public partial class EntryListViewModel : ViewModelBase
 
     [ObservableProperty]
     private ICollection<EntryListModel>? _selectedDayEntries = [];
+
+    [ObservableProperty]
+    private bool _filterSet;
 
     public string? SelectedDate { get; set; } = null;
 
@@ -42,18 +45,13 @@ public partial class EntryListViewModel : ViewModelBase
     {
         using var _ = new BusyIndicator(this);
         _labels = await _labelClient.GetAllAsync();
-
-        _entryFilter = new EntryFilter
-        {
-            OrderByProperty = EntryFilterEnums.OrderByProperty.CreatedAt,
-            OrderByDirection = EntryFilterEnums.OrderByDirection.Descending,
-        };
+        _entryFilter = LoadEntryFilter();
+        FilterSet = IsFilterSet();
 
         Items = await _entryClient.GetAllAsync(_entryFilter);
 
         Events = ConstructEventCollection(Items);
 
-        // TODO: implement faster loading
         DaySelected(DateTime.Now.Date);
     }
 
@@ -112,10 +110,41 @@ public partial class EntryListViewModel : ViewModelBase
         if (result is EntryFilter entryFilter)
         {
             _entryFilter = entryFilter;
+            SaveEntryFilter(entryFilter);
+            FilterSet = IsFilterSet();
 
             Items = await _entryClient.GetAllAsync(_entryFilter);
             Events = ConstructEventCollection(Items);
             SelectedDayEntries = Items;
         }
+    }
+
+    private void SaveEntryFilter(EntryFilter filter)
+    {
+        var filterJson = JsonConvert.SerializeObject(filter);
+        Preferences.Set("EntryFilter", filterJson);
+    }
+
+    private EntryFilter LoadEntryFilter()
+    {
+        var filterJson = Preferences.Get("EntryFilter", string.Empty);
+
+        EntryFilter defaultEntryFilter = new()
+        {
+            OrderByProperty = EntryFilterEnums.OrderByProperty.CreatedAt,
+            OrderByDirection = EntryFilterEnums.OrderByDirection.Descending,
+        };
+
+        if (!string.IsNullOrEmpty(filterJson))
+        {
+            return JsonConvert.DeserializeObject<EntryFilter>(filterJson) ?? defaultEntryFilter;
+        }
+
+        return defaultEntryFilter;
+    }
+
+    private bool IsFilterSet()
+    {
+        return _entryFilter.DateFrom != null || _entryFilter.DateTo != null || _entryFilter.LabelsToShow?.Count > 0 || _entryFilter.MoodsToShow?.Count > 0;
     }
 }
