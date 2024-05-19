@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Enums;
+using Diary.Mappers;
 using Diary.Models.Entry;
 using Diary.Models.Label;
 using Diary.ViewModels.Interfaces;
@@ -121,7 +122,8 @@ public partial class EntryListViewModel : IViewModel
 
     private void SaveEntryFilter(EntryFilter filter)
     {
-        var filterJson = JsonConvert.SerializeObject(filter);
+        var filterJson = JsonConvert.SerializeObject(filter.MapToEntryFilterFromPreferences());
+
         Preferences.Set("EntryFilter", filterJson);
     }
 
@@ -137,7 +139,11 @@ public partial class EntryListViewModel : IViewModel
 
         if (!string.IsNullOrEmpty(filterJson))
         {
-            return JsonConvert.DeserializeObject<EntryFilter>(filterJson) ?? defaultEntryFilter;
+            EntryFilterFromPreferences? entryFilterFromPreferences = JsonConvert.DeserializeObject<EntryFilterFromPreferences>(filterJson);
+
+            return entryFilterFromPreferences != null
+                ? entryFilterFromPreferences.MapToEntryFilter()
+                : defaultEntryFilter;
         }
 
         return defaultEntryFilter;
