@@ -2,23 +2,17 @@
 
 public static class Constants
 {
-    public static string AppFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Diary");
-
-    public static string DatabasePath => Path.Combine(AppFolder, "DiaryDB.db3");
-
-    public static string MediaPath => Path.Combine(AppFolder, "media");
-
-    public static string TempPath => Path.Combine(Path.GetTempPath(), "Diary");
+    public static readonly string AppFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Diary");
+    public static readonly string DatabasePath = Path.Combine(AppFolder, "DiaryDB.db3");
+    public static readonly string MediaPath = Path.Combine(AppFolder, "media");
+    public static readonly string TempPath = Path.Combine(Path.GetTempPath(), "Diary");
+    public static readonly TimeSpan CancellationTokenDelay = TimeSpan.FromSeconds(5);
+    public static readonly Color DefaultLabelColor = Color.FromArgb("#FF000000");
 
     public const string FirstRunKey = "FirstRun";
-
     public const string DefaultExportFileName = "DiaryExport.zip";
-
     public const string MapDateTimeFormat = "dd/MM/y H:mm";
-
     public const string BingMapsApiKey = "AslgOYkoOW5Q3lhZ0c3az5GzKnFtvrWQjayd4ihqT5nNOYr6WUzoXLX6o4yHAwE9";
-
-    public static TimeSpan CancellationTokenDelay = TimeSpan.FromSeconds(5);
 
 # if WINDOWS
     public const float LineChartLabelTextSize = 15f;

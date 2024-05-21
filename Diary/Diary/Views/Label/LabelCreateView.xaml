@@ -42,20 +42,15 @@
             Orientation="Horizontal"
             Spacing="10">
             <Label Text="Color:" VerticalOptions="Center" />
-            <colorpicker:ColorPicker
-                x:Name="ColorPicker"
-                ColorFlowDirection="Horizontal"
-                ColorSpectrumStyle="ShadeToHueToTintStyle"
-                HeightRequest="120"
-                PickedColor="{Binding Label.Color, Mode=TwoWay}"
-                PointerRingBorderUnits="0.3"
-                PointerRingDiameterUnits="0.7"
-                WidthRequest="200" />
             <BoxView
                 HeightRequest="40"
                 VerticalOptions="Center"
                 WidthRequest="40"
-                Color="{Binding Label.Color}" />
+                Color="{Binding Label.Color}" >
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SelectColorCommand}" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
 
         </StackLayout>
 
