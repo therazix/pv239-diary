@@ -159,6 +159,9 @@
 	  <MauiXaml Update="Views\ImportExport\ImportExportView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\Label\ColorPickerPopupView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Label\LabelCreateView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
