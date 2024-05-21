@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.Core.Extensions;
+﻿using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Helpers;
@@ -10,12 +11,14 @@ namespace Diary.ViewModels.Media;
 public partial class MediaListViewModel : ViewModelBase
 {
     private readonly IMediaClient _mediaClient;
+    private readonly IPopupService _popupService;
 
     public ObservableCollection<MediaGroupModel> MediaGroups { get; set; } = new();
 
-    public MediaListViewModel(IMediaClient mediaClient)
+    public MediaListViewModel(IMediaClient mediaClient, IPopupService popupService)
     {
         _mediaClient = mediaClient;
+        _popupService = popupService;
     }
 
     public override async Task OnAppearingAsync()
@@ -37,5 +40,11 @@ public partial class MediaListViewModel : ViewModelBase
     private async Task GoToEntryDetailAsync(Guid id)
     {
         await Shell.Current.GoToAsync("//entries/detail", new Dictionary<string, object> { ["id"] = id });
+    }
+
+    [RelayCommand]
+    private async Task DisplayMediaPopupAsync(Guid id)
+    {
+        await _popupService.ShowPopupAsync<MediaPopupViewModel>(onPresenting: async viewModel => await viewModel.InitializeAsync(id));
     }
 }
