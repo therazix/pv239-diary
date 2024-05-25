@@ -1,8 +1,10 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Core.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Models.Entry;
 using Diary.Models.Label;
 using Diary.Models.Mood;
+using System.Collections.ObjectModel;
 using static Diary.Enums.EntryFilterEnums;
 
 namespace Diary.ViewModels.Entry;
@@ -38,6 +40,21 @@ public partial class FilterSortPopupViewModel : ViewModelBase
 
     public void Initialize(EntryFilter entryFilter, ICollection<LabelListModel> labels)
     {
+        List<LabelListModel>? selectedLabels = entryFilter.LabelsToShow?.Cast<LabelListModel>().ToList();
+        List<LabelListModel>? selectedLabelsFromDb = new();
+
+        foreach (var label in selectedLabels ?? [])
+        {
+            var labelFromDb = labels.FirstOrDefault(l => l.Id == label.Id);
+
+            if (labelFromDb != null)
+            {
+                selectedLabelsFromDb.Add(labelFromDb);
+            }
+        }
+
+        entryFilter.LabelsToShow = selectedLabelsFromDb.Cast<object>().ToObservableCollection();
+
         EntryFilter = entryFilter;
         EntryFilterOriginalState = entryFilter;
         FilterByDate = EntryFilter.DateFrom != null && EntryFilter.DateTo != null;
