@@ -27,12 +27,30 @@
             HorizontalOptions="FillAndExpand"
             VerticalOptions="FillAndExpand" />
         <VerticalStackLayout Grid.Row="0" Padding="15">
-            <Label
-                FontSize="Medium"
-                HorizontalOptions="Center"
-                Text="Filter"
-                TextColor="{AppThemeBinding Dark={StaticResource PrimaryLightText},
-                                            Light={StaticResource PrimaryDarkText}}" />
+            <Grid ColumnDefinitions="*, Auto">
+                <Label
+                    Grid.Column="0"
+                    Padding="0"
+                    FontAttributes="Bold"
+                    FontSize="Medium"
+                    HorizontalOptions="Center"
+                    Text="Filter"
+                    TextColor="{AppThemeBinding Dark={StaticResource PrimaryLightText},
+                                                Light={StaticResource PrimaryDarkText}}" />
+                <Label
+                    Grid.Column="1"
+                    BackgroundColor="Transparent"
+                    FontAttributes="Bold"
+                    FontFamily="{Static fonts:Fonts.FontAwesome}"
+                    FontSize="Medium"
+                    Text="{Static fonts:FontAwesomeIcons.Times}"
+                    TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                Dark={StaticResource PrimaryLightText}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnCancelButtonClicked" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
 
             <Grid
                 Padding="0,15,0,0"
@@ -129,8 +147,15 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
+            <BoxView
+                Margin="0,20,0,0"
+                BackgroundColor="{AppThemeBinding Dark={StaticResource PrimaryLightText},
+                                                  Light={StaticResource PrimaryDarkText}}"
+                HeightRequest="1"
+                HorizontalOptions="FillAndExpand" />
             <Label
                 Margin="0,20,0,0"
+                FontAttributes="Bold"
                 FontSize="Medium"
                 HorizontalOptions="Center"
                 Text="Entry order"
@@ -179,10 +204,10 @@
                 Grid.Column="0"
                 Margin="0,20,0,0"
                 BackgroundColor="{StaticResource Gray600}"
-                Clicked="OnCancelButtonClicked"
+                Clicked="OnFilterResetButtonClicked"
                 CornerRadius="10"
                 FontAttributes="Bold"
-                Text="Cancel"
+                Text="Reset"
                 TextColor="White" />
             <Button
                 Grid.Column="1"

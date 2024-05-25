@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui.Views;
+using Diary.Models.Entry;
 using Diary.ViewModels.Entry;
 
 namespace Diary.Views.Entry;
@@ -37,5 +38,11 @@ public partial class FilterSortPopupView : Popup
     {
         var cts = new CancellationTokenSource(Constants.CancellationTokenDelay);
         await CloseAsync(_viewModel.EntryFilterOriginalState, cts.Token);
+    }
+
+    private async void OnFilterResetButtonClicked(object? sender, EventArgs e)
+    {
+        var cts = new CancellationTokenSource(Constants.CancellationTokenDelay);
+        await CloseAsync(new EntryFilter(), cts.Token);
     }
 }
