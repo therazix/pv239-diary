@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<views:ContentPageBase x:Class="Diary.Views.Label.LabelCreateView"
-                       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                       xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
-                       xmlns:models="clr-namespace:Diary.Models.Label"
-                       xmlns:vm="clr-namespace:Diary.ViewModels.Label"
-                       xmlns:texts="clr-namespace:Diary.Resources.Texts"
-                       xmlns:views="clr-namespace:Diary.Views"
-                       xmlns:converters="clr-namespace:Diary.Converters"
-                       x:Name="Root"
-                       Title="Create Label"
-                       x:DataType="vm:LabelCreateViewModel">
+<views:ContentPageBase
+    x:Class="Diary.Views.Label.LabelCreateView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:colorpicker="clr-namespace:Maui.ColorPicker;assembly=Maui.ColorPicker"
+    xmlns:dict="clr-namespace:Diary.Resources.Dictionaries"
+    xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+    xmlns:models="clr-namespace:Diary.Models.Label"
+    xmlns:texts="clr-namespace:Diary.Resources.Texts"
+    xmlns:views="clr-namespace:Diary.Views"
+    xmlns:vm="clr-namespace:Diary.ViewModels.Label"
+    x:Name="Root"
+    Title="Create Label"
+    x:DataType="vm:LabelCreateViewModel"
+    ControlTemplate="{StaticResource ContentTemplate}"
+    IsBusy="{Binding IsBusy}">
     <views:ContentPageBase.Resources>
         <ResourceDictionary>
-            <converters:StringToColorConverter x:Key="StringToColorConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <dict:BaseResourceDictionary />
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
 
@@ -26,30 +32,36 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Entry Grid.Row="0"
-               Placeholder="Name"
-               Text="{Binding Label.Name}" />
+        <Entry
+            Grid.Row="0"
+            Placeholder="Name"
+            Text="{Binding Label.Name}" />
 
-        <StackLayout Grid.Row="1"
-                     Orientation="Horizontal"
-                     Spacing="10">
-            <Label Text="Color:"
-                   VerticalOptions="Center" />
-            <Entry Placeholder="#AARRGGBB"
-                   Text="{Binding Label.Color}" />
-            <BoxView WidthRequest="40"
-                     HeightRequest="40"
-                     VerticalOptions="Center">
-                <BoxView.Color>
-                    <Binding Path="Label.Color"
-                             Converter="{StaticResource StringToColorConverter}" />
-                </BoxView.Color>
-            </BoxView>
+        <StackLayout
+            Grid.Row="1"
+            Orientation="Horizontal"
+            Spacing="10">
+            <Label Text="Color:" VerticalOptions="Center" />
+            <colorpicker:ColorPicker
+                x:Name="ColorPicker"
+                ColorFlowDirection="Horizontal"
+                ColorSpectrumStyle="ShadeToHueToTintStyle"
+                HeightRequest="120"
+                PickedColor="{Binding Label.Color, Mode=TwoWay}"
+                PointerRingBorderUnits="0.3"
+                PointerRingDiameterUnits="0.7"
+                WidthRequest="200" />
+            <BoxView
+                HeightRequest="40"
+                VerticalOptions="Center"
+                WidthRequest="40"
+                Color="{Binding Label.Color}" />
 
         </StackLayout>
 
-        <Button Grid.Row="2"
-                Text="Submit"
-                Command="{Binding SaveCommand}" />
+        <Button
+            Grid.Row="2"
+            Command="{Binding SaveCommand}"
+            Text="Submit" />
     </Grid>
 </views:ContentPageBase>

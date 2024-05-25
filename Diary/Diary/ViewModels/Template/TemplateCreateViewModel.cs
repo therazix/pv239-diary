@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
+using Diary.Helpers;
 using Diary.Models.Label;
 using Diary.Models.Template;
 using Diary.ViewModels.Map;
@@ -16,13 +17,9 @@ public partial class TemplateCreateViewModel : ViewModelBase
     private readonly IPopupService _popupService;
 
     public bool PresetMood { get; set; } = true;
-
     public bool PresetLocation { get; set; } = true;
-
     public TemplateDetailModel? Template { get; set; }
-
     public ObservableCollection<LabelListModel> Labels { get; set; }
-
     public ObservableCollection<object> SelectedLabels { get; set; }
 
     public bool IsLocationSet { get; set; } = false;
@@ -40,6 +37,8 @@ public partial class TemplateCreateViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
+
         Template = new TemplateDetailModel()
         {
             Id = Guid.Empty
@@ -63,6 +62,7 @@ public partial class TemplateCreateViewModel : ViewModelBase
                 Template.Longitude = null;
             }
 
+            using var _ = new BusyIndicator(this);
             Template.Labels = new ObservableCollection<LabelListModel>(SelectedLabels.Select(l => (LabelListModel)l));
             await _templateClient.SetAsync(Template);
         }
@@ -70,7 +70,7 @@ public partial class TemplateCreateViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private Task ClearLocationAsync()
+    private void ClearLocation()
     {
         if (Template != null)
         {
@@ -78,14 +78,13 @@ public partial class TemplateCreateViewModel : ViewModelBase
             Template.Longitude = null;
         }
         UpdateFormLocationInfo();
-        return Task.CompletedTask;
     }
 
     [RelayCommand]
     private async Task DisplayMapPopupAsync()
     {
         Location? userLocation = null;
-        if (await Helpers.LocationHelper.HasLocationPermission())
+        if (await Helpers.LocationHelper.HasLocationPermissionAsync())
         {
             userLocation = await Helpers.LocationHelper.GetAnyLocationAsync();
         }

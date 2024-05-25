@@ -7,4 +7,5 @@ public record EntryListModel : ModelBase
     public DateTime CreatedAt { get; set; }
     public DateTime EditedAt { get; set; }
     public bool IsFavorite { get; set; }
+    public int MediaCount { get; init; }
 }

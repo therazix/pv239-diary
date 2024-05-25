@@ -8,7 +8,7 @@ public class TemplateRepository : RepositoryBase<TemplateEntity>, ITemplateRepos
     {
     }
 
-    public async override Task<ICollection<TemplateEntity>> GetAllAsync()
+    public override async Task<ICollection<TemplateEntity>> GetAllAsync()
     {
         var entities = await connection.Table<TemplateEntity>().ToListAsync();
         foreach (var entity in entities)
@@ -19,7 +19,7 @@ public class TemplateRepository : RepositoryBase<TemplateEntity>, ITemplateRepos
         return entities;
     }
 
-    public async override Task<TemplateEntity?> GetByIdAsync(Guid id)
+    public override async Task<TemplateEntity?> GetByIdAsync(Guid id)
     {
         var entity = await connection.Table<TemplateEntity>().Where(e => e.Id == id).FirstOrDefaultAsync();
         if (entity != null)
@@ -30,7 +30,7 @@ public class TemplateRepository : RepositoryBase<TemplateEntity>, ITemplateRepos
         return entity;
     }
 
-    public async override Task<TemplateEntity> SetAsync(TemplateEntity entity)
+    public override async Task<TemplateEntity> SetAsync(TemplateEntity entity)
     {
         if (entity.Id == Guid.Empty)
         {
@@ -64,7 +64,7 @@ public class TemplateRepository : RepositoryBase<TemplateEntity>, ITemplateRepos
         return entity;
     }
 
-    public async override Task DeleteAsync(TemplateEntity entity)
+    public override async Task DeleteAsync(TemplateEntity entity)
     {
         var labelTemplatesToDelete = await GetLabelTemplatesByTemplateIdAsync(entity.Id);
         await connection.RunInTransactionAsync(tran =>

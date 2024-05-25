@@ -14,11 +14,13 @@ using Diary.Services.Interfaces;
 using Diary.ViewModels.Entry;
 using Diary.ViewModels.Interfaces;
 using Diary.ViewModels.Map;
+using Diary.ViewModels.Media;
 using Diary.Views;
 using Diary.Views.Entry;
 using Diary.Views.ImportExport;
 using Diary.Views.Label;
 using Diary.Views.Map;
+using Diary.Views.Media;
 using Diary.Views.Template;
 using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
@@ -35,8 +37,9 @@ namespace Diary
                 .UseMauiApp<App>()
                 .UseMicrocharts()
                 .UseMauiCommunityToolkit()
+                .UseMauiCommunityToolkitMediaElement()
+#if ANDROID
                 .UseLocalNotification()
-#if ANDROID || IOS
                 .UseMauiMaps()
 #elif WINDOWS
                 .UseMauiCommunityToolkitMaps(Constants.BingMapsApiKey)
@@ -66,6 +69,8 @@ namespace Diary
 
             var app = builder.Build();
 
+            SetupDirectories();
+
             Task.Run(async () => await SetupDatabaseAsync(app)).GetAwaiter().GetResult();
 
             return app;
@@ -78,20 +83,24 @@ namespace Diary
             services.AddSingleton<ICommandFactory, CommandFactory>();
             services.AddSingleton<IFilePicker>(FilePicker.Default);
             services.AddSingleton<IFileSaver>(FileSaver.Default);
+            services.AddSingleton<IMediaPicker>(MediaPicker.Default);
             services.AddSingleton<IImportExportService, ImportExportService>();
         }
 
         private static void ConfigureRepositories(IServiceCollection services)
         {
+            services.AddSingleton<IMediaRepository, MediaRepository>();
             services.AddSingleton<IEntryRepository, EntryRepository>();
             services.AddSingleton<ILabelRepository, LabelRepository>();
             services.AddSingleton<ITemplateRepository, TemplateRepository>();
             services.AddSingleton<ILabelEntryRepository, LabelEntryRepository>();
             services.AddSingleton<ILabelTemplateRepository, LabelTemplateRepository>();
+            services.AddSingleton<IEntryMediaRepository, EntryMediaRepository>();
         }
 
         private static void ConfigureClients(IServiceCollection services)
         {
+            services.AddSingleton<IMediaClient, MediaClient>();
             services.AddSingleton<IEntryClient, EntryClient>();
             services.AddSingleton<ILabelClient, LabelClient>();
             services.AddSingleton<ITemplateClient, TemplateClient>();
@@ -119,6 +128,7 @@ namespace Diary
         {
             services.AddTransientPopup<MapPopupView, MapPopupViewModel>();
             services.AddTransientPopup<FilterSortPopupView, FilterSortPopupViewModel>();
+            services.AddTransientPopup<MediaPopupView, MediaPopupViewModel>();
         }
 
         private static void RegisterRoutes()
@@ -139,27 +149,40 @@ namespace Diary
             Routing.RegisterRoute("//importexport", typeof(ImportExportView));
         }
 
+        private static void SetupDirectories()
+        {
+            SetupDirectory(Constants.AppFolder);
+            SetupDirectory(Constants.MediaPath);
+            SetupDirectory(Constants.TempPath);
+        }
+
+        private static void SetupDirectory(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
+
         private static async Task SetupDatabaseAsync(MauiApp app)
         {
             if (!File.Exists(Constants.DatabasePath))
             {
-                var directory = Path.GetDirectoryName(Constants.DatabasePath);
-                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
-
+                var mediaRepository = app.Services.GetRequiredService<IMediaRepository>();
                 var entryRepository = app.Services.GetRequiredService<IEntryRepository>();
                 var labelRepository = app.Services.GetRequiredService<ILabelRepository>();
                 var templateRepository = app.Services.GetRequiredService<ITemplateRepository>();
                 var labelEntryRepository = app.Services.GetRequiredService<ILabelEntryRepository>();
                 var labelTemplateRepository = app.Services.GetRequiredService<ILabelTemplateRepository>();
+                var entryMediaRepository = app.Services.GetRequiredService<IEntryMediaRepository>();
 
+                await mediaRepository.CreateTableAsync();
                 await entryRepository.CreateTableAsync();
                 await labelRepository.CreateTableAsync();
                 await templateRepository.CreateTableAsync();
                 await labelEntryRepository.CreateTableAsync();
                 await labelTemplateRepository.CreateTableAsync();
+                await entryMediaRepository.CreateTableAsync();
 
                 await DataSeedService.SeedAsync(entryRepository, labelRepository, templateRepository);
             }

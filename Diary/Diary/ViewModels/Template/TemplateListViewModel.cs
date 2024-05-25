@@ -1,20 +1,19 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Commands.Interfaces;
+using Diary.Helpers;
 using Diary.Models.Template;
-using Diary.ViewModels.Interfaces;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Diary.ViewModels.Template;
 
-[INotifyPropertyChanged]
-public partial class TemplateListViewModel : IViewModel
+public partial class TemplateListViewModel : ViewModelBase
 {
     private readonly ITemplateClient _templateClient;
 
-    [ObservableProperty]
-    private ICollection<TemplateListModel>? items;
+    public ObservableCollection<TemplateListModel>? Items { get; set; }
 
     public ICommand GoToDetailCommand { get; set; }
 
@@ -24,9 +23,10 @@ public partial class TemplateListViewModel : IViewModel
         GoToDetailCommand = commandFactory.Create<Guid>(GoToDetailAsync);
     }
 
-    public async Task OnAppearingAsync()
+    public override async Task OnAppearingAsync()
     {
-        Items = await _templateClient.GetAllAsync();
+        using var _ = new BusyIndicator(this);
+        Items = (await _templateClient.GetAllAsync()).ToObservableCollection();
     }
 
     private async Task GoToDetailAsync(Guid id)

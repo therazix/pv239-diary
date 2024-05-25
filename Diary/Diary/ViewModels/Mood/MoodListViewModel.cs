@@ -1,17 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Converters;
 using Diary.Helpers;
 using Diary.Models.Mood;
-using Diary.ViewModels.Interfaces;
 using Microcharts;
 using Scrtwpns.Mixbox;
 
 namespace Diary.ViewModels.Mood;
 
-[INotifyPropertyChanged]
-public partial class MoodListViewModel : IViewModel
+public partial class MoodListViewModel : ViewModelBase
 {
     private readonly IEntryClient _entryClient;
     private readonly IntToMoodColorConverter _intToMoodColorConverter = new();
@@ -26,46 +23,36 @@ public partial class MoodListViewModel : IViewModel
     private DateTime _monthRadarChartDayFrom => new(_monthRadarChartDayTo.Year, _monthRadarChartDayTo.Month, 1);
     private DateTime _monthRadarChartDayTo;
 
-    [ObservableProperty]
-    private DateTime _averageMoodFrom;
-
-    [ObservableProperty]
-    private DateTime _averageMoodTo;
-
-    [ObservableProperty]
-    private string _monthRadarChartDayFromText;
-
-    [ObservableProperty]
-    private LineChart _weekLineChart;
-
-    [ObservableProperty]
-    private RadarChart _monthRadarChart;
-
-    [ObservableProperty]
-    private PointChart _averageMoodPointChart;
+    public DateTime AverageMoodFrom { get; set; }
+    public DateTime AverageMoodTo { get; set; }
+    public string MonthRadarChartDayFromText { get; set; }
+    public LineChart WeekLineChart { get; set; }
+    public RadarChart MonthRadarChart { get; set; }
+    public PointChart AverageMoodPointChart { get; set; }
 
     public MoodListViewModel(IEntryClient entryClient)
     {
         _entryClient = entryClient;
 
-        _weekLineChartDayFrom = DateTime.Today.AddDays(DateTime.Today.DayOfWeek == 0 ? -6 : (int)DateTime.Today.DayOfWeek - 1);
+        _weekLineChartDayFrom = DateTime.Today.AddDays(DateTime.Today.DayOfWeek == 0 ? -6 : -(int)DateTime.Today.DayOfWeek + 1);
         _monthRadarChartDayTo = new(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
 
         AverageMoodFrom = _monthRadarChartDayFrom;
         AverageMoodTo = _monthRadarChartDayTo;
     }
 
-    public async Task OnAppearingAsync()
+    public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
         await InitializeChartsAsync();
     }
 
     [RelayCommand]
-    private async Task WeekLineChartPrevious()
+    private async Task WeekLineChartPreviousAsync()
     {
         _weekLineChartDayFrom = _weekLineChartDayFrom.AddDays(-7);
 
-        var moodEntries = await _entryClient.GetMoodFromEntriesByDateRange(_weekLineChartDayFrom, _weekLineChartDayTo);
+        var moodEntries = await _entryClient.GetMoodFromEntriesByDateRangeAsync(_weekLineChartDayFrom, _weekLineChartDayTo);
 
         SetWeekLineChart(moodEntries);
     }
@@ -75,7 +62,7 @@ public partial class MoodListViewModel : IViewModel
     {
         _weekLineChartDayFrom = _weekLineChartDayFrom.AddDays(7);
 
-        var moodEntries = await _entryClient.GetMoodFromEntriesByDateRange(_weekLineChartDayFrom, _weekLineChartDayTo);
+        var moodEntries = await _entryClient.GetMoodFromEntriesByDateRangeAsync(_weekLineChartDayFrom, _weekLineChartDayTo);
 
         SetWeekLineChart(moodEntries);
     }
@@ -85,7 +72,7 @@ public partial class MoodListViewModel : IViewModel
     {
         _monthRadarChartDayTo = _monthRadarChartDayTo.AddMonths(-1);
 
-        var moodEntries = await _entryClient.GetMoodFromEntriesByDateRange(_monthRadarChartDayFrom, _monthRadarChartDayTo);
+        var moodEntries = await _entryClient.GetMoodFromEntriesByDateRangeAsync(_monthRadarChartDayFrom, _monthRadarChartDayTo);
 
         SetMonthRadarChart(moodEntries);
     }
@@ -95,7 +82,7 @@ public partial class MoodListViewModel : IViewModel
     {
         _monthRadarChartDayTo = _monthRadarChartDayTo.AddMonths(1);
 
-        var moodEntries = await _entryClient.GetMoodFromEntriesByDateRange(_monthRadarChartDayFrom, _monthRadarChartDayTo);
+        var moodEntries = await _entryClient.GetMoodFromEntriesByDateRangeAsync(_monthRadarChartDayFrom, _monthRadarChartDayTo);
 
         SetMonthRadarChart(moodEntries);
     }
@@ -103,14 +90,14 @@ public partial class MoodListViewModel : IViewModel
     [RelayCommand]
     private async Task ChangeAverageMoodChartRangeAsync()
     {
-        var moodEntries = await _entryClient.GetMoodFromEntriesByDateRange(AverageMoodFrom, AverageMoodTo);
+        var moodEntries = await _entryClient.GetMoodFromEntriesByDateRangeAsync(AverageMoodFrom, AverageMoodTo);
 
         SetAverageMoodPointChart(moodEntries);
     }
 
     private async Task InitializeChartsAsync()
     {
-        var moodEntriesMonth = await _entryClient.GetMoodFromEntriesByDateRange(_monthRadarChartDayFrom, _monthRadarChartDayTo);
+        var moodEntriesMonth = await _entryClient.GetMoodFromEntriesByDateRangeAsync(_monthRadarChartDayFrom, _monthRadarChartDayTo);
         var moodEntriesWeek = moodEntriesMonth
             .Where(m => m.DateTime.Date >= _weekLineChartDayFrom && m.DateTime.Date <= _weekLineChartDayTo)
             .ToList();
@@ -118,7 +105,7 @@ public partial class MoodListViewModel : IViewModel
         SetWeekLineChart(moodEntriesWeek);
         SetMonthRadarChart(moodEntriesMonth);
 
-        var moodEntriesForAverageMood = await _entryClient.GetMoodFromEntriesByDateRange(AverageMoodFrom, AverageMoodTo);
+        var moodEntriesForAverageMood = await _entryClient.GetMoodFromEntriesByDateRangeAsync(AverageMoodFrom, AverageMoodTo);
         SetAverageMoodPointChart(moodEntriesForAverageMood);
     }
 
@@ -129,30 +116,34 @@ public partial class MoodListViewModel : IViewModel
         WeekLineChart = new LineChart
         {
             Entries = lineChartEntries,
-            MinValue = 0,
+            MinValue = -0.5f, // -0.5 is used to increase padding between point and labels, if there was any other way to increase padding, 0 would be used
             MaxValue = 5,
             ValueLabelOrientation = Orientation.Horizontal,
             LabelOrientation = Orientation.Horizontal,
-            LabelTextSize = 12,
+            LabelTextSize = Constants.LineChartLabelTextSize,
             BackgroundColor = SkiaSharp.SKColor.Parse(_backgroundColorHex),
-            LabelColor = SkiaSharp.SKColor.Parse(_textColorHex)
+            LabelColor = SkiaSharp.SKColor.Parse(_textColorHex),
+            LineSize = Constants.LineChartLineSize,
         };
     }
 
     private void SetMonthRadarChart(ICollection<MoodListModel> moodEntries)
     {
         var radarChartEntries = GetEntriesForMonthRadarChart(moodEntries);
+        var maxValue = radarChartEntries.Any()
+                ? radarChartEntries.Where(e => e.Value != null).Max(e => (float)e.Value!) + 0.35f // Without adding this value, some circles may not be fully visible in charts
+                : 0;
 
         MonthRadarChart = new RadarChart
         {
             Entries = radarChartEntries,
             MinValue = 0,
-            MaxValue = radarChartEntries.Any()
-                ? radarChartEntries.Where(e => e.Value != null).Max(e => (float)e.Value!) + 0.35f // Without adding this value, some circles may not be fully visible in charts
-                : 0,
+            MaxValue = maxValue,
             BackgroundColor = SkiaSharp.SKColor.Parse(_backgroundColorHex),
             LabelColor = SkiaSharp.SKColor.Parse(_textColorHex),
             BorderLineColor = SkiaSharp.SKColor.Parse(_textColorHex),
+            LineSize = Constants.RadarChartLineSize,
+            LabelTextSize = Constants.RadarChartLabelTextSize,
         };
     }
 
@@ -163,13 +154,15 @@ public partial class MoodListViewModel : IViewModel
         AverageMoodPointChart = new PointChart
         {
             Entries = pointChartEntries,
-            MinValue = 0,
-            MaxValue = 5,
+            MinValue = -0.5f, // -0.5 is used to increase padding between point and labels, if there was any other way to increase padding, 0 would be used
+            MaxValue = 5.5f, // 5.5 is used to increase padding between point and labels, if there was any other way to increase padding, 5 would be used
             ValueLabelOrientation = Orientation.Horizontal,
             LabelOrientation = Orientation.Horizontal,
-            LabelTextSize = 12,
+            LabelTextSize = Constants.PointChartLabelTextSize,
             BackgroundColor = SkiaSharp.SKColor.Parse(_backgroundColorHex),
-            LabelColor = SkiaSharp.SKColor.Parse(_textColorHex)
+            LabelColor = SkiaSharp.SKColor.Parse(_textColorHex),
+            PointSize = Constants.PointChartPointSize,
+            ValueLabelTextSize = Constants.PointChartValueLabelTextSize,
         };
     }
 
@@ -245,7 +238,7 @@ public partial class MoodListViewModel : IViewModel
             var averageMood = moods.Any()
                 ? moods.Average(m => m.Mood)
                 : 0;
-            // TODO: Why is 0 green and not black??
+
             var averageMoodColor = moodColors.Any()
                 ? moodColors.Aggregate((color1, color2) => Color.FromInt(Mixbox.Lerp(color1.ToInt(), color2.ToInt(), 0.5f)))
                 : ColorHelper.GetTextColorForCurrentTheme();
@@ -253,8 +246,9 @@ public partial class MoodListViewModel : IViewModel
             pointChartEntries.Add(new ChartEntry((float)averageMood)
             {
                 Label = day,
-                ValueLabel = averageMood.ToString(),
-                Color = SkiaSharp.SKColor.Parse(_intToMoodColorConverter.ConvertFrom((int)averageMood).ToHex())
+                ValueLabel = averageMood != 0 ? _intToMoodEmojiConverter.ConvertFrom((int)averageMood) : "",
+                ValueLabelColor = SkiaSharp.SKColor.Parse(averageMoodColor.ToHex()),
+                Color = SkiaSharp.SKColor.Parse(averageMoodColor.ToHex())
             });
         }
 

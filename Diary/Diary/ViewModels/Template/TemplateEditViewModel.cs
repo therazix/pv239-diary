@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
+using Diary.Helpers;
 using Diary.Models.Label;
 using Diary.Models.Template;
 using Diary.ViewModels.Map;
@@ -17,17 +17,11 @@ public partial class TemplateEditViewModel : ViewModelBase
     private readonly ILabelClient _labelClient;
     private readonly IPopupService _popupService;
 
-    [ObservableProperty]
-    private bool _presetMood;
-
-    [ObservableProperty]
-    private bool _presetLocation;
-
+    public bool PresetMood { get; set; }
+    public bool PresetLocation { get; set; }
 
     public TemplateDetailModel Template { get; set; } = null!;
-
     public ObservableCollection<LabelListModel> Labels { get; set; }
-
     public ObservableCollection<object> SelectedLabels { get; set; }
 
     public bool IsLocationSet { get; set; } = false;
@@ -45,6 +39,8 @@ public partial class TemplateEditViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
+
         PresetMood = Template.Mood != 0;
         PresetLocation = Template.Latitude != null && Template.Longitude != null;
 
@@ -76,14 +72,17 @@ public partial class TemplateEditViewModel : ViewModelBase
             Template.Longitude = null;
         }
 
-        Template.Labels = new ObservableCollection<LabelListModel>(SelectedLabels.Select(l => (LabelListModel)l));
+        using (new BusyIndicator(this))
+        {
+            Template.Labels = new ObservableCollection<LabelListModel>(SelectedLabels.Select(l => (LabelListModel)l));
+            await _templateClient.SetAsync(Template);
+        }
 
-        await _templateClient.SetAsync(Template);
         await Shell.Current.GoToAsync("//templates");
     }
 
     [RelayCommand]
-    private Task ClearLocationAsync()
+    private void ClearLocation()
     {
         if (Template != null)
         {
@@ -91,14 +90,13 @@ public partial class TemplateEditViewModel : ViewModelBase
             Template.Longitude = null;
         }
         UpdateFormLocationInfo();
-        return Task.CompletedTask;
     }
 
     [RelayCommand]
     private async Task DisplayMapPopupAsync()
     {
         Location? userLocation = null;
-        if (await Helpers.LocationHelper.HasLocationPermission())
+        if (await Helpers.LocationHelper.HasLocationPermissionAsync())
         {
             userLocation = await Helpers.LocationHelper.GetAnyLocationAsync();
         }

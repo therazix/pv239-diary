@@ -1,21 +1,20 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Commands.Interfaces;
+using Diary.Helpers;
 using Diary.Models.Label;
-using Diary.ViewModels.Interfaces;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 
 namespace Diary.ViewModels.Label;
 
-[INotifyPropertyChanged]
-public partial class LabelListViewModel : IViewModel
+public partial class LabelListViewModel : ViewModelBase
 {
     private readonly ILabelClient _labelClient;
 
-    [ObservableProperty]
-    private ICollection<LabelListModel>? items;
+    public ObservableCollection<LabelListModel>? Items { get; set; }
 
     public ICommand GoToDetailCommand { get; set; }
 
@@ -25,9 +24,10 @@ public partial class LabelListViewModel : IViewModel
         GoToDetailCommand = commandFactory.Create<Guid>(GoToDetailAsync);
     }
 
-    public async Task OnAppearingAsync()
+    public override async Task OnAppearingAsync()
     {
-        Items = await _labelClient.GetAllAsync();
+        using var _ = new BusyIndicator(this);
+        Items = (await _labelClient.GetAllAsync()).ToObservableCollection();
     }
 
     private async Task GoToDetailAsync(Guid id)

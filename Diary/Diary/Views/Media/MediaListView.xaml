@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase
+    x:Class="Diary.Views.Media.MediaListView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:Diary.Converters"
+    xmlns:dict="clr-namespace:Diary.Resources.Dictionaries"
+    xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+    xmlns:models="clr-namespace:Diary.Models.Media"
+    xmlns:selectors="clr-namespace:Diary.Selectors"
+    xmlns:texts="clr-namespace:Diary.Resources.Texts"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:views="clr-namespace:Diary.Views"
+    xmlns:vm="clr-namespace:Diary.ViewModels.Media"
+    Title="Gallery"
+    x:DataType="vm:MediaListViewModel"
+    ControlTemplate="{StaticResource ContentTemplate}"
+    IsBusy="{Binding IsBusy}">
+    <views:ContentPageBase.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <dict:BaseResourceDictionary />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:MediaNameToPathConverter x:Key="MediaNameToPathConverter" />
+            <selectors:MediaDataTemplateSelector x:Key="MediaDataTemplateSelector">
+                <!--  TODO: Adjust styles  -->
+                <selectors:MediaDataTemplateSelector.ImageTemplate>
+                    <DataTemplate x:DataType="models:MediaModel">
+                        <Frame
+                            Margin="5"
+                            Padding="0"
+                            BorderColor="Gray"
+                            CornerRadius="10"
+                            HorizontalOptions="FillAndExpand">
+                            <Image Aspect="AspectFill" Source="{Binding FileName, Converter={StaticResource MediaNameToPathConverter}}" />
+                        </Frame>
+                    </DataTemplate>
+                </selectors:MediaDataTemplateSelector.ImageTemplate>
+                <selectors:MediaDataTemplateSelector.VideoTemplate>
+                    <DataTemplate x:DataType="models:MediaModel">
+                        <Frame
+                            Margin="5"
+                            Padding="0"
+                            BorderColor="Gray"
+                            CornerRadius="10"
+                            HorizontalOptions="FillAndExpand">
+                            <toolkit:MediaElement
+                                Aspect="AspectFill"
+                                HorizontalOptions="Center"
+                                ShouldShowPlaybackControls="True"
+                                Source="{Binding FileName, Converter={StaticResource MediaNameToPathConverter}}"
+                                VerticalOptions="Center" />
+                        </Frame>
+                    </DataTemplate>
+                </selectors:MediaDataTemplateSelector.VideoTemplate>
+            </selectors:MediaDataTemplateSelector>
+        </ResourceDictionary>
+    </views:ContentPageBase.Resources>
+
+    <StackLayout>
+        <CollectionView ItemsSource="{Binding MediaGroups}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:MediaGroupModel">
+                    <StackLayout>
+                        <Label
+                            Margin="10"
+                            FontAttributes="Bold"
+                            Text="{Binding Date, StringFormat='{0:D}'}" />
+                        <CollectionView
+                            ItemTemplate="{StaticResource MediaDataTemplateSelector}"
+                            ItemsLayout="VerticalGrid, 3"
+                            ItemsSource="{Binding Media}" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
+
+</views:ContentPageBase>

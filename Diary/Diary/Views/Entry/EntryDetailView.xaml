@@ -3,136 +3,178 @@
     x:Class="Diary.Views.Entry.EntryDetailView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:Diary.Converters"
+    xmlns:dict="clr-namespace:Diary.Resources.Dictionaries"
     xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
     xmlns:labelmodels="clr-namespace:Diary.Models.Label"
+    xmlns:mediamodels="clr-namespace:Diary.Models.Media"
     xmlns:models="clr-namespace:Diary.Models.Entry"
+    xmlns:selectors="clr-namespace:Diary.Selectors"
     xmlns:texts="clr-namespace:Diary.Resources.Texts"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:views="clr-namespace:Diary.Views"
     xmlns:vm="clr-namespace:Diary.ViewModels.Entry"
     x:Name="Root"
     Title="Entry Detail"
-    x:DataType="vm:EntryDetailViewModel">
+    x:DataType="vm:EntryDetailViewModel"
+    ControlTemplate="{StaticResource ContentTemplate}"
+    IsBusy="{Binding IsBusy}">
+    <views:ContentPageBase.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <dict:BaseResourceDictionary />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:IntToMoodIconConverter x:Key="IntToMoodIconConverter" />
+            <converters:IntToMoodColorConverter x:Key="IntToMoodColorConverter" />
+            <converters:MediaNameToPathConverter x:Key="MediaNameToPathConverter" />
+            <selectors:MediaDataTemplateSelector x:Key="MediaDataTemplateSelector">
+                <selectors:MediaDataTemplateSelector.ImageTemplate>
+                    <DataTemplate x:DataType="mediamodels:MediaModel">
+                        <Frame
+                            Margin="5"
+                            Padding="0"
+                            BorderColor="Gray"
+                            CornerRadius="10"
+                            HeightRequest="175"
+                            WidthRequest="175">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.DisplayMediaPopupCommand, Source={x:Reference Root}}" CommandParameter="{Binding Id}" />
+                            </Frame.GestureRecognizers>
+                            <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <Image
+                                    AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                    AbsoluteLayout.LayoutFlags="All"
+                                    Aspect="AspectFill"
+                                    Source="{Binding FileName, Converter={StaticResource MediaNameToPathConverter}}" />
+                            </AbsoluteLayout>
+                        </Frame>
+                    </DataTemplate>
+                </selectors:MediaDataTemplateSelector.ImageTemplate>
+                <selectors:MediaDataTemplateSelector.VideoTemplate>
+                    <DataTemplate x:DataType="mediamodels:MediaModel">
+                        <Frame
+                            Margin="5"
+                            Padding="0"
+                            BorderColor="Gray"
+                            CornerRadius="10"
+                            HeightRequest="175"
+                            WidthRequest="175">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.DisplayMediaPopupCommand, Source={x:Reference Root}}" CommandParameter="{Binding Id}" />
+                            </Frame.GestureRecognizers>
+                            <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <toolkit:MediaElement
+                                    AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                    AbsoluteLayout.LayoutFlags="All"
+                                    Aspect="AspectFill"
+                                    ShouldShowPlaybackControls="False"
+                                    Source="{Binding FileName, Converter={StaticResource MediaNameToPathConverter}}" />
+                                <Label
+                                    Margin="0"
+                                    Padding="0"
+                                    AbsoluteLayout.LayoutBounds="0.5,0.5,AutoSize,AutoSize"
+                                    AbsoluteLayout.LayoutFlags="PositionProportional"
+                                    FontFamily="{Static fonts:Fonts.FontAwesome}"
+                                    FontSize="Large"
+                                    HeightRequest="40"
+                                    HorizontalTextAlignment="Center"
+                                    Text="{Static fonts:FontAwesomeIcons.Play}"
+                                    TextColor="#A0FFFFFF"
+                                    VerticalTextAlignment="Center"
+                                    WidthRequest="40" />
+                            </AbsoluteLayout>
+                        </Frame>
+                    </DataTemplate>
+                </selectors:MediaDataTemplateSelector.VideoTemplate>
+            </selectors:MediaDataTemplateSelector>
+        </ResourceDictionary>
+    </views:ContentPageBase.Resources>
 
-    <Grid Padding="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+    <ScrollView>
+        <VerticalStackLayout Padding="15">
+            <Label FontAttributes="Bold" Text="Is favorite:" />
+            <Label Text="{Binding Entry.IsFavorite}" />
 
-        <Label
-            Grid.Row="0"
-            Grid.Column="0"
-            FontAttributes="Bold"
-            Text="Title:" />
-        <Label
-            Grid.Row="0"
-            Grid.Column="1"
-            Text="{Binding Entry.Title}" />
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Title:" />
+            <Label Text="{Binding Entry.Title}" />
 
-        <Label
-            Grid.Row="1"
-            Grid.Column="0"
-            FontAttributes="Bold"
-            Text="Content:" />
-        <Label
-            Grid.Row="1"
-            Grid.Column="1"
-            Text="{Binding Entry.Content}" />
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Content:" />
+            <Label Text="{Binding Entry.Content}" />
 
-        <Label
-            Grid.Row="2"
-            Grid.Column="0"
-            FontAttributes="Bold"
-            Text="Created At:" />
-        <Label
-            Grid.Row="2"
-            Grid.Column="1"
-            Text="{Binding Entry.CreatedAt}" />
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Created:" />
+            <Label Text="{Binding Entry.CreatedAt}" />
 
-        <Label
-            Grid.Row="3"
-            Grid.Column="0"
-            FontAttributes="Bold"
-            Text="Edited At:" />
-        <Label
-            Grid.Row="3"
-            Grid.Column="1"
-            Text="{Binding Entry.EditedAt}" />
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Edited:" />
+            <Label Text="{Binding Entry.EditedAt}" />
 
-        <Label
-            Grid.Row="4"
-            Grid.Column="0"
-            FontAttributes="Bold"
-            Text="IsFavorite:" />
-        <Label
-            Grid.Row="4"
-            Grid.Column="1"
-            Text="{Binding Entry.IsFavorite}" />
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Media:" />
+            <CollectionView
+                ItemTemplate="{StaticResource MediaDataTemplateSelector}"
+                ItemsLayout="VerticalGrid, 2"
+                ItemsSource="{Binding Entry.Media}"
+                SelectionMode="None" />
 
-        <Label
-            Grid.Row="5"
-            Grid.Column="0"
-            FontAttributes="Bold"
-            Text="Mood:" />
-        <Label
-            Grid.Row="5"
-            Grid.Column="1"
-            Text="{Binding Entry.Mood}" />
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Mood:" />
+            <Label
+                Padding="15,0,0,0"
+                FontFamily="{x:Static fonts:Fonts.FontAwesome}"
+                FontSize="Large"
+                Text="{Binding Entry.Mood, Converter={StaticResource IntToMoodIconConverter}}"
+                TextColor="{Binding Entry.Mood, Converter={StaticResource IntToMoodColorConverter}}" />
 
-        <Label
-            Grid.Row="6"
-            Grid.Column="0"
-            FontAttributes="Bold"
-            Text="Location:" />
-        <Label
-            Grid.Row="6"
-            Grid.Column="1"
-            Text="{Binding LocationText}" />
-        <Button
-            Grid.Row="6"
-            Grid.Column="1"
-            Command="{Binding DisplayMapPopupCommand}"
-            IsVisible="{Binding IsLocationSet}"
-            Text="Show Map" />
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Location:" />
+            <StackLayout Orientation="Horizontal">
+                <Label Padding="0,15,0,0" Text="{Binding LocationText}" />
+                <Button
+                    Margin="15,0,0,0"
+                    Command="{Binding DisplayMapPopupCommand}"
+                    IsVisible="{Binding IsLocationSet}"
+                    Text="Show Map" />
+            </StackLayout>
 
-        <Label
-            Grid.Row="7"
-            Grid.Column="0"
-            FontAttributes="Bold"
-            Text="Labels:" />
-        <CollectionView
-            Grid.Row="7"
-            Grid.Column="1"
-            ItemsSource="{Binding Entry.Labels}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="labelmodels:LabelListModel">
-                    <StackLayout Orientation="Horizontal" Spacing="10">
-                        <BoxView
-                            BackgroundColor="{Binding Color}"
-                            HeightRequest="20"
-                            WidthRequest="20" />
-                        <Label Text="{Binding Name}" />
-                    </StackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            <Label
+                Padding="0,15,0,0"
+                FontAttributes="Bold"
+                Text="Labels:" />
+            <CollectionView ItemsSource="{Binding Entry.Labels}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="labelmodels:LabelListModel">
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <BoxView
+                                BackgroundColor="{Binding Color}"
+                                HeightRequest="20"
+                                WidthRequest="20" />
+                            <Label Text="{Binding Name}" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-        <Button
-            Grid.Row="8"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Command="{Binding GoToEditCommand}"
-            Text="Edit" />
-    </Grid>
+            <Button
+                Margin="0,15,0,0"
+                Command="{Binding GoToEditCommand}"
+                Text="Edit" />
+        </VerticalStackLayout>
+    </ScrollView>
 </views:ContentPageBase>

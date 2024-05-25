@@ -1,12 +1,16 @@
 ﻿using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
+using Diary.Enums;
+using Diary.Helpers;
 using Diary.Models.Entry;
 using Diary.Models.Label;
+using Diary.Models.Media;
 using Diary.Models.Template;
+using Diary.Services;
 using Diary.ViewModels.Map;
+using Diary.ViewModels.Media;
 using System.Collections.ObjectModel;
 
 namespace Diary.ViewModels.Entry;
@@ -16,29 +20,35 @@ public partial class EntryCreateViewModel : ViewModelBase
     private readonly IEntryClient _entryClient;
     private readonly ILabelClient _labelClient;
     private readonly ITemplateClient _templateClient;
+    private readonly IMediaClient _mediaClient;
     private readonly IPopupService _popupService;
+    private readonly IMediaPicker _mediaPicker;
 
-    [ObservableProperty]
-    private TemplateDetailModel? _selectedTemplate;
-
+    public TemplateDetailModel? SelectedTemplate { get; set; }
     public EntryDetailModel? Entry { get; set; }
-
     public ObservableCollection<LabelListModel> Labels { get; set; }
-
     public ObservableCollection<object> SelectedLabels { get; set; }
-
     public ObservableCollection<TemplateDetailModel> Templates { get; set; }
 
     public bool IsLocationSet { get; set; } = false;
     public string LocationText { get; set; } = string.Empty;
     public Color LocationTextColor { get; set; } = Color.FromArgb("#FF000000");
 
-    public EntryCreateViewModel(IEntryClient entryClient, ILabelClient labelClient, ITemplateClient templateClient, IPopupService popupService)
+    public EntryCreateViewModel(
+        IEntryClient entryClient,
+        ILabelClient labelClient,
+        ITemplateClient templateClient,
+        IMediaClient mediaClient,
+        IPopupService popupService,
+        IMediaPicker mediaPicker
+        )
     {
         _entryClient = entryClient;
         _labelClient = labelClient;
         _templateClient = templateClient;
+        _mediaClient = mediaClient;
         _popupService = popupService;
+        _mediaPicker = mediaPicker;
 
         Labels = new ObservableCollection<LabelListModel>();
         SelectedLabels = new ObservableCollection<object>();
@@ -47,6 +57,8 @@ public partial class EntryCreateViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
+
         Entry = new EntryDetailModel()
         {
             Id = Guid.Empty
@@ -66,6 +78,7 @@ public partial class EntryCreateViewModel : ViewModelBase
     {
         if (Entry != null)
         {
+            using var _ = new BusyIndicator(this);
             Entry.Labels = new ObservableCollection<LabelListModel>(SelectedLabels.Select(l => (LabelListModel)l));
             await _entryClient.SetAsync(Entry);
         }
@@ -73,7 +86,41 @@ public partial class EntryCreateViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private Task ClearLocationAsync()
+    private async Task DisplayMediaPopupAsync(Guid id)
+    {
+        await _popupService.ShowPopupAsync<MediaPopupViewModel>(onPresenting: async viewModel => await viewModel.InitializeAsync(id));
+    }
+
+    [RelayCommand]
+    private async Task AddImageAsync()
+    {
+        var fileResult = await _mediaPicker.PickPhotoAsync();
+        await LoadMediaAsync(fileResult, MediaType.Image);
+    }
+
+    [RelayCommand]
+    private async Task AddVideoAsync()
+    {
+        var fileResult = await _mediaPicker.PickVideoAsync();
+        await LoadMediaAsync(fileResult, MediaType.Video);
+    }
+
+    [RelayCommand]
+    private void RemoveMedia(string fileName)
+    {
+        if (Entry != null)
+        {
+            var media = Entry.Media.FirstOrDefault(m => m.FileName == fileName);
+            if (media != null)
+            {
+                _mediaClient.DeleteIfUnusedAsync(media);
+                Entry.Media.Remove(media);
+            }
+        }
+    }
+
+    [RelayCommand]
+    private void ClearLocation()
     {
         if (Entry != null)
         {
@@ -81,14 +128,13 @@ public partial class EntryCreateViewModel : ViewModelBase
             Entry.Longitude = null;
         }
         UpdateFormLocationInfo();
-        return Task.CompletedTask;
     }
 
     [RelayCommand]
     private async Task DisplayMapPopupAsync()
     {
         Location? userLocation = null;
-        if (await Helpers.LocationHelper.HasLocationPermission())
+        if (await Helpers.LocationHelper.HasLocationPermissionAsync())
         {
             userLocation = await Helpers.LocationHelper.GetAnyLocationAsync();
         }
@@ -187,5 +233,25 @@ public partial class EntryCreateViewModel : ViewModelBase
         LocationText = IsLocationSet ? "Set" : "None";
         // TODO: Use a converter or predefined colors
         LocationTextColor = IsLocationSet ? Color.FromArgb("#FF1B9100") : Color.FromArgb("#FF000000");
+    }
+
+    private async Task LoadMediaAsync(FileResult? fileResult, MediaType mediaType)
+    {
+        if (Entry != null && fileResult != null)
+        {
+            using var _ = new BusyIndicator(this);
+            var fileName = await MediaFileService.SaveAsync(fileResult);
+            if (!Entry.Media.Select(i => i.FileName).Contains(fileName))
+            {
+                var media = new MediaModel()
+                {
+                    FileName = fileName,
+                    OriginalFileName = fileResult.FileName,
+                    MediaType = mediaType
+                };
+                media = await _mediaClient.SetIfNewAsync(media);
+                Entry.Media.Add(media);
+            }
+        }
     }
 }

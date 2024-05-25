@@ -7,5 +7,5 @@ public interface IEntryRepository : IRepository<EntryEntity>
 
     Task<ICollection<EntryEntity>> GetByDayFromPreviousYearsAsync(DateTime date);
 
-    Task<ICollection<EntryEntity>> GetByTimeMachineNotificationIdAsync(int timeMachineNotificationId);
+    Task<ICollection<EntryEntity>> GetByNotificationIdAsync(int notificationId);
 }

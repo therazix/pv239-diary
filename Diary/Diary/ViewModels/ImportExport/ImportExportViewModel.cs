@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.Input;
+using Diary.Helpers;
 using Diary.Services.Interfaces;
-using System.Text;
 
 namespace Diary.ViewModels.ImportExport;
 
@@ -11,14 +11,14 @@ public partial class ImportExportViewModel : ViewModelBase
     private readonly IFilePicker _filePicker;
     private readonly IFileSaver _fileSaver;
     private readonly IImportExportService _importExportService;
-    private readonly FilePickerFileType _jsonFileType = new(
+    private readonly FilePickerFileType _zipFileType = new(
                 new Dictionary<DevicePlatform, IEnumerable<string>>
-                {
-                    { DevicePlatform.Android, new[] { "application/json" } } ,
-                    { DevicePlatform.iOS, new[] { "public.json" } },
-                    { DevicePlatform.MacCatalyst, new[] { "public.json" } },
-                    { DevicePlatform.macOS, new[] { "json" } },
-                    { DevicePlatform.WinUI, new[] { ".json" } }
+                       {
+                    { DevicePlatform.Android, new[] { "application/zip" } } ,
+                    { DevicePlatform.iOS, new[] { "public.zip-archive" } },
+                    { DevicePlatform.MacCatalyst, new[] { "public.zip-archive" } },
+                    { DevicePlatform.macOS, new[] { "zip" } },
+                    { DevicePlatform.WinUI, new[] { ".zip" } }
                 });
 
     public ImportExportViewModel(IFilePicker filePicker, IFileSaver fileSaver, IImportExportService importExportService)
@@ -31,10 +31,13 @@ public partial class ImportExportViewModel : ViewModelBase
     [RelayCommand]
     private async Task ExportAsync()
     {
-        var export = await _importExportService.ExportAsync();
-        using var stream = new MemoryStream(Encoding.Default.GetBytes(export));
+        MemoryStream stream;
+        using (new BusyIndicator(this))
+        {
+            stream = await _importExportService.ExportAsync();
+        }
 
-        var fileSaverResult = await _fileSaver.SaveAsync(Constants.AppFolder, Constants.DefaultImportExportFileName, stream);
+        var fileSaverResult = await _fileSaver.SaveAsync(Constants.DefaultExportFileName, stream);
 
         var toast = Toast.Make(fileSaverResult.IsSuccessful ? "Successfully exported" : fileSaverResult.Exception.Message);
         await toast.Show();
@@ -46,7 +49,7 @@ public partial class ImportExportViewModel : ViewModelBase
         var options = new PickOptions()
         {
             PickerTitle = "Please select a file to import",
-            FileTypes = _jsonFileType,
+            FileTypes = _zipFileType,
         };
 
         string? toastMessage = null;
@@ -55,15 +58,12 @@ public partial class ImportExportViewModel : ViewModelBase
             var result = await _filePicker.PickAsync(options);
             if (result != null)
             {
-                if (result.FileName.EndsWith("json", StringComparison.OrdinalIgnoreCase))
+                if (result.FileName.EndsWith("zip", StringComparison.OrdinalIgnoreCase))
                 {
-                    using var stream = await result.OpenReadAsync();
-
-                    using var reader = new StreamReader(stream);
-                    var content = await reader.ReadToEndAsync();
-
-                    await _importExportService.ImportAsync(content);
-
+                    using (new BusyIndicator(this))
+                    {
+                        await _importExportService.ImportAsync(result.FullPath);
+                    }
                     toastMessage = "Successfully imported";
                 }
             }

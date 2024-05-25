@@ -5,6 +5,7 @@ using Riok.Mapperly.Abstractions;
 namespace Diary.Mappers;
 
 [Mapper]
+[UseStaticMapper(typeof(LabelMapper))]
 public static partial class TemplateMapper
 {
     public static partial TemplateDetailModel MapToDetailModel(this TemplateEntity entity);

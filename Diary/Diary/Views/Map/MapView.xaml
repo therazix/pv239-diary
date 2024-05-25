@@ -39,7 +39,7 @@
                     Address="{Binding Description}"
                     Label="{Binding Title}"
                     Location="{Binding Location}"
-                    MarkerClicked="OnPinClickedAsync"
+                    MarkerClicked="OnPinClicked"
                     Type="Place" />
             </DataTemplate>
         </maps:Map.ItemTemplate>

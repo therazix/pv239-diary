@@ -21,7 +21,7 @@ public partial class MapViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
-        IsLocationEnabled = await Helpers.LocationHelper.HasLocationPermission();
+        IsLocationEnabled = await Helpers.LocationHelper.HasLocationPermissionAsync();
         if (IsLocationEnabled)
         {
             CurrentLocation = await Helpers.LocationHelper.GetAnyLocationAsync();

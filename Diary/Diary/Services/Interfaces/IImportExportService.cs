@@ -2,6 +2,6 @@
 
 public interface IImportExportService
 {
-    Task<string> ExportAsync();
-    Task ImportAsync(string content);
+    Task<MemoryStream> ExportAsync();
+    Task ImportAsync(string filePath);
 }

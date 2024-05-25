@@ -10,7 +10,7 @@ public partial class MapPopupViewModel : ViewModelBase
     public ObservableCollection<PinModel> Pins { get; set; } = new ObservableCollection<PinModel>();
 
     public delegate void OnInitializeAction(Location? pinLocation, Location? userLocation);
-    public event OnInitializeAction OnInitialize;
+    public event OnInitializeAction? OnInitialize;
 
     public MapPopupViewModel()
     {

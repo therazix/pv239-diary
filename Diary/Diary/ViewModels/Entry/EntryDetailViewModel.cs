@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
+using Diary.Helpers;
 using Diary.Models.Entry;
 using Diary.ViewModels.Map;
+using Diary.ViewModels.Media;
 using PropertyChanged;
 
 namespace Diary.ViewModels.Entry;
@@ -17,7 +19,6 @@ public partial class EntryDetailViewModel : ViewModelBase
     public Guid Id { get; set; }
 
     public EntryDetailModel? Entry { get; set; }
-
     public bool IsLocationSet { get; set; } = false;
     public string LocationText { get; set; } = string.Empty;
 
@@ -29,6 +30,7 @@ public partial class EntryDetailViewModel : ViewModelBase
 
     public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
         Entry = await _entryClient.GetByIdAsync(Id);
         UpdateFormLocationInfo();
     }
@@ -43,10 +45,17 @@ public partial class EntryDetailViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private async Task DisplayMediaPopupAsync(Guid id)
+    {
+        await _popupService.ShowPopupAsync<MediaPopupViewModel>(onPresenting: async viewModel => await viewModel.InitializeAsync(id));
+    }
+
+
+    [RelayCommand]
     private async Task DisplayMapPopupAsync()
     {
         Location? userLocation = null;
-        if (await Helpers.LocationHelper.HasLocationPermission())
+        if (await Helpers.LocationHelper.HasLocationPermissionAsync())
         {
             userLocation = await Helpers.LocationHelper.GetAnyLocationAsync();
         }

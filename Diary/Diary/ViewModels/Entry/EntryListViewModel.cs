@@ -1,19 +1,20 @@
-﻿using CommunityToolkit.Maui.Core;
+﻿using CommunityToolkit.Maui.Core.Extensions;
+using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Enums;
-using Diary.Mappers;
+using Diary.Helpers;
 using Diary.Models.Entry;
 using Diary.Models.Label;
-using Diary.ViewModels.Interfaces;
 using Newtonsoft.Json;
 using Plugin.Maui.Calendar.Models;
+using System.Collections.ObjectModel;
+using Diary.Mappers;
 
 namespace Diary.ViewModels.Entry;
 
-[INotifyPropertyChanged]
-public partial class EntryListViewModel : IViewModel
+public partial class EntryListViewModel : ViewModelBase
 {
     private readonly IEntryClient _entryClient;
     private readonly ILabelClient _labelClient;
@@ -23,17 +24,11 @@ public partial class EntryListViewModel : IViewModel
     private EntryFilter _entryFilter { get; set; } = new();
 
     [ObservableProperty]
-    private EventCollection _events = [];
-
-    [ObservableProperty]
-    private ICollection<EntryListModel>? _items;
-
-    [ObservableProperty]
-    private ICollection<EntryListModel>? _selectedDayEntries = [];
-
-    [ObservableProperty]
     private bool _filterSet;
 
+    public EventCollection Events { get; set; } = [];
+    public ObservableCollection<EntryListModel>? Items { get; set; }
+    public ObservableCollection<EntryListModel>? SelectedDayEntries { get; set; } = [];
     public string? SelectedDate { get; set; } = null;
 
     public EntryListViewModel(IEntryClient entryClient, ILabelClient labelClient, IPopupService popupService)
@@ -43,13 +38,15 @@ public partial class EntryListViewModel : IViewModel
         _popupService = popupService;
     }
 
-    public async Task OnAppearingAsync()
+    public override async Task OnAppearingAsync()
     {
+        using var _ = new BusyIndicator(this);
+
         _labels = await _labelClient.GetAllAsync();
         _entryFilter = LoadEntryFilter();
-        FilterSet = IsFilterSet(); 
 
-        Items = await _entryClient.GetAllAsync(_entryFilter);
+        FilterSet = IsFilterSet();
+        Items = (await _entryClient.GetAllAsync(_entryFilter)).ToObservableCollection();
 
         Events = ConstructEventCollection(Items);
 
@@ -82,7 +79,8 @@ public partial class EntryListViewModel : IViewModel
 
             if (dayHasEvents)
             {
-                SelectedDayEntries = (ICollection<EntryListModel>)dayEvents;
+                var selectedDayEntries = (ICollection<EntryListModel>)dayEvents;
+                SelectedDayEntries = selectedDayEntries.ToObservableCollection();
             }
             else
             {
@@ -114,7 +112,7 @@ public partial class EntryListViewModel : IViewModel
             SaveEntryFilter(entryFilter);
             FilterSet = IsFilterSet();
 
-            Items = await _entryClient.GetAllAsync(_entryFilter);
+            Items = (await _entryClient.GetAllAsync(_entryFilter)).ToObservableCollection();
             Events = ConstructEventCollection(Items);
             SelectedDayEntries = Items;
         }

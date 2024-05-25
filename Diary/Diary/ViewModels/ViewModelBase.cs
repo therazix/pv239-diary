@@ -4,10 +4,10 @@ using Diary.ViewModels.Interfaces;
 
 namespace Diary.ViewModels;
 
-
-[INotifyPropertyChanged]
-public abstract partial class ViewModelBase : IViewModel
+public abstract partial class ViewModelBase : ObservableObject, IViewModel
 {
+    public bool IsBusy { get; set; }
+
     public virtual Task OnAppearingAsync()
     {
         return Task.CompletedTask;

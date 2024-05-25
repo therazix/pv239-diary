@@ -6,6 +6,7 @@ using Diary.Models.Label;
 using Diary.Models.Mood;
 using Diary.Models.Pin;
 using Diary.Repositories.Interfaces;
+using Diary.Services;
 using Plugin.LocalNotification;
 using Plugin.LocalNotification.AndroidOption;
 using static Diary.Enums.EntryFilterEnums;
@@ -13,21 +14,18 @@ using static Diary.Enums.EntryFilterEnums;
 namespace Diary.Clients;
 public class EntryClient : IEntryClient
 {
-    private readonly IEntryRepository _repository;
+    private readonly IEntryRepository _entryRepository;
+    private readonly IMediaRepository _mediaRepository;
 
-    public EntryClient(IEntryRepository repository)
+    public EntryClient(IEntryRepository entryRepository, IMediaRepository mediaRepository)
     {
-        _repository = repository;
+        _entryRepository = entryRepository;
+        _mediaRepository = mediaRepository;
     }
 
     public async Task<ICollection<EntryListModel>> GetAllAsync(EntryFilter? entryFilter = null)
     {
-        var entities = await _repository.GetAllAsync();
-
-        foreach (var entity in entities)
-        {
-            entity.Title = !string.IsNullOrEmpty(entity.Title) ? entity.Title : "No title";
-        }
+        var entities = await _entryRepository.GetAllAsync();
 
         if (entryFilter?.LabelsToShow?.Count > 0)
         {
@@ -70,15 +68,9 @@ public class EntryClient : IEntryClient
         return entities.MapToListModels();
     }
 
-    public async Task<ICollection<EntryListModel>> GetByDayFromPreviousYears(DateTime date) 
+    public async Task<ICollection<EntryListModel>> GetByDayFromPreviousYearsAsync(DateTime date)
     {
-        var entities = await _repository.GetByDayFromPreviousYearsAsync(date);
-
-        foreach (var entity in entities)
-        {
-            entity.Title = !string.IsNullOrEmpty(entity.Title) ? entity.Title : "No title";
-        }
-
+        var entities = await _entryRepository.GetByDayFromPreviousYearsAsync(date);
         entities = entities.OrderByDescending(e => e.CreatedAt).ToList();
 
         return entities.MapToListModels();
@@ -86,62 +78,75 @@ public class EntryClient : IEntryClient
 
     public async Task<EntryDetailModel?> GetByIdAsync(Guid id)
     {
-        var entity = await _repository.GetByIdAsync(id);
+        var entity = await _entryRepository.GetByIdAsync(id);
         return entity?.MapToDetailModel();
     }
 
+    /// <summary>
+    /// Sets the entry in the database. If the entry already exists, it will be updated.
+    /// If the entry is linked to any media, the links will be updated.
+    /// Media files are also updated to reflect the changes.
+    /// </summary>
     public async Task<EntryDetailModel> SetAsync(EntryDetailModel model)
     {
         var entity = model.MapToEntity();
-        var savedEntity = await _repository.SetAsync(entity);
+        var savedEntity = await _entryRepository.SetAsync(entity);
+        await _mediaRepository.DeleteIfUnusedAsync(entity.Media);
+        await MediaFileService.DeleteUnusedFilesAsync(_mediaRepository);
 
 #if ANDROID
-        await ScheduleTimeMachineNotification(savedEntity);
+        await ScheduleTimeMachineNotificationAsync(savedEntity);
 #endif
         return savedEntity.MapToDetailModel();
     }
 
+    /// <summary>
+    /// Deletes the entry from database. If the entry is linked to any media, the links will be removed.
+    /// Media files are also updated to reflect the changes.
+    /// </summary>
     public async Task DeleteAsync(EntryDetailModel model)
     {
         var entity = model.MapToEntity();
 
-        await _repository.DeleteAsync(entity);
+        await _entryRepository.DeleteAsync(entity);
+        await _mediaRepository.DeleteIfUnusedAsync(entity.Media);
+        await MediaFileService.DeleteUnusedFilesAsync(_mediaRepository);
 
-        var entriesWithTheSameTimeMachineNotificationId = await _repository.GetByTimeMachineNotificationIdAsync(entity.TimeMachineNotificationId);
+        var entriesWithTheSameNotificationId = await _entryRepository.GetByNotificationIdAsync(entity.NotificationId);
 
-        if (entriesWithTheSameTimeMachineNotificationId.Count == 0)
+        if (entriesWithTheSameNotificationId.Count == 0)
         {
-            LocalNotificationCenter.Current.Cancel(entity.TimeMachineNotificationId);
+            LocalNotificationCenter.Current.Cancel(entity.NotificationId);
         }
     }
 
-    public async Task<ICollection<MoodListModel>> GetMoodFromAllEntries()
+    public async Task<ICollection<MoodListModel>> GetMoodFromAllEntriesAsync()
     {
-        var entities = await _repository.GetAllAsync();
+        var entities = await _entryRepository.GetAllAsync();
         return entities.MapToMoodListModels();
     }
 
-    public async Task<ICollection<MoodListModel>> GetMoodFromEntriesByDateRange(DateTime dateFrom, DateTime dateTo)
+    public async Task<ICollection<MoodListModel>> GetMoodFromEntriesByDateRangeAsync(DateTime dateFrom, DateTime dateTo)
     {
-        var entities = await _repository.GetEntriesByDateRangeAsync(dateFrom, dateTo);
+        var entities = await _entryRepository.GetEntriesByDateRangeAsync(dateFrom, dateTo);
         return entities.MapToMoodListModels();
     }
 
     public async Task<ICollection<PinModel>> GetAllLocationPinsAsync()
     {
-        var entities = await _repository.GetAllAsync();
+        var entities = await _entryRepository.GetAllAsync();
         var entitiesWithLocation = entities.Where(e => e.Latitude != null && e.Longitude != null).ToList();
         return entitiesWithLocation.MapToPinModels();
     }
 
-    private async Task ScheduleTimeMachineNotification(EntryEntity entity)
+    private async Task ScheduleTimeMachineNotificationAsync(EntryEntity entity)
     {
         if (await LocalNotificationCenter.Current.AreNotificationsEnabled() == false)
         {
             await LocalNotificationCenter.Current.RequestNotificationPermission();
         }
 
-        var entriesWithTheSameTimeMachineNotificationId = await _repository.GetByTimeMachineNotificationIdAsync(entity.TimeMachineNotificationId);
+        var entriesWithTheSameNotificationId = await _entryRepository.GetByNotificationIdAsync(entity.NotificationId);
 
         TimeSpan repeatInterval;
         DateTime notificationDate = entity.CreatedAt.AddYears(1);
@@ -158,9 +163,9 @@ public class EntryClient : IEntryClient
 
         var request = new NotificationRequest
         {
-            NotificationId = entity.TimeMachineNotificationId,
+            NotificationId = entity.NotificationId,
             Title = "Diary Time Machine",
-            Description = $"You have already written {entriesWithTheSameTimeMachineNotificationId.Count} entries on this day in the past.",
+            Description = $"You have already written {entriesWithTheSameNotificationId.Count} entries on this day in the past.",
 
             Schedule = new NotificationRequestSchedule
             {
@@ -172,7 +177,7 @@ public class EntryClient : IEntryClient
         };
 
         // Remove scheduled notification with out-of-date number of diary entries written on the same day
-        LocalNotificationCenter.Current.Cancel([entity.TimeMachineNotificationId]);
+        LocalNotificationCenter.Current.Cancel([entity.NotificationId]);
 
         await LocalNotificationCenter.Current.Show(request);
     }

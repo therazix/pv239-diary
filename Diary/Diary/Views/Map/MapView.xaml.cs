@@ -18,7 +18,7 @@ public partial class MapView
         }
     }
 
-    private async void OnPinClickedAsync(object sender, PinClickedEventArgs e)
+    private async void OnPinClicked(object sender, PinClickedEventArgs e)
     {
         e.HideInfoWindow = true;
         var pinModel = (PinModel)((Pin)sender).BindingContext; // Get original pin model

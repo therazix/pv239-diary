@@ -8,9 +8,10 @@
     xmlns:texts="clr-namespace:Diary.Resources.Texts"
     xmlns:views="clr-namespace:Diary.Views"
     xmlns:vm="clr-namespace:Diary.ViewModels.ImportExport"
-    x:Name="Root"
     Title="Import &amp; Export"
-    x:DataType="vm:ImportExportViewModel">
+    x:DataType="vm:ImportExportViewModel"
+    ControlTemplate="{StaticResource ContentTemplate}"
+    IsBusy="{Binding IsBusy}">
 
     <Grid Padding="20" RowSpacing="10">
         <Grid.RowDefinitions>
