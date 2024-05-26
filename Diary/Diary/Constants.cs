@@ -10,7 +10,7 @@ public static class Constants
 
     public static string TempPath => Path.Combine(Path.GetTempPath(), "Diary");
 
-    public const string FirstRunKey = "FirstRun";
+    public const string EntryFilterPreferencesKey = "EntryFilter";
 
     public const string DefaultExportFileName = "DiaryExport.zip";
 

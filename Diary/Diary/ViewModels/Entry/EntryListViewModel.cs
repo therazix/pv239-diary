@@ -1,16 +1,16 @@
-﻿using CommunityToolkit.Maui.Core.Extensions;
-using CommunityToolkit.Maui.Core;
+﻿using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
 using Diary.Enums;
 using Diary.Helpers;
+using Diary.Mappers;
 using Diary.Models.Entry;
 using Diary.Models.Label;
 using Newtonsoft.Json;
 using Plugin.Maui.Calendar.Models;
 using System.Collections.ObjectModel;
-using Diary.Mappers;
 
 namespace Diary.ViewModels.Entry;
 
@@ -122,12 +122,12 @@ public partial class EntryListViewModel : ViewModelBase
     {
         var filterJson = JsonConvert.SerializeObject(filter.MapToEntryFilterFromPreferences());
 
-        Preferences.Set("EntryFilter", filterJson);
+        Preferences.Set(Constants.EntryFilterPreferencesKey, filterJson);
     }
 
     private EntryFilter LoadEntryFilter()
     {
-        var filterJson = Preferences.Get("EntryFilter", string.Empty);
+        var filterJson = Preferences.Get(Constants.EntryFilterPreferencesKey, string.Empty);
 
         EntryFilter defaultEntryFilter = new()
         {
