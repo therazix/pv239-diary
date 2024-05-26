@@ -9,7 +9,7 @@ public static class Constants
     public static readonly TimeSpan CancellationTokenDelay = TimeSpan.FromSeconds(5);
     public static readonly Color DefaultLabelColor = Color.FromArgb("#FF000000");
 
-    public const string FirstRunKey = "FirstRun";
+    public const string EntryFilterPreferencesKey = "EntryFilter";
     public const string DefaultExportFileName = "DiaryExport.zip";
     public const string MapDateTimeFormat = "dd/MM/y H:mm";
     public const string BingMapsApiKey = "AslgOYkoOW5Q3lhZ0c3az5GzKnFtvrWQjayd4ihqT5nNOYr6WUzoXLX6o4yHAwE9";
