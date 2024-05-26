@@ -1,5 +1,4 @@
-﻿using Diary.Clients.Interfaces;
-using Diary.Helpers;
+﻿using Diary.Helpers;
 using Diary.Services.Interfaces;
 using Plugin.LocalNotification;
 using Plugin.LocalNotification.EventArgs;
@@ -40,5 +39,7 @@ public partial class App : Application
 
         var globalExceptionServiceInitializer = _serviceProvider.GetRequiredService<IGlobalExceptionServiceInitializer>();
         globalExceptionServiceInitializer.Initialize();
+
+        Preferences.Remove(Constants.EntryFilterPreferencesKey); // Make sure to remove the filter when the app starts
     }
 }
