@@ -23,7 +23,7 @@ public class EntryClient : IEntryClient
         _mediaRepository = mediaRepository;
     }
 
-    public async Task<ICollection<EntryListModel>> GetAllAsync(EntryFilter? entryFilter = null)
+    public async Task<ICollection<EntryListModel>> GetAllAsync(EntryFilterModel? entryFilter = null)
     {
         var entities = await _entryRepository.GetAllAsync();
 

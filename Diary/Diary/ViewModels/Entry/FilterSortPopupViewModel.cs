@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Maui.Core.Extensions;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Models.Entry;
 using Diary.Models.Label;
@@ -10,19 +9,19 @@ using static Diary.Enums.EntryFilterEnums;
 namespace Diary.ViewModels.Entry;
 public partial class FilterSortPopupViewModel : ViewModelBase
 {
-    [ObservableProperty]
-    private EntryFilter _entryFilter = new();
+    public EntryFilterModel EntryFilter { get; set; } = new();
 
-    public EntryFilter EntryFilterOriginalState { get; set; } = new();
+    public ObservableCollection<object> LabelsToShow { get; set; } = new();
+    public ObservableCollection<object> MoodsToShow { get; set; } = new();
 
-    public delegate void OnFilterApplyFilterAction(EntryFilter entryFilter);
+    public delegate void OnFilterApplyFilterAction(EntryFilterModel entryFilter);
     public event OnFilterApplyFilterAction OnFilterApplyFilter;
 
     public bool FilterByDate { get; set; }
 
-    public ICollection<LabelListModel> Labels { get; set; }
+    public ObservableCollection<LabelListModel> Labels { get; set; } = new();
 
-    public ICollection<MoodSelectionModel> Moods { get; set; } =
+    public ObservableCollection<MoodSelectionModel> Moods { get; set; } =
     [
         new() { Mood = 1 },
         new() { Mood = 2 },
@@ -38,30 +37,33 @@ public partial class FilterSortPopupViewModel : ViewModelBase
     {
     }
 
-    public void Initialize(EntryFilter entryFilter, ICollection<LabelListModel> labels)
+    public void Initialize(EntryFilterModel entryFilter, ICollection<LabelListModel> labels)
     {
-        List<LabelListModel>? selectedLabels = entryFilter.LabelsToShow?.Cast<LabelListModel>().ToList();
-        List<LabelListModel>? selectedLabelsFromDb = new();
+        List<LabelListModel> selectedLabels = entryFilter.LabelsToShow?.ToList() ?? new();
+        LabelsToShow = new ObservableCollection<object>(labels.Where(l => selectedLabels.Select(sl => sl.Id).Contains(l.Id)));
 
-        foreach (var label in selectedLabels ?? [])
+        if (entryFilter.MoodsToShow != null)
         {
-            var labelFromDb = labels.FirstOrDefault(l => l.Id == label.Id);
-
-            if (labelFromDb != null)
-            {
-                selectedLabelsFromDb.Add(labelFromDb);
-            }
+            MoodsToShow = entryFilter.MoodsToShow.Cast<object>().ToObservableCollection();
         }
 
-        entryFilter.LabelsToShow = selectedLabelsFromDb.Cast<object>().ToObservableCollection();
-
         EntryFilter = entryFilter;
-        EntryFilterOriginalState = entryFilter;
         FilterByDate = EntryFilter.DateFrom != null && EntryFilter.DateTo != null;
-        Labels = labels;
+        Labels = labels.ToObservableCollection();
     }
 
-    public EntryFilter GetEntryFilter()
+    public void SaveSelectedProperties()
+    {
+        EntryFilter.LabelsToShow = LabelsToShow.Any()
+            ? new ObservableCollection<LabelListModel>(LabelsToShow.Select(l => (LabelListModel)l))
+            : null;
+
+        EntryFilter.MoodsToShow = MoodsToShow.Any()
+            ? new ObservableCollection<MoodSelectionModel>(MoodsToShow.Select(m => (MoodSelectionModel)m))
+            : null;
+    }
+
+    public EntryFilterModel GetEntryFilter()
     {
         if (!FilterByDate)
         {

@@ -102,7 +102,7 @@
             <CollectionView
                 Margin="0,5,0,0"
                 ItemsSource="{Binding Moods}"
-                SelectedItems="{Binding EntryFilter.MoodsToShow}"
+                SelectedItems="{Binding MoodsToShow}"
                 SelectionMode="Multiple">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Horizontal" />
@@ -132,7 +132,7 @@
             <CollectionView
                 Margin="0,5,0,0"
                 ItemsSource="{Binding Labels}"
-                SelectedItems="{Binding EntryFilter.LabelsToShow}"
+                SelectedItems="{Binding LabelsToShow}"
                 SelectionMode="Multiple">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="labelmodels:LabelListModel">
