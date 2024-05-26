@@ -1,11 +1,8 @@
 ﻿using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Diary.Clients.Interfaces;
-using Diary.Enums;
 using Diary.Helpers;
-using Diary.Mappers;
 using Diary.Models.Entry;
 using Diary.Models.Label;
 using Newtonsoft.Json;
@@ -21,11 +18,9 @@ public partial class EntryListViewModel : ViewModelBase
     private readonly IPopupService _popupService;
 
     private ICollection<LabelListModel> _labels;
-    private EntryFilter _entryFilter { get; set; } = new();
+    private EntryFilterModel _entryFilter { get; set; } = new();
 
-    [ObservableProperty]
-    private bool _filterSet;
-
+    public bool FilterSet { get; set; }
     public EventCollection Events { get; set; } = [];
     public ObservableCollection<EntryListModel>? Items { get; set; }
     public ObservableCollection<EntryListModel>? SelectedDayEntries { get; set; } = [];
@@ -106,7 +101,7 @@ public partial class EntryListViewModel : ViewModelBase
     {
         var result = await _popupService.ShowPopupAsync<FilterSortPopupViewModel>(onPresenting: viewModel => viewModel.Initialize(_entryFilter, _labels));
 
-        if (result is EntryFilter entryFilter)
+        if (result is EntryFilterModel entryFilter)
         {
             _entryFilter = entryFilter;
             SaveEntryFilter(entryFilter);
@@ -118,33 +113,25 @@ public partial class EntryListViewModel : ViewModelBase
         }
     }
 
-    private void SaveEntryFilter(EntryFilter filter)
+    private void SaveEntryFilter(EntryFilterModel filter)
     {
-        var filterJson = JsonConvert.SerializeObject(filter.MapToEntryFilterFromPreferences());
+        var filterJson = JsonConvert.SerializeObject(filter);
 
         Preferences.Set(Constants.EntryFilterPreferencesKey, filterJson);
     }
 
-    private EntryFilter LoadEntryFilter()
+    private EntryFilterModel LoadEntryFilter()
     {
         var filterJson = Preferences.Get(Constants.EntryFilterPreferencesKey, string.Empty);
 
-        EntryFilter defaultEntryFilter = new()
-        {
-            OrderByProperty = EntryFilterEnums.OrderByProperty.CreatedAt,
-            OrderByDirection = EntryFilterEnums.OrderByDirection.Descending,
-        };
-
         if (!string.IsNullOrEmpty(filterJson))
         {
-            EntryFilterFromPreferences? entryFilterFromPreferences = JsonConvert.DeserializeObject<EntryFilterFromPreferences>(filterJson);
+            EntryFilterModel? entryFilter = JsonConvert.DeserializeObject<EntryFilterModel>(filterJson);
 
-            return entryFilterFromPreferences != null
-                ? entryFilterFromPreferences.MapToEntryFilter()
-                : defaultEntryFilter;
+            return entryFilter ?? new EntryFilterModel();
         }
 
-        return defaultEntryFilter;
+        return new EntryFilterModel();
     }
 
     private bool IsFilterSet()

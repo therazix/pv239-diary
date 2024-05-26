@@ -12,7 +12,7 @@ public partial class FilterSortPopupView : Popup
     {
         InitializeComponent();
         BindingContext = _viewModel = viewModel;
-        
+
         AdjustPopupSize();
     }
 
@@ -21,8 +21,11 @@ public partial class FilterSortPopupView : Popup
         var window = Application.Current?.Windows[0];
         if (window != null)
         {
-            double width = window.Width * 0.9;
-            double height = window.Height * 0.9;
+            var widthMultiplier = DeviceInfo.Current.Idiom == DeviceIdiom.Phone ? 1.0 : 0.9;
+            var heightMultiplier = DeviceInfo.Current.Idiom == DeviceIdiom.Phone ? 1.0 : 0.9;
+
+            double width = window.Width * widthMultiplier;
+            double height = window.Height * heightMultiplier;
 
             this.Size = new Size(width, height);
         }
@@ -30,6 +33,7 @@ public partial class FilterSortPopupView : Popup
 
     private async void OnApplyFilterButtonClicked(object? sender, EventArgs e)
     {
+        _viewModel.SaveSelectedProperties();
         var cts = new CancellationTokenSource(Constants.CancellationTokenDelay);
         await CloseAsync(_viewModel.EntryFilter, cts.Token);
     }
@@ -37,12 +41,12 @@ public partial class FilterSortPopupView : Popup
     private async void OnCancelButtonClicked(object? sender, EventArgs e)
     {
         var cts = new CancellationTokenSource(Constants.CancellationTokenDelay);
-        await CloseAsync(_viewModel.EntryFilterOriginalState, cts.Token);
+        await CloseAsync(null, cts.Token);
     }
 
     private async void OnFilterResetButtonClicked(object? sender, EventArgs e)
     {
         var cts = new CancellationTokenSource(Constants.CancellationTokenDelay);
-        await CloseAsync(new EntryFilter(), cts.Token);
+        await CloseAsync(new EntryFilterModel(), cts.Token);
     }
 }

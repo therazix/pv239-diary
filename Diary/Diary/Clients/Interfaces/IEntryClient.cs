@@ -5,7 +5,7 @@ using Diary.Models.Pin;
 namespace Diary.Clients.Interfaces;
 public interface IEntryClient
 {
-    Task<ICollection<EntryListModel>> GetAllAsync(EntryFilter? entryFilter = null);
+    Task<ICollection<EntryListModel>> GetAllAsync(EntryFilterModel? entryFilter = null);
 
     Task<ICollection<EntryListModel>> GetByDayFromPreviousYearsAsync(DateTime date);
 
