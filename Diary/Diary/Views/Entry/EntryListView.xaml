@@ -3,6 +3,7 @@
     x:Class="Diary.Views.Entry.EntryListView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:Diary.Controls"
     xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
     xmlns:models="clr-namespace:Diary.Models.Entry"
     xmlns:plugin="clr-namespace:Plugin.Maui.Calendar.Controls;assembly=Plugin.Maui.Calendar"
@@ -48,7 +49,13 @@
             TodayTextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
                                              Dark={StaticResource PrimaryLightText}}"
             VerticalOptions="Fill"
-            YearLabelColor="{StaticResource Primary}" />
+            YearLabelColor="{StaticResource Primary}">
+            <plugin:Calendar.FooterSectionTemplate>
+                <DataTemplate>
+                    <controls:CalendarFooter />
+                </DataTemplate>
+            </plugin:Calendar.FooterSectionTemplate>
+        </plugin:Calendar>
 
         <ScrollView Grid.Row="1">
             <StackLayout BindableLayout.ItemsSource="{Binding SelectedDayEntries}" Orientation="Vertical">
