@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView
+    x:Class="Diary.Controls.CalendarFooter"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:Diary.Converters"
+    xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
+    xmlns:plugin="clr-namespace:Plugin.Maui.Calendar.Controls;assembly=Plugin.Maui.Calendar"
+    x:DataType="plugin:Calendar">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:DateStringToCalendarFooterText x:Key="DateStringToCalendarFooterText" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Grid
+        ColumnDefinitions="Auto,*"
+        HeightRequest="40"
+        HorizontalOptions="Fill"
+        RowSpacing="6"
+        VerticalOptions="Fill">
+        <Label
+            Grid.Column="0"
+            FontAttributes="Bold"
+            FontSize="Medium"
+            Text="{Binding SelectedDateText, Converter={StaticResource DateStringToCalendarFooterText}}"
+            TextColor="{Binding SelectedDateColor}"
+            VerticalOptions="Center"
+            VerticalTextAlignment="Center" />
+
+        <Label
+            x:Name="showHideLabel"
+            Grid.Column="1"
+            Margin="0,0,15,0"
+            BackgroundColor="Transparent"
+            FontAttributes="Bold"
+            FontFamily="{Static fonts:Fonts.FontAwesome}"
+            FontSize="20"
+            HorizontalOptions="End"
+            IsVisible="{Binding FooterArrowVisible}"
+            Text="{Static fonts:FontAwesomeIcons.ArrowUp}"
+            TextColor="{Binding SelectedDateColor}"
+            VerticalOptions="Center"
+            VerticalTextAlignment="Center">
+            <Label.Triggers>
+                <DataTrigger
+                    Binding="{Binding CalendarSectionShown}"
+                    TargetType="Label"
+                    Value="False">
+                    <Setter Property="Text" Value="{Static fonts:FontAwesomeIcons.ArrowDown}" />
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding ShowHideCalendarCommand}" />
+        </Grid.GestureRecognizers>
+    </Grid>
+</ContentView>
