@@ -25,6 +25,15 @@
             <converters:IntToMoodColorConverter x:Key="IntToMoodColorConverter" />
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
+
+    <Shell.TitleView>
+        <Label
+            FontSize="Medium"
+            Text="Templates"
+            TextColor="{StaticResource PrimaryLightText}"
+            VerticalTextAlignment="Center" />
+    </Shell.TitleView>
+
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
