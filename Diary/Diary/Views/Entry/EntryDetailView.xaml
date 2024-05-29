@@ -8,9 +8,7 @@
     xmlns:fonts="clr-namespace:Diary.Resources.Fonts"
     xmlns:labelmodels="clr-namespace:Diary.Models.Label"
     xmlns:mediamodels="clr-namespace:Diary.Models.Media"
-    xmlns:models="clr-namespace:Diary.Models.Entry"
     xmlns:selectors="clr-namespace:Diary.Selectors"
-    xmlns:texts="clr-namespace:Diary.Resources.Texts"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:views="clr-namespace:Diary.Views"
     xmlns:vm="clr-namespace:Diary.ViewModels.Entry"
@@ -31,12 +29,12 @@
                 <selectors:MediaDataTemplateSelector.ImageTemplate>
                     <DataTemplate x:DataType="mediamodels:MediaModel">
                         <Frame
-                            Margin="5"
+                            Margin="10"
                             Padding="0"
                             BorderColor="Gray"
                             CornerRadius="10"
-                            HeightRequest="175"
-                            WidthRequest="175">
+                            HeightRequest="150"
+                            WidthRequest="150">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding BindingContext.DisplayMediaPopupCommand, Source={x:Reference Root}}" CommandParameter="{Binding Id}" />
                             </Frame.GestureRecognizers>
@@ -92,84 +90,110 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="15">
-            <Label FontAttributes="Bold" Text="Is favorite:" />
-            <Label Text="{Binding Entry.IsFavorite}" />
+            <Grid ColumnDefinitions="*, Auto">
+                <Label
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    Text="{Binding Entry.Title}" />
+                <Label
+                    Grid.Column="1"
+                    FontFamily="{x:Static fonts:Fonts.FontAwesome}"
+                    FontSize="Large"
+                    IsVisible="{Binding Entry.IsFavorite}"
+                    Text="{Static fonts:FontAwesomeIcons.Star}"
+                    TextColor="{StaticResource Tertiary}" />
+            </Grid>
 
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Title:" />
-            <Label Text="{Binding Entry.Title}" />
+            <HorizontalStackLayout Padding="0,5,0,0">
+                <Label FontAttributes="Bold" Text="Created at: " />
+                <Label FontAttributes="Italic" Text="{Binding Entry.CreatedAt}" />
+            </HorizontalStackLayout>
 
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Content:" />
-            <Label Text="{Binding Entry.Content}" />
+            <HorizontalStackLayout>
+                <Label FontAttributes="Bold" Text="Edited at: " />
+                <Label FontAttributes="Italic" Text="{Binding Entry.EditedAt}" />
+            </HorizontalStackLayout>
 
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Created:" />
-            <Label Text="{Binding Entry.CreatedAt}" />
+            <Border Margin="0,10,0,0" Style="{StaticResource ShadowBorder}">
+                <VerticalStackLayout>
+                    <Label FontAttributes="Bold" Text="Content:" />
+                    <Label Text="{Binding Entry.Content}" />
+                </VerticalStackLayout>
+            </Border>
 
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Edited:" />
-            <Label Text="{Binding Entry.EditedAt}" />
+            <Border
+                Margin="0,10,0,0"
+                IsVisible="{Binding HasMedia}"
+                Style="{StaticResource ShadowBorder}">
+                <CollectionView
+                    ItemTemplate="{StaticResource MediaDataTemplateSelector}"
+                    ItemsLayout="VerticalGrid, 2"
+                    ItemsSource="{Binding Entry.Media}"
+                    SelectionMode="None" />
+            </Border>
 
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Media:" />
-            <CollectionView
-                ItemTemplate="{StaticResource MediaDataTemplateSelector}"
-                ItemsLayout="VerticalGrid, 2"
-                ItemsSource="{Binding Entry.Media}"
-                SelectionMode="None" />
+            <Border Margin="0,10,0,0" Style="{StaticResource ShadowBorder}">
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto, Auto">
+                    <HorizontalStackLayout Grid.Row="0" Grid.Column="0">
+                        <Label FontAttributes="Bold" Text="Mood:" />
+                        <Label
+                            Padding="15,0,0,0"
+                            FontFamily="{x:Static fonts:Fonts.FontAwesome}"
+                            FontSize="Large"
+                            Text="{Binding Entry.Mood, Converter={StaticResource IntToMoodIconConverter}}"
+                            TextColor="{Binding Entry.Mood, Converter={StaticResource IntToMoodColorConverter}}" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        IsVisible="{Binding IsLocationSet}">
+                        <Label
+                            Margin="0,0,10,0"
+                            FontAttributes="Bold"
+                            Text="Location:" />
+                        <Grid>
+                            <Button
+                                BackgroundColor="{StaticResource Primary}"
+                                HeightRequest="25"
+                                WidthRequest="25" />
+                            <Label
+                                Grid.Column="1"
+                                FontFamily="{x:Static fonts:Fonts.FontAwesome}"
+                                FontSize="Medium"
+                                HorizontalOptions="Center"
+                                Text="{Static fonts:FontAwesomeIcons.MapPin}"
+                                TextColor="{StaticResource PrimaryLightText}"
+                                VerticalOptions="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding DisplayMapPopupCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </Grid>
+                    </HorizontalStackLayout>
 
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Mood:" />
-            <Label
-                Padding="15,0,0,0"
-                FontFamily="{x:Static fonts:Fonts.FontAwesome}"
-                FontSize="Large"
-                Text="{Binding Entry.Mood, Converter={StaticResource IntToMoodIconConverter}}"
-                TextColor="{Binding Entry.Mood, Converter={StaticResource IntToMoodColorConverter}}" />
-
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Location:" />
-            <StackLayout Orientation="Horizontal">
-                <Label Padding="0,15,0,0" Text="{Binding LocationText}" />
-                <Button
-                    Margin="15,0,0,0"
-                    Command="{Binding DisplayMapPopupCommand}"
-                    IsVisible="{Binding IsLocationSet}"
-                    Text="Show Map" />
-            </StackLayout>
-
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Labels:" />
-            <CollectionView ItemsSource="{Binding Entry.Labels}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="labelmodels:LabelListModel">
-                        <StackLayout Orientation="Horizontal" Spacing="10">
-                            <BoxView
-                                BackgroundColor="{Binding Color}"
-                                HeightRequest="20"
-                                WidthRequest="20" />
-                            <Label Text="{Binding Name}" />
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                    <VerticalStackLayout
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        Padding="0,10,0,0"
+                        IsVisible="{Binding HasLabels}">
+                        <Label FontAttributes="Bold" Text="Labels:" />
+                        <CollectionView ItemsSource="{Binding Entry.Labels}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="labelmodels:LabelListModel">
+                                    <StackLayout Orientation="Horizontal" Spacing="10">
+                                        <BoxView
+                                            BackgroundColor="{Binding Color}"
+                                            HeightRequest="20"
+                                            WidthRequest="20" />
+                                        <Label Text="{Binding Name}" />
+                                    </StackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
 
             <Button
                 Margin="0,15,0,0"
