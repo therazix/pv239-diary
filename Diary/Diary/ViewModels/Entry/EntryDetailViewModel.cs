@@ -21,6 +21,8 @@ public partial class EntryDetailViewModel : ViewModelBase
     public EntryDetailModel? Entry { get; set; }
     public bool IsLocationSet { get; set; } = false;
     public string LocationText { get; set; } = string.Empty;
+    public bool HasMedia => Entry?.Media?.Count > 0;
+    public bool HasLabels => Entry?.Labels?.Count > 0;
 
     public EntryDetailViewModel(IEntryClient entryClient, IPopupService popupService)
     {
