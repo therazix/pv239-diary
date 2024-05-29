@@ -13,6 +13,14 @@
     ControlTemplate="{StaticResource ContentTemplate}"
     IsBusy="{Binding IsBusy}">
 
+    <Shell.TitleView>
+        <Label
+            FontSize="Medium"
+            Text="Import &amp; Export"
+            TextColor="{StaticResource PrimaryLightText}"
+            VerticalTextAlignment="Center" />
+    </Shell.TitleView>
+
     <Grid Padding="20" RowSpacing="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

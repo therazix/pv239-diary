@@ -22,6 +22,14 @@
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
 
+    <Shell.TitleView>
+        <Label
+            FontSize="Medium"
+            Text="Labels"
+            TextColor="{StaticResource PrimaryLightText}"
+            VerticalTextAlignment="Center" />
+    </Shell.TitleView>
+
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
