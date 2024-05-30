@@ -24,15 +24,9 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:MediaNameToPathConverter x:Key="MediaNameToPathConverter" />
             <selectors:MediaDataTemplateSelector x:Key="MediaDataTemplateSelector">
-                <!--  TODO: Adjust styles  -->
                 <selectors:MediaDataTemplateSelector.ImageTemplate>
                     <DataTemplate x:DataType="models:MediaModel">
-                        <Frame
-                            Margin="5"
-                            Padding="0"
-                            BorderColor="Gray"
-                            CornerRadius="10"
-                            HorizontalOptions="FillAndExpand">
+                        <Frame Style="{StaticResource MediaFrame}">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding BindingContext.DisplayMediaPopupCommand, Source={x:Reference Root}}" CommandParameter="{Binding Id}" />
                             </Frame.GestureRecognizers>
@@ -42,12 +36,7 @@
                 </selectors:MediaDataTemplateSelector.ImageTemplate>
                 <selectors:MediaDataTemplateSelector.VideoTemplate>
                     <DataTemplate x:DataType="models:MediaModel">
-                        <Frame
-                            Margin="5"
-                            Padding="0"
-                            BorderColor="Gray"
-                            CornerRadius="10"
-                            HorizontalOptions="FillAndExpand">
+                        <Frame Style="{StaticResource MediaFrame}">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding BindingContext.DisplayMediaPopupCommand, Source={x:Reference Root}}" CommandParameter="{Binding Id}" />
                             </Frame.GestureRecognizers>
@@ -88,7 +77,7 @@
                         <Border Margin="10,5,10,5" Style="{StaticResource ShadowBorder}">
                             <StackLayout>
                                 <Label
-                                    Margin="10"
+                                    Margin="5,5,5,0"
                                     FontAttributes="Bold"
                                     FontSize="Medium"
                                     Text="{Binding Date, StringFormat='{0:D}'}" />

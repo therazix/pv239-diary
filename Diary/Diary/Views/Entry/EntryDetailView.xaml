@@ -28,13 +28,7 @@
             <selectors:MediaDataTemplateSelector x:Key="MediaDataTemplateSelector">
                 <selectors:MediaDataTemplateSelector.ImageTemplate>
                     <DataTemplate x:DataType="mediamodels:MediaModel">
-                        <Frame
-                            Margin="5"
-                            Padding="0"
-                            BorderColor="Gray"
-                            CornerRadius="10"
-                            HeightRequest="150"
-                            WidthRequest="150">
+                        <Frame Style="{StaticResource SquareMediaFrame}">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding BindingContext.DisplayMediaPopupCommand, Source={x:Reference Root}}" CommandParameter="{Binding Id}" />
                             </Frame.GestureRecognizers>
@@ -50,13 +44,7 @@
                 </selectors:MediaDataTemplateSelector.ImageTemplate>
                 <selectors:MediaDataTemplateSelector.VideoTemplate>
                     <DataTemplate x:DataType="mediamodels:MediaModel">
-                        <Frame
-                            Margin="5"
-                            Padding="0"
-                            BorderColor="Gray"
-                            CornerRadius="10"
-                            HeightRequest="150"
-                            WidthRequest="150">
+                        <Frame Style="{StaticResource SquareMediaFrame}">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding BindingContext.DisplayMediaPopupCommand, Source={x:Reference Root}}" CommandParameter="{Binding Id}" />
                             </Frame.GestureRecognizers>

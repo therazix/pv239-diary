@@ -58,16 +58,10 @@
         <Button
             Grid.Row="1"
             Margin="0,0,20,20"
-            BackgroundColor="#007AFF"
             Command="{Binding GoToCreateCommand}"
-            CornerRadius="30"
-            FontAttributes="Bold"
-            FontSize="24"
-            HeightRequest="60"
             HorizontalOptions="End"
+            Style="{StaticResource RoundButton}"
             Text="+"
-            TextColor="White"
-            VerticalOptions="End"
-            WidthRequest="60" />
+            VerticalOptions="End" />
     </Grid>
 </views:ContentPageBase>

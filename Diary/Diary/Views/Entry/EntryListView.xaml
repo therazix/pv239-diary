@@ -108,29 +108,24 @@
         <Grid
             Grid.Row="2"
             Grid.Column="0"
-            Padding="15,0,15,15"
+            Margin="15"
             ColumnDefinitions="*, Auto"
             ColumnSpacing="15">
             <Button
                 Grid.Column="0"
-                Margin="0,20,0,0"
                 BackgroundColor="{StaticResource PrimaryLight}"
                 Command="{Binding GoToCreateCommand}"
-                CornerRadius="10"
                 FontAttributes="Bold"
-                FontSize="Small"
                 Text="Add new"
                 TextColor="White"
                 VerticalOptions="Center" />
             <Button
                 Grid.Column="1"
-                Margin="0,20,0,0"
                 Padding="7"
                 BackgroundColor="{Binding FilterSet, Converter={StaticResource BoolToFilterBackgroundColorConverter}}"
                 Command="{Binding DisplayFilterSortPopupCommand}"
                 ContentLayout="Left, 15"
-                FontSize="15"
-                Text="">
+                FontSize="15">
                 <Button.ImageSource>
                     <FontImageSource
                         FontFamily="{Static fonts:Fonts.FontAwesome}"
