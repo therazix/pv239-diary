@@ -55,19 +55,7 @@
                                     Aspect="AspectFill"
                                     ShouldShowPlaybackControls="False"
                                     Source="{Binding FileName, Converter={StaticResource MediaNameToPathConverter}}" />
-                                <Label
-                                    Margin="0"
-                                    Padding="0"
-                                    AbsoluteLayout.LayoutBounds="0.5,0.5,AutoSize,AutoSize"
-                                    AbsoluteLayout.LayoutFlags="PositionProportional"
-                                    FontFamily="{Static fonts:Fonts.FontAwesome}"
-                                    FontSize="Large"
-                                    HeightRequest="40"
-                                    HorizontalTextAlignment="Center"
-                                    Text="{Static fonts:FontAwesomeIcons.Play}"
-                                    TextColor="#A0FFFFFF"
-                                    VerticalTextAlignment="Center"
-                                    WidthRequest="40" />
+                                <Label Style="{StaticResource MediaVideoOverlay}" />
                             </AbsoluteLayout>
                         </Frame>
                     </DataTemplate>

@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
-<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:fonts="clr-namespace:Diary.Resources.Fonts">
 
     <Style TargetType="ActivityIndicator">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
@@ -246,11 +249,52 @@
         <Setter Property="TextColor" Value="{StaticResource PrimaryLightText}" />
     </Style>
 
+    <Style
+        x:Key="RoundAddButton"
+        BasedOn="{StaticResource RoundButton}"
+        TargetType="Button">
+        <Setter Property="Margin" Value="0,0,20,20" />
+        <Setter Property="HorizontalOptions" Value="End" />
+        <Setter Property="VerticalOptions" Value="End" />
+        <Setter Property="Padding" Value="0,0,0,0" />
+        <Setter Property="Text" Value="{Static fonts:FontAwesomeIcons.Plus}" />
+        <Setter Property="FontFamily" Value="{Static fonts:Fonts.FontAwesome}" />
+    </Style>
+
     <Style x:Key="MediaFrame" TargetType="Frame">
         <Setter Property="Margin" Value="5" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="CornerRadius" Value="10" />
         <Setter Property="BorderColor" Value="{StaticResource Gray500}" />
+    </Style>
+
+    <Style x:Key="MediaDeleteButton" TargetType="Button">
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="AbsoluteLayout.LayoutBounds" Value="1,0,AutoSize,AutoSize" />
+        <Setter Property="AbsoluteLayout.LayoutFlags" Value="PositionProportional" />
+        <Setter Property="FontFamily" Value="{Static fonts:Fonts.FontAwesome}" />
+        <Setter Property="Text" Value="{Static fonts:FontAwesomeIcons.Trash}" />
+        <Setter Property="BackgroundColor" Value="#80000000" />
+        <Setter Property="FontSize" Value="Small" />
+        <Setter Property="HeightRequest" Value="30" />
+        <Setter Property="WidthRequest" Value="30" />
+        <Setter Property="TextColor" Value="{StaticResource White}" />
+    </Style>
+
+    <Style x:Key="MediaVideoOverlay" TargetType="Label">
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="AbsoluteLayout.LayoutBounds" Value="0.5,0.5,AutoSize,AutoSize" />
+        <Setter Property="AbsoluteLayout.LayoutFlags" Value="PositionProportional" />
+        <Setter Property="FontFamily" Value="{Static fonts:Fonts.FontAwesome}" />
+        <Setter Property="Text" Value="{Static fonts:FontAwesomeIcons.Play}" />
+        <Setter Property="FontSize" Value="Large" />
+        <Setter Property="HeightRequest" Value="40" />
+        <Setter Property="WidthRequest" Value="40" />
+        <Setter Property="TextColor" Value="#A0FFFFFF" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="VerticalTextAlignment" Value="Center" />
     </Style>
 
     <Style
