@@ -8,10 +8,12 @@ namespace Diary.Mappers;
 public static partial class LabelMapper
 {
     [MapProperty(nameof(LabelEntity.Color), nameof(LabelDetailModel.Color), Use = nameof(MapColorStringToColor))]
+    [MapProperty(nameof(LabelDetailModel.Name), nameof(LabelEntity.Name), Use = nameof(MapEmptyTitleToDefaultTitle))]
     public static partial LabelDetailModel MapToDetailModel(this LabelEntity entity);
     public static partial ICollection<LabelDetailModel> MapToDetailModels(this ICollection<LabelEntity> entities);
 
     [MapProperty(nameof(LabelEntity.Color), nameof(LabelListModel.Color), Use = nameof(MapColorStringToColor))]
+    [MapProperty(nameof(LabelEntity.Name), nameof(LabelListModel.Name), Use = nameof(MapEmptyTitleToDefaultTitle))]
     public static partial LabelListModel MapToListModel(this LabelEntity entity);
     public static partial ICollection<LabelListModel> MapToListModels(this ICollection<LabelEntity> entities);
 
@@ -29,4 +31,7 @@ public static partial class LabelMapper
 
     [UserMapping(Default = false)]
     private static Color MapColorStringToColor(string color) => Color.FromArgb(color);
+
+    [UserMapping(Default = false)]
+    private static string MapEmptyTitleToDefaultTitle(string? title) => string.IsNullOrEmpty(title) ? "No title" : title;
 }

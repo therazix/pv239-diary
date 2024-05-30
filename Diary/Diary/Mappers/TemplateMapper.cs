@@ -8,9 +8,11 @@ namespace Diary.Mappers;
 [UseStaticMapper(typeof(LabelMapper))]
 public static partial class TemplateMapper
 {
+    [MapProperty(nameof(TemplateEntity.Name), nameof(TemplateDetailModel.Name), Use = nameof(MapEmptyTitleToDefaultTitle))]
     public static partial TemplateDetailModel MapToDetailModel(this TemplateEntity entity);
     public static partial ICollection<TemplateDetailModel> MapToDetailModels(this ICollection<TemplateEntity> entities);
 
+    [MapProperty(nameof(TemplateEntity.Name), nameof(TemplateDetailModel.Name), Use = nameof(MapEmptyTitleToDefaultTitle))]
     public static partial TemplateListModel MapToListModel(this TemplateEntity entity);
     public static partial ICollection<TemplateListModel> MapToListModels(this ICollection<TemplateEntity> entities);
 
@@ -20,4 +22,7 @@ public static partial class TemplateMapper
     [MapperIgnoreTarget(nameof(TemplateEntity.Labels))]
     public static partial TemplateEntity MapToEntity(this TemplateListModel model);
     public static partial TemplateEntity MapToEntity(this TemplateDetailModel model);
+
+    [UserMapping(Default = false)]
+    private static string MapEmptyTitleToDefaultTitle(string? title) => string.IsNullOrEmpty(title) ? "No title" : title;
 }
