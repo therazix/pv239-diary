@@ -16,14 +16,6 @@
     ControlTemplate="{StaticResource ContentTemplate}"
     IsBusy="{Binding IsBusy}">
 
-    <Shell.TitleView>
-        <Label
-            FontSize="Medium"
-            Text="Entries"
-            TextColor="{StaticResource PrimaryLightText}"
-            VerticalTextAlignment="Center" />
-    </Shell.TitleView>
-
     <Grid
         Padding="15,0,15,15"
         ColumnDefinitions="*"

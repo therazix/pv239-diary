@@ -15,14 +15,6 @@
     ControlTemplate="{StaticResource ContentTemplate}"
     IsBusy="{Binding IsBusy}">
 
-    <Shell.TitleView>
-        <Label
-            FontSize="Medium"
-            Text="Mood charts"
-            TextColor="{StaticResource PrimaryLightText}"
-            VerticalTextAlignment="Center" />
-    </Shell.TitleView>
-
     <ScrollView>
         <StackLayout>
             <Border Margin="15" Style="{StaticResource ShadowBorder}">

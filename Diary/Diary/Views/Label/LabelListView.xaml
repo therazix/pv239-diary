@@ -22,14 +22,6 @@
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
 
-    <Shell.TitleView>
-        <Label
-            FontSize="Medium"
-            Text="Labels"
-            TextColor="{StaticResource PrimaryLightText}"
-            VerticalTextAlignment="Center" />
-    </Shell.TitleView>
-
     <Grid Margin="0,5,0,0" Style="{StaticResource ShadowBorder}">
         <CollectionView Grid.Row="0" ItemsSource="{Binding Items}">
             <CollectionView.ItemTemplate>

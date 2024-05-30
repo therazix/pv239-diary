@@ -80,14 +80,6 @@
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
 
-    <Shell.TitleView>
-        <Label
-            FontSize="Medium"
-            Text="Gallery"
-            TextColor="{StaticResource PrimaryLightText}"
-            VerticalTextAlignment="Center" />
-    </Shell.TitleView>
-
     <StackLayout>
         <CollectionView ItemsSource="{Binding MediaGroups}">
             <CollectionView.ItemTemplate>
