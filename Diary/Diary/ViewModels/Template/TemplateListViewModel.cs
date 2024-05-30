@@ -30,7 +30,7 @@ public partial class TemplateListViewModel : ViewModelBase
     public override async Task OnAppearingAsync()
     {
         using var _ = new BusyIndicator(this);
-        Items = (await _templateClient.GetAllAsync()).ToObservableCollection();
+        Items = (await _templateClient.GetAllAsync()).OrderBy(t => t.Name).ToObservableCollection();
     }
 
     private async Task GoToDetailAsync(Guid id)
