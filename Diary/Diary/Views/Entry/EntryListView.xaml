@@ -16,10 +16,7 @@
     ControlTemplate="{StaticResource ContentTemplate}"
     IsBusy="{Binding IsBusy}">
 
-    <Grid
-        Padding="15,0,15,15"
-        ColumnDefinitions="*"
-        RowDefinitions="Auto, *, Auto">
+    <Grid ColumnDefinitions="*" RowDefinitions="Auto, *, Auto">
         <Grid.Resources>
             <ResourceDictionary>
                 <converters:BoolToFilterBackgroundColorConverter x:Key="BoolToFilterBackgroundColorConverter" />
@@ -27,6 +24,7 @@
         </Grid.Resources>
         <plugin:Calendar
             Grid.Row="0"
+            Padding="15,0,15,0"
             ArrowsBackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
                                                     Dark={StaticResource DarkBackground}}"
             ArrowsBorderColor="{AppThemeBinding Light={StaticResource LightBackground},
@@ -66,46 +64,43 @@
             <StackLayout BindableLayout.ItemsSource="{Binding SelectedDayEntries}" Orientation="Vertical">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="models:EntryListModel">
-                        <StackLayout>
-                            <StackLayout.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding BindingContext.GoToDetailCommand, Source={x:Reference Root}}" CommandParameter="{Binding Id}" />
-                            </StackLayout.GestureRecognizers>
-                            <BoxView
-                                Margin="0,0,0,15"
-                                HeightRequest="1"
-                                VerticalOptions="End"
-                                Color="{AppThemeBinding Light={StaticResource PrimaryDark},
-                                                        Dark={StaticResource PrimaryLight}}" />
-                            <Grid ColumnDefinitions="*, Auto">
+                        <Border Margin="15,10,15,5" Style="{StaticResource ShadowBorder}">
+                            <StackLayout>
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.GoToDetailCommand, Source={x:Reference Root}}" CommandParameter="{Binding Id}" />
+                                </StackLayout.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <Label
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="Start"
+                                        Text="{Binding Title}"
+                                        TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                                    Dark={StaticResource PrimaryLightText}}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        HorizontalOptions="End"
+                                        Text="{Binding CreatedAt, StringFormat='{0:D}'}"
+                                        TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
+                                                                    Dark={StaticResource PrimaryLightText}}"
+                                        VerticalOptions="Center" />
+                                </Grid>
                                 <Label
-                                    Grid.Row="0"
+                                    Grid.Row="1"
                                     Grid.Column="0"
-                                    FontAttributes="Bold"
+                                    Grid.ColumnSpan="2"
+                                    Margin="0,0,0,15"
                                     HorizontalOptions="Start"
-                                    Text="{Binding Title}"
+                                    Text="{Binding Content}"
                                     TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
                                                                 Dark={StaticResource PrimaryLightText}}"
                                     VerticalOptions="Center" />
-                                <Label
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    HorizontalOptions="End"
-                                    Text="{Binding CreatedAt, StringFormat='{0:D}'}"
-                                    TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
-                                                                Dark={StaticResource PrimaryLightText}}"
-                                    VerticalOptions="Center" />
-                            </Grid>
-                            <Label
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="2"
-                                Margin="0,0,0,15"
-                                HorizontalOptions="Start"
-                                Text="{Binding Content}"
-                                TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
-                                                            Dark={StaticResource PrimaryLightText}}"
-                                VerticalOptions="Center" />
-                        </StackLayout>
+                            </StackLayout>
+                        </Border>
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
             </StackLayout>
@@ -113,6 +108,7 @@
         <Grid
             Grid.Row="2"
             Grid.Column="0"
+            Padding="15,0,15,15"
             ColumnDefinitions="*, Auto"
             ColumnSpacing="15">
             <Button
