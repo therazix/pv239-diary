@@ -148,51 +148,6 @@
         </Setter>
     </Style>
 
-    <Style TargetType="SearchBar">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-        <Setter Property="PlaceholderColor" Value="{StaticResource Gray500}" />
-        <Setter Property="CancelButtonColor" Value="{StaticResource Gray500}" />
-        <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="PoppinsRegular" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="MinimumHeightRequest" Value="44" />
-        <Setter Property="MinimumWidthRequest" Value="44" />
-        <Setter Property="VisualStateManager.VisualStateGroups">
-            <VisualStateGroupList>
-                <VisualStateGroup x:Name="CommonStates">
-                    <VisualState x:Name="Normal" />
-                    <VisualState x:Name="Disabled">
-                        <VisualState.Setters>
-                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
-                            <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateGroupList>
-        </Setter>
-    </Style>
-
-    <Style TargetType="SearchHandler">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-        <Setter Property="PlaceholderColor" Value="{StaticResource Gray500}" />
-        <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="PoppinsRegular" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="VisualStateManager.VisualStateGroups">
-            <VisualStateGroupList>
-                <VisualStateGroup x:Name="CommonStates">
-                    <VisualState x:Name="Normal" />
-                    <VisualState x:Name="Disabled">
-                        <VisualState.Setters>
-                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
-                            <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
-            </VisualStateGroupList>
-        </Setter>
-    </Style>
-
     <Style TargetType="Switch">
         <Setter Property="OnColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
         <Setter Property="ThumbColor" Value="{StaticResource White}" />
@@ -241,19 +196,6 @@
         <Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
     </Style>
 
-    <Style TargetType="NavigationPage">
-        <Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkBackground}}" />
-        <Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource White}}" />
-        <Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource White}}" />
-    </Style>
-
-    <Style TargetType="TabbedPage">
-        <Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray950}}" />
-        <Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource Magenta}, Dark={StaticResource White}}" />
-        <Setter Property="UnselectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray950}}" />
-        <Setter Property="SelectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
-    </Style>
-
     <Style x:Key="FloutItemStyle" TargetType="Grid">
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
@@ -274,7 +216,7 @@
         <Setter Property="HorizontalOptions" Value="Center" />
         <Setter Property="FontSize" Value="Medium" />
         <Setter Property="FontAttributes" Value="Bold" />
-        <Setter Property="Margin" Value="0,15,0,15" />
+        <Setter Property="Margin" Value="0,5,0,15" />
     </Style>
 
     <Style x:Key="ShadowBorder" TargetType="Border">
@@ -291,5 +233,31 @@
                     Offset="0, 0" />
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="RoundButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryLight}" />
+        <Setter Property="CornerRadius" Value="30" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="HeightRequest" Value="60" />
+        <Setter Property="WidthRequest" Value="60" />
+        <Setter Property="Padding" Value="0,5,0,0" />
+        <Setter Property="TextColor" Value="{StaticResource PrimaryLightText}" />
+    </Style>
+
+    <Style x:Key="MediaFrame" TargetType="Frame">
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="BorderColor" Value="{StaticResource Gray500}" />
+    </Style>
+
+    <Style
+        x:Key="SquareMediaFrame"
+        BasedOn="{StaticResource MediaFrame}"
+        TargetType="Frame">
+        <Setter Property="HeightRequest" Value="155" />
+        <Setter Property="WidthRequest" Value="155" />
     </Style>
 </ResourceDictionary>

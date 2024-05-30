@@ -15,9 +15,9 @@
     ControlTemplate="{StaticResource ContentTemplate}"
     IsBusy="{Binding IsBusy}">
 
-    <ScrollView>
+    <ScrollView Margin="0,10,0,10">
         <StackLayout>
-            <Border Margin="15" Style="{StaticResource ShadowBorder}">
+            <Border Margin="15,5,15,10" Style="{StaticResource ShadowBorder}">
                 <StackLayout>
                     <Label Style="{StaticResource ChartHeaderLabel}" Text="Mood during week" />
 
@@ -29,13 +29,13 @@
                     <Grid ColumnDefinitions="*,*">
                         <Button
                             Grid.Column="0"
-                            Margin="15"
+                            Margin="10"
                             Command="{Binding WeekLineChartPreviousCommand}"
                             HorizontalOptions="Start"
                             Text="Previous week" />
                         <Button
                             Grid.Column="1"
-                            Margin="15"
+                            Margin="10"
                             Command="{Binding WeekLineChartNextCommand}"
                             HorizontalOptions="End"
                             Text="Next week" />
@@ -43,7 +43,7 @@
                 </StackLayout>
             </Border>
 
-            <Border Margin="15" Style="{StaticResource ShadowBorder}">
+            <Border Margin="15,5,15,10" Style="{StaticResource ShadowBorder}">
                 <StackLayout>
                     <Label Style="{StaticResource ChartHeaderLabel}" Text="Monthly mood counter" />
                     <Label HorizontalOptions="Center" Text="{Binding MonthRadarChartDayFromText}" />
@@ -55,13 +55,13 @@
                     <Grid ColumnDefinitions="*,*">
                         <Button
                             Grid.Column="0"
-                            Margin="15"
+                            Margin="10"
                             Command="{Binding MonthRadarChartPreviousCommand}"
                             HorizontalOptions="Start"
                             Text="Previous week" />
                         <Button
                             Grid.Column="1"
-                            Margin="15"
+                            Margin="10"
                             Command="{Binding MonthRadarChartNextCommand}"
                             HorizontalOptions="End"
                             Text="Next week" />
@@ -69,7 +69,7 @@
                 </StackLayout>
             </Border>
 
-            <Border Margin="15" Style="{StaticResource ShadowBorder}">
+            <Border Margin="15,5,15,5" Style="{StaticResource ShadowBorder}">
                 <StackLayout>
                     <Label Style="{StaticResource ChartHeaderLabel}" Text="Average mood per day" />
                     <microcharts:ChartView
@@ -79,7 +79,7 @@
                     <Grid ColumnDefinitions="*,*">
                         <DatePicker
                             Grid.Column="0"
-                            Margin="15"
+                            Margin="10"
                             Date="{Binding AverageMoodFrom}"
                             HorizontalOptions="Start">
                             <DatePicker.Behaviors>
