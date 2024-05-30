@@ -58,10 +58,20 @@
         <Button
             Grid.Row="1"
             Grid.Column="0"
-            BackgroundColor="{StaticResource Gray500}"
+            BackgroundColor="{StaticResource Gray600}"
             Clicked="OnCancelButtonClicked"
             CornerRadius="0"
-            Text="Cancel" />
+            Text="Cancel">
+            <Button.Triggers>
+                <DataTrigger
+                    Binding="{Binding IsControlEnabled}"
+                    TargetType="Button"
+                    Value="False">
+                    <Setter Property="Grid.ColumnSpan" Value="2" />
+                    <Setter Property="Text" Value="Close" />
+                </DataTrigger>
+            </Button.Triggers>
+        </Button>
         <Button
             Grid.Row="1"
             Grid.Column="1"
