@@ -187,6 +187,15 @@ public partial class EntryCreateViewModel : ViewModelBase
         UpdateFormLocationInfo();
     }
 
+    [RelayCommand]
+    private void ToggleFavorite()
+    {
+        if (Entry != null)
+        {
+            Entry.IsFavorite = !Entry.IsFavorite;
+        }
+    }
+
     private async Task<bool> ConfirmSelectionIfDataLossPossibleAsync()
     {
         bool hasEntryContent = !string.IsNullOrWhiteSpace(Entry?.Content);

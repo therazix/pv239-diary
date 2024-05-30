@@ -27,112 +27,169 @@
             <converters:IntToMoodColorConverter x:Key="IntToMoodColorConverter" />
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
+
+    <Shell.TitleView>
+        <Label
+            FontSize="Medium"
+            Text="Template update"
+            TextColor="{StaticResource PrimaryLightText}"
+            VerticalTextAlignment="Center" />
+    </Shell.TitleView>
+
     <ScrollView>
-        <VerticalStackLayout Padding="15">
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Name:" />
-            <Entry Text="{Binding Template.Name}" />
+        <VerticalStackLayout Padding="15,10,15,10">
+            <Border Margin="0,10,0,5" Style="{StaticResource ShadowBorder}">
+                <StackLayout>
+                    <Label FontAttributes="Bold" Text="Name:" />
+                    <Entry Text="{Binding Template.Name}" />
+                </StackLayout>
+            </Border>
 
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Content:" />
-            <Editor
-                AutoSize="TextChanges"
-                MinimumHeightRequest="100"
-                Text="{Binding Template.Content}" />
+            <Border Margin="0,10,0,5" Style="{StaticResource ShadowBorder}">
+                <StackLayout>
+                    <Label FontAttributes="Bold" Text="Content:" />
+                    <Editor
+                        AutoSize="TextChanges"
+                        MinimumHeightRequest="100"
+                        Text="{Binding Template.Content}" />
+                </StackLayout>
+            </Border>
 
-            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto, Auto">
-                <Label
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Padding="0,15,0,0"
-                    FontAttributes="Bold"
-                    Text="Preset mood?" />
-                <Switch
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    IsToggled="{Binding PresetMood}" />
-                <Label
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Padding="0,15,0,0"
-                    FontAttributes="Bold"
-                    Text="Mood:" />
+            <Border Margin="0,10,0,0" Style="{StaticResource ShadowBorder}">
                 <Grid
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    ColumnDefinitions="*, Auto">
-                    <Slider
-                        Grid.Column="0"
-                        IsEnabled="{Binding PresetMood}"
-                        Maximum="5"
-                        Minimum="1"
-                        Value="{Binding Template.Mood}" />
+                    ColumnDefinitions="Auto,*"
+                    ColumnSpacing="10"
+                    RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto">
                     <Label
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        FontAttributes="Bold"
+                        Text="Preset mood?" />
+                    <Switch
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        IsToggled="{Binding PresetMood}" />
+                    <Label
+                        Grid.Row="0"
                         Grid.Column="1"
-                        Padding="15,0,0,0"
-                        FontFamily="{x:Static fonts:Fonts.FontAwesome}"
-                        FontSize="Large"
-                        IsVisible="{Binding PresetMood}"
-                        Text="{Binding Template.Mood, Converter={StaticResource IntToMoodIconConverter}}"
-                        TextColor="{Binding Template.Mood, Converter={StaticResource IntToMoodColorConverter}}" />
+                        FontAttributes="Bold"
+                        Text="Mood:" />
+                    <Grid
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        ColumnDefinitions="*, Auto">
+                        <Slider
+                            Grid.Column="0"
+                            IsEnabled="{Binding PresetMood}"
+                            Maximum="5"
+                            Minimum="1"
+                            Value="{Binding Template.Mood}" />
+                        <Label
+                            Grid.Column="1"
+                            FontFamily="{x:Static fonts:Fonts.FontAwesome}"
+                            FontSize="Large"
+                            IsVisible="{Binding PresetMood}"
+                            Text="{Binding Template.Mood, Converter={StaticResource IntToMoodIconConverter}}"
+                            TextColor="{Binding Template.Mood, Converter={StaticResource IntToMoodColorConverter}}"
+                            VerticalOptions="Center" />
+                    </Grid>
+
+                    <Label
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Padding="0,15,0,0"
+                        FontAttributes="Bold"
+                        Text="Preset location?" />
+                    <Switch
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        IsToggled="{Binding PresetLocation}" />
+                    <Label
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Padding="0,15,0,0"
+                        FontAttributes="Bold"
+                        Text="Location:" />
+
+                    <StackLayout
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Orientation="Horizontal"
+                        VerticalOptions="Center">
+                        <Label
+                            IsEnabled="{Binding PresetLocation}"
+                            Text="{Binding LocationText}"
+                            TextColor="{Binding LocationTextColor}" />
+                        <Grid Margin="10,0,0,0" IsEnabled="{Binding PresetLocation}">
+                            <Button
+                                BackgroundColor="{StaticResource Primary}"
+                                HeightRequest="25"
+                                WidthRequest="25" />
+                            <Label
+                                Grid.Column="1"
+                                FontFamily="{x:Static fonts:Fonts.FontAwesome}"
+                                FontSize="Medium"
+                                HorizontalOptions="Center"
+                                Text="{Static fonts:FontAwesomeIcons.MapPin}"
+                                TextColor="{StaticResource PrimaryLightText}"
+                                VerticalOptions="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding DisplayMapPopupCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </Grid>
+                        <Grid
+                            Margin="10,0,0,0"
+                            IsEnabled="{Binding PresetLocation}"
+                            IsVisible="{Binding IsLocationSet}">
+                            <Button
+                                BackgroundColor="{StaticResource Secondary}"
+                                HeightRequest="25"
+                                WidthRequest="25" />
+                            <Label
+                                Grid.Column="1"
+                                FontFamily="{x:Static fonts:Fonts.FontAwesome}"
+                                FontSize="Medium"
+                                HorizontalOptions="Center"
+                                Text="{Static fonts:FontAwesomeIcons.TrashAlt}"
+                                TextColor="{StaticResource PrimaryLightText}"
+                                VerticalOptions="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ClearLocationCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </Grid>
+                    </StackLayout>
+
+                    <Label
+                        Grid.Row="4"
+                        Grid.ColumnSpan="2"
+                        Margin="0,15,0,0"
+                        FontAttributes="Bold"
+                        Text="Labels:" />
+                    <CollectionView
+                        Grid.Row="5"
+                        Grid.ColumnSpan="2"
+                        ItemsSource="{Binding Labels}"
+                        SelectedItems="{Binding SelectedLabels, Mode=TwoWay}"
+                        SelectionMode="Multiple">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="labelmodels:LabelListModel">
+                                <StackLayout Orientation="Horizontal" Spacing="10">
+                                    <BoxView
+                                        BackgroundColor="{Binding Color}"
+                                        HeightRequest="20"
+                                        WidthRequest="20" />
+                                    <Label Text="{Binding Name}" />
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
                 </Grid>
-            </Grid>
-
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Preset location?" />
-            <Switch IsToggled="{Binding PresetLocation}" />
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Location:" />
-            <StackLayout Orientation="Horizontal">
-                <Label
-                    Padding="0,15,0,0"
-                    IsEnabled="{Binding PresetLocation}"
-                    Text="{Binding LocationText}"
-                    TextColor="{Binding LocationTextColor}" />
-                <Button
-                    Margin="15,0,0,0"
-                    Command="{Binding DisplayMapPopupCommand}"
-                    IsEnabled="{Binding PresetLocation}"
-                    Text="Show Map" />
-                <Button
-                    Margin="15,0,0,0"
-                    Command="{Binding ClearLocationCommand}"
-                    IsEnabled="{Binding PresetLocation}"
-                    IsVisible="{Binding IsLocationSet}"
-                    Text="Clear" />
-            </StackLayout>
-
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Labels:" />
-            <CollectionView
-                ItemsSource="{Binding Labels}"
-                SelectedItems="{Binding SelectedLabels, Mode=TwoWay}"
-                SelectionMode="Multiple">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="labelmodels:LabelListModel">
-                        <StackLayout Orientation="Horizontal" Spacing="10">
-                            <BoxView
-                                BackgroundColor="{Binding Color}"
-                                HeightRequest="20"
-                                WidthRequest="20" />
-                            <Label Text="{Binding Name}" />
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            </Border>
 
             <Grid
-                Margin="0,15,0,0"
+                Margin="0,10,0,0"
                 ColumnDefinitions="Auto, *"
                 ColumnSpacing="15">
                 <Button

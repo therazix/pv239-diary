@@ -29,7 +29,7 @@
                 <selectors:MediaDataTemplateSelector.ImageTemplate>
                     <DataTemplate x:DataType="mediamodels:MediaModel">
                         <Frame
-                            Margin="10"
+                            Margin="5"
                             Padding="0"
                             BorderColor="Gray"
                             CornerRadius="10"
@@ -55,8 +55,8 @@
                             Padding="0"
                             BorderColor="Gray"
                             CornerRadius="10"
-                            HeightRequest="175"
-                            WidthRequest="175">
+                            HeightRequest="150"
+                            WidthRequest="150">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding BindingContext.DisplayMediaPopupCommand, Source={x:Reference Root}}" CommandParameter="{Binding Id}" />
                             </Frame.GestureRecognizers>
@@ -88,37 +88,43 @@
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
 
+    <Shell.TitleView>
+        <Label
+            FontSize="Medium"
+            Text="Entry detail"
+            TextColor="{StaticResource PrimaryLightText}"
+            VerticalTextAlignment="Center" />
+    </Shell.TitleView>
+
     <ScrollView>
-        <VerticalStackLayout Padding="15">
-            <Grid ColumnDefinitions="*, Auto">
-                <Label
-                    Grid.Column="0"
-                    FontAttributes="Bold"
-                    FontSize="Large"
-                    Text="{Binding Entry.Title}" />
-                <Label
-                    Grid.Column="1"
-                    FontFamily="{x:Static fonts:Fonts.FontAwesome}"
-                    FontSize="Large"
-                    IsVisible="{Binding Entry.IsFavorite}"
-                    Text="{Static fonts:FontAwesomeIcons.Star}"
-                    TextColor="{StaticResource Tertiary}" />
-            </Grid>
-
-            <HorizontalStackLayout Padding="0,5,0,0">
-                <Label FontAttributes="Bold" Text="Created at: " />
-                <Label FontAttributes="Italic" Text="{Binding Entry.CreatedAt}" />
-            </HorizontalStackLayout>
-
-            <HorizontalStackLayout>
-                <Label FontAttributes="Bold" Text="Edited at: " />
-                <Label FontAttributes="Italic" Text="{Binding Entry.EditedAt}" />
-            </HorizontalStackLayout>
-
-            <Border Margin="0,10,0,0" Style="{StaticResource ShadowBorder}">
+        <VerticalStackLayout Padding="15,10,15,15">
+            <Border Margin="0,5,0,0" Style="{StaticResource ShadowBorder}">
                 <VerticalStackLayout>
-                    <Label FontAttributes="Bold" Text="Content:" />
-                    <Label Text="{Binding Entry.Content}" />
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label
+                            Grid.Column="0"
+                            FontAttributes="Bold"
+                            FontSize="Large"
+                            Text="{Binding Entry.Title}" />
+                        <Label
+                            Grid.Column="1"
+                            FontFamily="{x:Static fonts:Fonts.FontAwesome}"
+                            FontSize="Large"
+                            IsVisible="{Binding Entry.IsFavorite}"
+                            Text="{Static fonts:FontAwesomeIcons.Star}"
+                            TextColor="{StaticResource Tertiary}" />
+                    </Grid>
+                    <HorizontalStackLayout Padding="0,5,0,0">
+                        <Label FontAttributes="Bold" Text="Created at: " />
+                        <Label FontAttributes="Italic" Text="{Binding Entry.CreatedAt}" />
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout>
+                        <Label FontAttributes="Bold" Text="Edited at: " />
+                        <Label FontAttributes="Italic" Text="{Binding Entry.EditedAt}" />
+                    </HorizontalStackLayout>
+
+                    <Label Margin="0,15,0,0" Text="{Binding Entry.Content}" />
                 </VerticalStackLayout>
             </Border>
 

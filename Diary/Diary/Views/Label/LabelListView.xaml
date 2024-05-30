@@ -30,36 +30,35 @@
             VerticalTextAlignment="Center" />
     </Shell.TitleView>
 
-    <Grid x:Name="MainGrid">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
+    <Grid Margin="0,5,0,0" Style="{StaticResource ShadowBorder}">
         <CollectionView Grid.Row="0" ItemsSource="{Binding Items}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:LabelListModel">
-                    <Grid Padding="10" ColumnSpacing="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="40" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.GoToDetailCommand}" CommandParameter="{Binding Id}" />
-                        </Grid.GestureRecognizers>
-                        <BoxView
-                            Grid.Column="0"
-                            HeightRequest="30"
-                            VerticalOptions="Center"
-                            WidthRequest="30"
-                            Color="{Binding Color}" />
-                        <Label
-                            Grid.Column="1"
-                            HorizontalOptions="Start"
-                            Text="{Binding Name}"
-                            TextColor="Black"
-                            VerticalOptions="Center" />
-                    </Grid>
+                    <StackLayout>
+                        <Border Margin="5,5,5,10" Style="{StaticResource ShadowBorder}">
+                            <Grid
+                                Padding="5"
+                                ColumnDefinitions="40, *"
+                                ColumnSpacing="10">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={x:Reference Root}, Path=BindingContext.GoToDetailCommand}" CommandParameter="{Binding Id}" />
+                                </Grid.GestureRecognizers>
+
+                                <BoxView
+                                    Grid.Column="0"
+                                    HeightRequest="30"
+                                    VerticalOptions="Center"
+                                    WidthRequest="30"
+                                    Color="{Binding Color}" />
+                                <Label
+                                    Grid.Column="1"
+                                    HorizontalOptions="Start"
+                                    Text="{Binding Name}"
+                                    TextColor="Black"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </StackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
