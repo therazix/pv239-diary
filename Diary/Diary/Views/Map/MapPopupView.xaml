@@ -58,14 +58,16 @@
         <Button
             Grid.Row="1"
             Grid.Column="0"
+            BackgroundColor="{StaticResource Gray500}"
             Clicked="OnCancelButtonClicked"
+            CornerRadius="0"
             Text="Cancel" />
         <Button
             Grid.Row="1"
             Grid.Column="1"
             Clicked="OnSaveButtonClicked"
+            CornerRadius="0"
             IsVisible="{Binding IsControlEnabled}"
             Text="Save" />
-
     </Grid>
 </toolkit:Popup>

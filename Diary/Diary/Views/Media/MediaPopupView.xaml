@@ -32,6 +32,7 @@
         <Button
             Grid.Row="0"
             Grid.Column="0"
+            Margin="5"
             BackgroundColor="#80000000"
             Clicked="OnCloseButtonClicked"
             FontFamily="{Static fonts:Fonts.FontAwesome}"

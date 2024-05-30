@@ -203,7 +203,7 @@
             <Button
                 Grid.Column="0"
                 Margin="0,20,0,0"
-                BackgroundColor="{StaticResource Gray600}"
+                BackgroundColor="{StaticResource Gray500}"
                 Clicked="OnFilterResetButtonClicked"
                 CornerRadius="10"
                 FontAttributes="Bold"
