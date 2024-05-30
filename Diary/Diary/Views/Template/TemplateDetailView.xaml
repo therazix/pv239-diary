@@ -26,14 +26,6 @@
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
 
-    <Shell.TitleView>
-        <Label
-            FontSize="Medium"
-            Text="Template detail"
-            TextColor="{StaticResource PrimaryLightText}"
-            VerticalTextAlignment="Center" />
-    </Shell.TitleView>
-
     <ScrollView>
         <VerticalStackLayout Padding="15,5,15,10">
             <Border Margin="0,10,0,0" Style="{StaticResource ShadowBorder}">

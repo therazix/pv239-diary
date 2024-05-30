@@ -23,14 +23,6 @@
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
 
-    <Shell.TitleView>
-        <Label
-            FontSize="Medium"
-            Text="New label"
-            TextColor="{StaticResource PrimaryLightText}"
-            VerticalTextAlignment="Center" />
-    </Shell.TitleView>
-
     <StackLayout Margin="15" Orientation="Vertical">
         <Border Margin="0,0,0,15" Style="{StaticResource ShadowBorder}">
             <Grid ColumnDefinitions="*, Auto">
