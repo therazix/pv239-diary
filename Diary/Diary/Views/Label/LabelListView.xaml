@@ -38,6 +38,8 @@
 
                                 <BoxView
                                     Grid.Column="0"
+                                    BackgroundColor="Transparent"
+                                    CornerRadius="5"
                                     HeightRequest="30"
                                     VerticalOptions="Center"
                                     WidthRequest="30"
