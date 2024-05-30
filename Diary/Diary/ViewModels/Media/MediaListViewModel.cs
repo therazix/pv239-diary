@@ -14,6 +14,7 @@ public partial class MediaListViewModel : ViewModelBase
     private readonly IPopupService _popupService;
 
     public ObservableCollection<MediaGroupModel> MediaGroups { get; set; } = new();
+    public bool IsEmpty { get; set; }
 
     public MediaListViewModel(IMediaClient mediaClient, IPopupService popupService)
     {
@@ -34,6 +35,8 @@ public partial class MediaListViewModel : ViewModelBase
                 Media = media.ToObservableCollection()
             }).OrderByDescending(m => m.Date)
             .ToObservableCollection();
+
+        IsEmpty = MediaGroups.Count == 0;
     }
 
     [RelayCommand]
