@@ -23,6 +23,8 @@ public partial class EntryEditViewModel : ViewModelBase
     private readonly IPopupService _popupService;
     private readonly IMediaPicker _mediaPicker;
 
+    private ICollection<MediaModel> _mediaToDelete;
+
     public EntryDetailModel Entry { get; set; } = null!;
     public ObservableCollection<LabelListModel> Labels { get; set; }
     public ObservableCollection<object> SelectedLabels { get; set; }
@@ -37,6 +39,8 @@ public partial class EntryEditViewModel : ViewModelBase
         _mediaClient = mediaClient;
         _popupService = popupService;
         _mediaPicker = mediaPicker;
+
+        _mediaToDelete = new List<MediaModel>();
 
         SelectedLabels = new ObservableCollection<object>();
         Labels = new ObservableCollection<LabelListModel>();
@@ -68,6 +72,10 @@ public partial class EntryEditViewModel : ViewModelBase
     {
         using (new BusyIndicator(this))
         {
+            _mediaToDelete = _mediaToDelete.Where(m => Entry.Media.All(em => em.Id != m.Id)).ToList();
+            await _mediaClient.DeleteIfUnusedAsync(_mediaToDelete, [Entry.Id]);
+            _mediaToDelete.Clear();
+
             Entry.Labels = new ObservableCollection<LabelListModel>(SelectedLabels.Select(l => (LabelListModel)l));
             await _entryClient.SetAsync(Entry);
         }
@@ -103,7 +111,10 @@ public partial class EntryEditViewModel : ViewModelBase
             var media = Entry.Media.FirstOrDefault(m => m.FileName == fileName);
             if (media != null)
             {
-                _mediaClient.DeleteIfUnusedAsync(media, [Entry.Id]);
+                if (!_mediaToDelete.Any(m => m.Id == media.Id))
+                {
+                    _mediaToDelete.Add(media);
+                }
                 Entry.Media.Remove(media);
             }
         }
