@@ -27,7 +27,7 @@ public partial class LabelListViewModel : ViewModelBase
     public override async Task OnAppearingAsync()
     {
         using var _ = new BusyIndicator(this);
-        Items = (await _labelClient.GetAllAsync()).ToObservableCollection();
+        Items = (await _labelClient.GetAllAsync()).OrderBy(l => l.Name).ToObservableCollection();
     }
 
     private async Task GoToDetailAsync(Guid id)
