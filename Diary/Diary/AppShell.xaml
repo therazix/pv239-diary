@@ -160,27 +160,4 @@
             ContentTemplate="{DataTemplate mapviews:MapView}"
             Route="map" />
     </FlyoutItem>
-
-    <Shell.FlyoutFooterTemplate>
-        <DataTemplate>
-            <Grid
-                Padding="20,15,15,15"
-                ColumnDefinitions="21, *"
-                ColumnSpacing="15"
-                Style="{StaticResource FloutItemStyle}">
-
-                <Label
-                    Grid.Column="0"
-                    FontFamily="{Static f:Fonts.FontAwesome}"
-                    FontSize="Large"
-                    Text="{Static f:FontAwesomeIcons.Cog}"
-                    TextColor="{StaticResource PrimaryLightText}" />
-
-                <Label
-                    Grid.Column="1"
-                    Text="Settings"
-                    TextColor="GhostWhite" />
-            </Grid>
-        </DataTemplate>
-    </Shell.FlyoutFooterTemplate>
 </Shell>
