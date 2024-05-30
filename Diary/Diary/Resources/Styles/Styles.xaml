@@ -269,9 +269,12 @@
         </Setter>
     </Style>
 
-    <Style x:Key="LabelStripe" TargetType="Label">
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkBackgroundAccent}}" />
+    <Style x:Key="ChartHeaderLabel" TargetType="Label">
         <Setter Property="Padding" Value="5" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="FontSize" Value="Medium" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="Margin" Value="0,15,0,15" />
     </Style>
 
     <Style x:Key="ShadowBorder" TargetType="Border">

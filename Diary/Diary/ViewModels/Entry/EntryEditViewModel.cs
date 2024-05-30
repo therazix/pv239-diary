@@ -145,6 +145,15 @@ public partial class EntryEditViewModel : ViewModelBase
         UpdateFormLocationInfo();
     }
 
+    [RelayCommand]
+    private void ToggleFavorite()
+    {
+        if (Entry != null)
+        {
+            Entry.IsFavorite = !Entry.IsFavorite;
+        }
+    }
+
     private void UpdateFormLocationInfo()
     {
         IsLocationSet = Entry != null && (Entry.Latitude != null || Entry.Longitude != null);

@@ -25,74 +25,94 @@
             <converters:IntToMoodColorConverter x:Key="IntToMoodColorConverter" />
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
+
+    <Shell.TitleView>
+        <Label
+            FontSize="Medium"
+            Text="Template detail"
+            TextColor="{StaticResource PrimaryLightText}"
+            VerticalTextAlignment="Center" />
+    </Shell.TitleView>
+
     <ScrollView>
-        <VerticalStackLayout Padding="15">
-            <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
-                <Label
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Padding="0,15,0,0"
-                    FontAttributes="Bold"
-                    Text="Name:" />
-                <Label
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Text="{Binding Template.Name}" />
+        <VerticalStackLayout Padding="15,5,15,10">
+            <Border Margin="0,10,0,0" Style="{StaticResource ShadowBorder}">
+                <VerticalStackLayout>
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        Text="{Binding Template.Name}" />
+                    <Label Margin="0,10,0,0" Text="{Binding Template.Content}" />
+                </VerticalStackLayout>
+            </Border>
 
-                <Label
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Padding="0,15,0,0"
-                    FontAttributes="Bold"
-                    IsVisible="{Binding ShowMood}"
-                    Text="Mood:" />
-                <Label
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Padding="15,0,0,0"
-                    FontFamily="{x:Static fonts:Fonts.FontAwesome}"
-                    FontSize="Large"
-                    IsVisible="{Binding ShowMood}"
-                    Text="{Binding Template.Mood, Converter={StaticResource IntToMoodIconConverter}}"
-                    TextColor="{Binding Template.Mood, Converter={StaticResource IntToMoodColorConverter}}" />
-            </Grid>
+            <Border Margin="0,15,0,0" Style="{StaticResource ShadowBorder}">
+                <VerticalStackLayout>
+                    <HorizontalStackLayout IsVisible="{Binding ShowMood}">
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            Text="Mood:" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="10,0,0,0"
+                            FontFamily="{x:Static fonts:Fonts.FontAwesome}"
+                            FontSize="Large"
+                            IsVisible="{Binding ShowMood}"
+                            Text="{Binding Template.Mood, Converter={StaticResource IntToMoodIconConverter}}"
+                            TextColor="{Binding Template.Mood, Converter={StaticResource IntToMoodColorConverter}}" />
+                    </HorizontalStackLayout>
 
-            <Label
-                Padding="0,15,0,0"
-                FontAttributes="Bold"
-                Text="Content:" />
-            <Label Text="{Binding Template.Content}" />
+                    <HorizontalStackLayout IsVisible="{Binding ShowLocation}">
+                        <Label
+                            Margin="0,15,0,0"
+                            FontAttributes="Bold"
+                            Text="Location:" />
+                        <Grid Margin="10,10,0,0">
+                            <Button
+                                BackgroundColor="{StaticResource Primary}"
+                                HeightRequest="25"
+                                WidthRequest="25" />
+                            <Label
+                                Grid.Column="1"
+                                FontFamily="{x:Static fonts:Fonts.FontAwesome}"
+                                FontSize="Medium"
+                                HorizontalOptions="Center"
+                                Text="{Static fonts:FontAwesomeIcons.MapPin}"
+                                TextColor="{StaticResource PrimaryLightText}"
+                                VerticalOptions="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding DisplayMapPopupCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </Grid>
+                    </HorizontalStackLayout>
 
-            <VerticalStackLayout IsVisible="{Binding ShowLocation}">
-                <Label
-                    Padding="0,15,0,0"
-                    FontAttributes="Bold"
-                    Text="Location:" />
-                <StackLayout Orientation="Horizontal">
-                    <Label Padding="0,15,0,0" Text="{Binding LocationText}" />
-                    <Button Command="{Binding DisplayMapPopupCommand}" Text="Show Map" />
-                </StackLayout>
-            </VerticalStackLayout>
-
-            <VerticalStackLayout IsVisible="{Binding ShowLabels}">
-                <Label
-                    Padding="0,15,0,0"
-                    FontAttributes="Bold"
-                    Text="Labels:" />
-                <CollectionView ItemsSource="{Binding Template.Labels}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="labelmodels:LabelListModel">
-                            <StackLayout Orientation="Horizontal" Spacing="10">
-                                <BoxView
-                                    BackgroundColor="{Binding Color}"
-                                    HeightRequest="20"
-                                    WidthRequest="20" />
-                                <Label Text="{Binding Name}" />
-                            </StackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </VerticalStackLayout>
+                    <VerticalStackLayout IsVisible="{Binding ShowLabels}">
+                        <Label
+                            Margin="0,15,0,0"
+                            FontAttributes="Bold"
+                            Text="Labels:" />
+                        <CollectionView ItemsSource="{Binding Template.Labels}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="labelmodels:LabelListModel">
+                                    <StackLayout Orientation="Horizontal" Spacing="10">
+                                        <BoxView
+                                            BackgroundColor="{Binding Color}"
+                                            HeightRequest="20"
+                                            WidthRequest="20" />
+                                        <Label Text="{Binding Name}" />
+                                    </StackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
 
             <Button
                 Margin="0,15,0,0"

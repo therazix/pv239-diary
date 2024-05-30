@@ -23,40 +23,40 @@
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
 
-    <Grid Padding="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <Shell.TitleView>
+        <Label
+            FontSize="Medium"
+            Text="New label"
+            TextColor="{StaticResource PrimaryLightText}"
+            VerticalTextAlignment="Center" />
+    </Shell.TitleView>
 
-        <Entry
-            Grid.Row="0"
-            Placeholder="Name"
-            Text="{Binding Label.Name}" />
+    <StackLayout Margin="15" Orientation="Vertical">
+        <Border Margin="0,0,0,15" Style="{StaticResource ShadowBorder}">
+            <Grid ColumnDefinitions="*, Auto">
+                <Entry
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Placeholder="Name"
+                    Text="{Binding Label.Name}" />
 
-        <StackLayout
-            Grid.Row="1"
-            Orientation="Horizontal"
-            Spacing="10">
-            <Label Text="Color:" VerticalOptions="Center" />
-            <BoxView
-                HeightRequest="40"
-                VerticalOptions="Center"
-                WidthRequest="40"
-                Color="{Binding Label.Color}" >
-                <BoxView.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding SelectColorCommand}" />
-                </BoxView.GestureRecognizers>
-            </BoxView>
-
-        </StackLayout>
+                <BoxView
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    HeightRequest="40"
+                    HorizontalOptions="Start"
+                    WidthRequest="40"
+                    Color="{Binding Label.Color}">
+                    <BoxView.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectColorCommand}" />
+                    </BoxView.GestureRecognizers>
+                </BoxView>
+            </Grid>
+        </Border>
 
         <Button
             Grid.Row="2"
             Command="{Binding SaveCommand}"
             Text="Submit" />
-    </Grid>
+    </StackLayout>
 </views:ContentPageBase>

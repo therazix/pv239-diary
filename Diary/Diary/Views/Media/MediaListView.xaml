@@ -92,15 +92,20 @@
         <CollectionView ItemsSource="{Binding MediaGroups}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:MediaGroupModel">
-                    <StackLayout>
-                        <Label
-                            Margin="10"
-                            FontAttributes="Bold"
-                            Text="{Binding Date, StringFormat='{0:D}'}" />
-                        <CollectionView
-                            ItemTemplate="{StaticResource MediaDataTemplateSelector}"
-                            ItemsLayout="VerticalGrid, 3"
-                            ItemsSource="{Binding Media}" />
+                    <StackLayout Margin="5">
+                        <Border Margin="10,5,10,5" Style="{StaticResource ShadowBorder}">
+                            <StackLayout>
+                                <Label
+                                    Margin="10"
+                                    FontAttributes="Bold"
+                                    FontSize="Medium"
+                                    Text="{Binding Date, StringFormat='{0:D}'}" />
+                                <CollectionView
+                                    ItemTemplate="{StaticResource MediaDataTemplateSelector}"
+                                    ItemsLayout="VerticalGrid, 3"
+                                    ItemsSource="{Binding Media}" />
+                            </StackLayout>
+                        </Border>
                     </StackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
