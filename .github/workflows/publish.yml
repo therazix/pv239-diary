@@ -1,0 +1,31 @@
+name: Build AAB and APK
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Import Keystore File
+      run: echo "${{ secrets.KEYSTORE_FILE }}" > diary.keystore.asc
+    - name: Decrypt Keystore File
+      run: gpg -d --passphrase "${{ secrets.KEYSTORE_GPG_PASS }}" --batch diary.keystore.asc > diary.keystore
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Install MAUI
+      run: dotnet workload install maui
+    - name: Restore Dependencies
+      run: dotnet restore Diary/Diary/Diary.csproj
+    - name: Publish
+      run: dotnet publish Diary/Diary/Diary.csproj -f net8.0-android -p:ApplicationId=com.filipvagner.diary -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=../../diary.keystore -p:AndroidSigningKeyAlias=diary -p:AndroidSigningKeyPass="${{ secrets.KEYSTORE_PASS }}" -p:AndroidSigningStorePass="${{ secrets.KEYSTORE_PASS }}" --no-restore
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.3.3
+      with:
+        path: |
+          ./**/publish/*.aab
+          ./**/publish/*.apk
