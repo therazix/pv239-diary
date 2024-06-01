@@ -67,7 +67,7 @@
                         <Switch
                             Grid.Row="0"
                             Grid.Column="1"
-                            IsToggled="{Binding FilterByDate}"
+                            IsToggled="{Binding FilterByDateEnabled}"
                             VerticalOptions="Start" />
 
                         <Label
@@ -85,13 +85,13 @@
                             Grid.Column="0"
                             Margin="0,5,0,0"
                             Date="{Binding EntryFilter.DateFrom}"
-                            IsEnabled="{Binding FilterByDate}" />
+                            IsEnabled="{Binding FilterByDateEnabled}" />
                         <DatePicker
                             Grid.Row="3"
                             Grid.Column="1"
                             Margin="0,5,0,0"
                             Date="{Binding EntryFilter.DateTo}"
-                            IsEnabled="{Binding FilterByDate}" />
+                            IsEnabled="{Binding FilterByDateEnabled}" />
                     </Grid>
 
                     <Label

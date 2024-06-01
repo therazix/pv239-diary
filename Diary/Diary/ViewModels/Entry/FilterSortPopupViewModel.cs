@@ -16,7 +16,7 @@ public partial class FilterSortPopupViewModel : ViewModelBase
     public delegate void OnFilterApplyFilterAction(EntryFilterModel entryFilter);
     public event OnFilterApplyFilterAction OnFilterApplyFilter;
 
-    public bool FilterByDate { get; set; }
+    public bool FilterByDateEnabled { get; set; }
 
     public ObservableCollection<LabelListModel> Labels { get; set; } = new();
 
@@ -47,7 +47,7 @@ public partial class FilterSortPopupViewModel : ViewModelBase
         }
 
         EntryFilter = entryFilter;
-        FilterByDate = EntryFilter.DateFrom != null && EntryFilter.DateTo != null;
+        FilterByDateEnabled = EntryFilter.DateFrom != null || EntryFilter.DateTo != null;
         Labels = labels.ToObservableCollection();
     }
 
@@ -64,15 +64,15 @@ public partial class FilterSortPopupViewModel : ViewModelBase
 
     public EntryFilterModel GetEntryFilter()
     {
-        if (!FilterByDate)
+        if (FilterByDateEnabled)
+        {
+            EntryFilter.DateFrom = EntryFilter.DateFrom ?? DateTime.Now.Date;
+            EntryFilter.DateTo = EntryFilter.DateTo ?? DateTime.Now.Date;
+        }
+        else
         {
             EntryFilter.DateFrom = null;
             EntryFilter.DateTo = null;
-        }
-        else if (FilterByDate && EntryFilter.DateFrom == null && EntryFilter.DateTo == null)
-        {
-            EntryFilter.DateFrom = DateTime.Now.Date;
-            EntryFilter.DateTo = DateTime.Now.Date;
         }
 
         return EntryFilter;
