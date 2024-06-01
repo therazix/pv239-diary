@@ -35,7 +35,7 @@ public partial class FilterSortPopupView : Popup
     {
         _viewModel.SaveSelectedProperties();
         var cts = new CancellationTokenSource(Constants.CancellationTokenDelay);
-        await CloseAsync(_viewModel.EntryFilter, cts.Token);
+        await CloseAsync(_viewModel.GetEntryFilter(), cts.Token);
     }
 
     private async void OnCancelButtonClicked(object? sender, EventArgs e)
