@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Maui.Core.Extensions;
-using CommunityToolkit.Mvvm.Input;
 using Diary.Models.Entry;
 using Diary.Models.Label;
 using Diary.Models.Mood;
@@ -70,21 +69,12 @@ public partial class FilterSortPopupViewModel : ViewModelBase
             EntryFilter.DateFrom = null;
             EntryFilter.DateTo = null;
         }
-        return EntryFilter;
-    }
-
-    [RelayCommand]
-    private void ToggleDateFiltering()
-    {
-        if (FilterByDate)
+        else if (FilterByDate && EntryFilter.DateFrom == null && EntryFilter.DateTo == null)
         {
             EntryFilter.DateFrom = DateTime.Now.Date;
             EntryFilter.DateTo = DateTime.Now.Date;
         }
-        else
-        {
-            EntryFilter.DateFrom = null;
-            EntryFilter.DateTo = null;
-        }
+
+        return EntryFilter;
     }
 }
