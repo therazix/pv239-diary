@@ -4,53 +4,81 @@
 - Filip Vágner (541699)
 - Jana Stopková (540463)
 
-## Introduction Screen
+## Overview
+The Personal Diary Management Application is designed to help users maintain a digital diary, enabling them to create, organize, and manage their personal entries efficiently. This application supports adding multimedia, categorization, and various other functionalities to enrich the user experience.
 
-- Overview of entries
-- Filtering entries by creation date, location, labels, mood
-- Sorting entries
-- Option to add a new entry - form with template application (user can select one of the templates, which will be inserted into the entry text, which the user can then further expand)
+## Features
 
-## Entry Detail
+### Introduction Screen
+- Overview of entries: Provides a comprehensive view of all diary entries.
+- Filtering and sorting: Filter entries by creation date, mood and labels. Sort entries for easier navigation.
+- New entry creation: Add new entries using a form. Users can select a template to pre-fill the entry details, which can then be customized.
+- Calendar view: Display entries in a calendar format. Users can select a specific date to show only the entries that were added on that day.
 
-- Display the entry with all related information (creation date, location, labels, mood, images, and optionally videos)
-- Option to edit, delete the entry, mark the entry as a favorite
+### Entry Detail
+- Display entry information: Shows all details related to an entry, including creation date, modification date, location, labels, mood and attached media.
+- Entry management: Edit, delete, or mark entries as favorites for quick access. Users can also assign labels to entries for better organization and filtering. Additionally, users can attach images and videos to enrich their entries.
+
+### Labels
+- Labels overview: Manage and view all labels.
+- Label management: Add, edit (name and color), or delete labels.
+
+### Templates
+- Templates overview: Manage and view all templates.
+- Template management: Add, edit, or delete templates to simplify the creation of future entries.
+
+### Time Machine
+- Anniversary view: Show all entries that were created on this day in previous years. This feature allows users to reflect on their past by displaying alerts such as "Last year on this same day you added this entry..."
+- Push notifications: Receive push notifications when an anniversary arrives, reminding users of entries from previous years.
+
+### Gallery
+- Media overview: View all images and videos associated with entries by the date they were created.
+
+### Map
+- Google Maps integration: View entries on a map with points representing their locations.
+
+### Mood Tracking
+- Mood graph: Visualize mood development over time with multiple graphs.
+
+### Export/Import
+- Data management: Export and import all data for backup and transfer purposes.
+
+## Installation
+To install and run the latest version of the Personal Diary Management Application, follow one of the methods below:
+
+### Method 1: Install Pre-Built Application
+Visit the [release page](https://github.com/therazix/pv239-diary/releases/latest) on GitHub to download the latest `.apk` and `.aab` files for your Android device.
+
+### Method 2: Build from source
+If you prefer to build the application directly from the source code, follow these steps:
+
+1. Install .NET
+Download and install the .NET SDK. Follow the instructions on [this page]((https://learn.microsoft.com/en-us/dotnet/core/install/windows)).
 
 
-## Labels
+2. Install the MAUI Workload
+```sh
+dotnet workload install maui
+```
 
-- Overview of labels
-- Adding, editing labels (name + color) - form
-- Deleting labels
+3. Clone the repository
+```sh
+git clone https://github.com/therazix/pv239-diary.git
+```
 
-## Templates
+4. Change directory
+```sh
+cd pv239-diary
+```
 
-- Overview of templates
-- Adding, editing templates - form
-- Deleting templates
+5. Restore project dependencies
+```sh
+dotnet restore Diary/Diary/Diary.csproj
+```
 
-## Calendar
-
-- Calendar overview of entries
-
-## Gallery
-
-- Overview of all images and videos added to entries
-- Option to sort by date when the image/video was added
-- Search by image/video name
-
-## Map
-
-- Google Map with points representing individual locations assigned to entries
-
-## Mood
-
-- Display of mood development in a graph
-
-## Further Possible Extensions
-
-- Calendar - setting reminders for specific dates and times (e.g., remind to add a new entry)
-- Export/import of existing entries
-- Anniversaries - displaying alerts like "Last year/week on this same day you added this entry..."
-- Achievements - "Add 10 entries per week, etc."
-
+6. Build application
+```sh
+dotnet build Diary/Diary/Diary.csproj -f net8.0-android -c Release
+```
+- The build files will be located in the `Diary/Diary/bin/Release/net8.0-android` directory.
+- If you want to sign the application, follow the steps provided [here](https://learn.microsoft.com/en-us/dotnet/maui/android/deployment/publish-cli?view=net-maui-8.0).
