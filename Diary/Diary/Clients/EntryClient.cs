@@ -27,6 +27,11 @@ public class EntryClient : IEntryClient
     {
         var entities = await _entryRepository.GetAllAsync();
 
+        if (entryFilter?.FavoriteOnly == true)
+        {
+            entities = entities.Where(e => e.IsFavorite).ToList();
+        }
+
         if (entryFilter?.LabelsToShow?.Count > 0)
         {
             entities = entities

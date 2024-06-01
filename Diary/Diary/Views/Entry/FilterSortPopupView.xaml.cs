@@ -47,6 +47,6 @@ public partial class FilterSortPopupView : Popup
     private async void OnFilterResetButtonClicked(object? sender, EventArgs e)
     {
         var cts = new CancellationTokenSource(Constants.CancellationTokenDelay);
-        await CloseAsync(new EntryFilterModel(), cts.Token);
+        await CloseAsync(new EntryFilterModel { FavoriteOnly = _viewModel.EntryFilter.FavoriteOnly }, cts.Token);
     }
 }
