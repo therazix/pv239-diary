@@ -19,5 +19,7 @@ namespace Diary.Models.Entry
         public DateTime? DateFrom { get; set; }
 
         public DateTime? DateTo { get; set; }
+
+        public bool FavoriteOnly { get; set; }
     }
 }

@@ -20,6 +20,7 @@ public partial class EntryListViewModel : ViewModelBase
     private ICollection<LabelListModel> _labels;
     private EntryFilterModel _entryFilter { get; set; } = new();
 
+    public bool FavoriteFilterSet { get; set; }
     public bool FilterSet { get; set; }
     public EventCollection Events { get; set; } = [];
     public ObservableCollection<EntryListModel>? Items { get; set; }
@@ -41,6 +42,7 @@ public partial class EntryListViewModel : ViewModelBase
         _entryFilter = LoadEntryFilter();
 
         FilterSet = IsFilterSet();
+        FavoriteFilterSet = IsFavoriteFilterSet();
         Items = (await _entryClient.GetAllAsync(_entryFilter)).ToObservableCollection();
 
         Events = ConstructEventCollection(Items);
@@ -103,14 +105,28 @@ public partial class EntryListViewModel : ViewModelBase
 
         if (result is EntryFilterModel entryFilter)
         {
-            _entryFilter = entryFilter;
-            SaveEntryFilter(entryFilter);
-            FilterSet = IsFilterSet();
-
-            Items = (await _entryClient.GetAllAsync(_entryFilter)).ToObservableCollection();
-            Events = ConstructEventCollection(Items);
-            SelectedDayEntries = Items;
+            await ApplyFilter(entryFilter);
         }
+    }
+
+    [RelayCommand]
+    private async Task ToggleFavoriteFilter()
+    {
+        _entryFilter.FavoriteOnly = !_entryFilter.FavoriteOnly;
+
+        await ApplyFilter(_entryFilter);
+    }
+
+    private async Task ApplyFilter(EntryFilterModel entryFilter)
+    {
+        _entryFilter = entryFilter;
+        SaveEntryFilter(entryFilter);
+        FilterSet = IsFilterSet();
+        FavoriteFilterSet = IsFavoriteFilterSet();
+
+        Items = (await _entryClient.GetAllAsync(_entryFilter)).ToObservableCollection();
+        Events = ConstructEventCollection(Items);
+        SelectedDayEntries = Items;
     }
 
     private void SaveEntryFilter(EntryFilterModel filter)
@@ -138,4 +154,6 @@ public partial class EntryListViewModel : ViewModelBase
     {
         return _entryFilter.DateFrom != null || _entryFilter.DateTo != null || _entryFilter.LabelsToShow?.Count > 0 || _entryFilter.MoodsToShow?.Count > 0;
     }
+
+    private bool IsFavoriteFilterSet() => _entryFilter.FavoriteOnly;
 }
