@@ -120,7 +120,8 @@
                     <Editor
                         AutoSize="TextChanges"
                         MinimumHeightRequest="100"
-                        Text="{Binding Entry.Content}" />
+                        Text="{Binding Entry.Content}"
+                        TextColor="{StaticResource PrimaryDarkText}" />
                 </VerticalStackLayout>
             </Border>
 
