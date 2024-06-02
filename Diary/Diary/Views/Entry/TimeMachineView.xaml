@@ -24,7 +24,7 @@
             <StackLayout BindableLayout.ItemsSource="{Binding Entries}" Orientation="Vertical">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="models:EntryListModel">
-                        <Border Margin="5" Style="{StaticResource ShadowBorder}">
+                        <Border Margin="5,10,5,5" Style="{StaticResource ShadowBorder}">
                             <StackLayout>
                                 <StackLayout.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding BindingContext.GoToDetailCommand, Source={x:Reference Root}}" CommandParameter="{Binding Id}" />

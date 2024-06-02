@@ -89,7 +89,6 @@
                                 <Grid ColumnDefinitions="*, Auto">
                                     <Label
                                         Grid.Column="0"
-                                        Grid.ColumnSpan="2"
                                         Margin="0,0,0,15"
                                         HorizontalOptions="Start"
                                         Text="{Binding Content}"
