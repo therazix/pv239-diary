@@ -22,7 +22,7 @@
         </ResourceDictionary>
     </views:ContentPageBase.Resources>
 
-    <Grid Margin="0,5,0,0" Style="{StaticResource ShadowBorder}">
+    <Grid Margin="0,5,0,0">
         <CollectionView Grid.Row="0" ItemsSource="{Binding Items}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:LabelListModel">
