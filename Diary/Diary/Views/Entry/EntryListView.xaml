@@ -47,6 +47,8 @@
             MonthLabelColor="{StaticResource PrimaryLight}"
             SelectedDate="{Binding SelectedDate}"
             SelectedDayBackgroundColor="{StaticResource Primary}"
+            SelectedDayTextColor="{StaticResource PrimaryLightText}"
+            SelectedTodayTextColor="{StaticResource PrimaryLightText}"
             ShownDate="{Binding SelectedDate}"
             TodayOutlineColor="{StaticResource Primary}"
             TodayTextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
