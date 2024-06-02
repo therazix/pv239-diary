@@ -1,28 +1,49 @@
 ﻿using Diary.Entities;
+using Diary.Enums;
+using Diary.Helpers;
 using Diary.Repositories.Interfaces;
 
 namespace Diary.Services;
 public static class DataSeedService
 {
-    public static async Task SeedAsync(IEntryRepository entryRepository, ILabelRepository labelRepository, ITemplateRepository templateRepository)
+    public static async Task SeedAsync(IEntryRepository entryRepository, ILabelRepository labelRepository, ITemplateRepository templateRepository, IMediaRepository mediaRepository)
     {
+        // Seed media
+        var beachMedia = await SaveFileAsync(Properties.Resources.BeachImage, "beach.jpg");
+        var parkMedia = await SaveFileAsync(Properties.Resources.ParkImage, "park.jpg");
+
+        beachMedia = await mediaRepository.SetAsync(beachMedia);
+        parkMedia = await mediaRepository.SetAsync(parkMedia);
+
+        entries[0].Media.Add(beachMedia);
+        entries[3].Media.Add(parkMedia);
+
+        // Seed labels
         foreach (var label in labels)
         {
             await labelRepository.SetAsync(label);
         }
 
-        entries[0].Labels.Add(labels[0]); // Entry 1 has red label
-        entries[1].Labels.Add(labels[1]);
-        entries[1].Labels.Add(labels[2]); // Entry 2 has green and blue labels, Entry 3 has no labels
+        // Seed entries
+        InsertLabelsToEntry(entries[0], [labels[2]]); // Nature
+        InsertLabelsToEntry(entries[1], [labels[4]]); // Work
+        InsertLabelsToEntry(entries[2], [labels[3]]); // Family
+        InsertLabelsToEntry(entries[3], [labels[1], labels[2]]); // Health, Nature
+        InsertLabelsToEntry(entries[4], [labels[0]]); // Entertainment
+        // InsertLabelsToEntry(entries[5], []);
+        InsertLabelsToEntry(entries[6], [labels[1]]); // Health
+        InsertLabelsToEntry(entries[7], [labels[3]]); // Family
+
         foreach (var entry in entries)
         {
             await entryRepository.SetAsync(entry);
         }
 
-        templates[0].Labels.Add(labels[2]); // Template 1 has blue label
-        templates[1].Labels.Add(labels[1]); // Template 2 has green label
-        templates[2].Labels.Add(labels[0]); // Template 3 has red and blue label
-        templates[2].Labels.Add(labels[2]);
+        // Seed templates
+        InsertLabelsToTemplate(templates[0], [labels[2]]); // Nature
+        InsertLabelsToTemplate(templates[1], [labels[0]]); // Entertainment
+        InsertLabelsToTemplate(templates[2], [labels[3]]); // Family
+
         foreach (var template in templates)
         {
             await templateRepository.SetAsync(template);
@@ -33,36 +54,99 @@ public static class DataSeedService
     {
         new EntryEntity()
         {
-            Title = "Entry 1",
-            Content = "Entry Content 1",
-            CreatedAt = DateTime.Now,
-            EditedAt = DateTime.Now,
+            Id = Guid.NewGuid(),
+            Title = "A Day at the Beach",
+            Content = "Today, I spent the day at the beach. The weather was perfect, and the water was warm. I collected seashells and built a sandcastle.",
+            CreatedAt = new DateTime(2024, 6, 1, 19, 21, 28),
+            EditedAt = new DateTime(2024, 6, 1, 19, 21, 28),
+            IsFavorite = true,
+            Mood = 5,
+            Latitude = 42.647362,
+            Longitude = 18.091228,
+            NotificationId = NotificationHelper.GetNotificationIdFromCreationDate(new DateTime(2024, 6, 1, 19, 21, 28))
+        },
+        new EntryEntity()
+        {
+            Id = Guid.NewGuid(),
+            Title = "First Day at New Job",
+            Content = "I started my new job today. It was overwhelming, but my colleagues were very welcoming. I'm excited about this new chapter.",
+            CreatedAt = new DateTime(2024, 5, 3, 17, 38, 10),
+            EditedAt = new DateTime(2024, 5, 3, 18, 05, 41),
+            IsFavorite = false,
+            Mood = 4,
+            Latitude = 49.191245,
+            Longitude = 16.611375,
+            NotificationId = NotificationHelper.GetNotificationIdFromCreationDate(new DateTime(2024, 5, 3, 17, 38, 10))
+        },
+        new EntryEntity()
+        {
+            Id = Guid.NewGuid(),
+            Title = "Family Dinner",
+            Content = "We had a family dinner at Grandma's house. The food was amazing, and it was great to catch up with everyone.",
+            CreatedAt = new DateTime(2024, 5, 14, 21, 57, 43),
+            EditedAt = new DateTime(2024, 5, 14, 21, 57, 43),
+            IsFavorite = true,
+            Mood = 5,
+            NotificationId = NotificationHelper.GetNotificationIdFromCreationDate(new DateTime(2024, 5, 14, 21, 57, 43))
+        },
+        new EntryEntity()
+        {
+            Id = Guid.NewGuid(),
+            Title = "Morning Run",
+            Content = "Went for a run in the park this morning. Felt great to start the day with some exercise and fresh air.",
+            CreatedAt = new DateTime(2024, 5, 31, 12, 48, 39),
+            EditedAt = new DateTime(2024, 5, 31, 12, 48, 39),
+            IsFavorite = false,
+            Mood = 5,
+            NotificationId = NotificationHelper.GetNotificationIdFromCreationDate(new DateTime(2024, 5, 31, 12, 48, 39))
+        },
+        new EntryEntity()
+        {
+            Id = Guid.NewGuid(),
+            Title = "Book Club Meeting",
+            Content = "Had a lively discussion at the book club today. We talked about the themes and characters of our latest read.",
+            CreatedAt = new DateTime(2024, 4, 24, 16, 34, 9),
+            EditedAt = new DateTime(2024, 4, 24, 16, 34, 9),
+            IsFavorite = true,
+            Mood = 3,
+            Latitude = 49.210064,
+            Longitude = 16.599239,
+            NotificationId = NotificationHelper.GetNotificationIdFromCreationDate(new DateTime(2024, 4, 24, 16, 34, 9))
+        },
+        new EntryEntity()
+        {
+            Id = Guid.NewGuid(),
+            Title = "Lost Wallet",
+            Content = "Lost my wallet today. Had to cancel all my cards and go through a lot of hassle. Not a great day.",
+            CreatedAt = new DateTime(2024, 4, 23, 18, 57, 12),
+            EditedAt = new DateTime(2024, 4, 23, 18, 57, 12),
             IsFavorite = false,
             Mood = 1,
-            Latitude = 1,
-            Longitude = 1
+            Latitude = 49.197792,
+            Longitude = 16.643665,
+            NotificationId = NotificationHelper.GetNotificationIdFromCreationDate(new DateTime(2024, 4, 23, 18, 57, 12))
         },
         new EntryEntity()
         {
-            Title = "Entry 2",
-            Content = "Entry Content 2",
-            CreatedAt = DateTime.Now,
-            EditedAt = DateTime.Now,
+            Id = Guid.NewGuid(),
+            Title = "Sick Day",
+            Content = "Spent the whole day in bed with a terrible cold. Missed work and felt really miserable.",
+            CreatedAt = new DateTime(2024, 4, 26, 22, 42, 34),
+            EditedAt = new DateTime(2024, 4, 26, 22, 42, 34),
+            IsFavorite = false,
+            Mood = 1,
+            NotificationId = NotificationHelper.GetNotificationIdFromCreationDate(new DateTime(2024, 4, 26, 22, 42, 34))
+        },
+        new EntryEntity()
+        {
+            Id = Guid.NewGuid(),
+            Title = "Argument with a Friend",
+            Content = "Had a big argument with a close friend. Feel really upset and hope we can resolve it soon.",
+            CreatedAt = new DateTime(2024, 6, 2, 9, 16, 36),
+            EditedAt = new DateTime(2024, 6, 2, 9, 16, 36),
             IsFavorite = false,
             Mood = 2,
-            Latitude = 2,
-            Longitude = 2
-        },
-        new EntryEntity()
-        {
-            Title = "Entry 3",
-            Content = "Entry Content 3",
-            CreatedAt = DateTime.Now,
-            EditedAt = DateTime.Now,
-            IsFavorite = false,
-            Mood = 3,
-            Latitude = 3,
-            Longitude = 3
+            NotificationId = NotificationHelper.GetNotificationIdFromCreationDate(new DateTime(2024, 6, 2, 9, 16, 36))
         }
     };
 
@@ -71,27 +155,21 @@ public static class DataSeedService
     {
         new TemplateEntity()
         {
-            Name = "Template 1",
-            Content = "Template Content 1",
-            Mood = 1,
-            Latitude = 1,
-            Longitude = 1
+            Name = "Outdoor Activity",
+            Content = "Had a wonderful time today doing [activity]. The weather was [weather description], and it was great to be outside. [Additional details about the activity].",
         },
         new TemplateEntity()
         {
-            Name = "Template 2",
-            Content = "Template Content 2",
-            Mood = 2,
-            Latitude = 2,
-            Longitude = 2
+            Name = "Book Club",
+            Content = "",
+            Latitude = 49.210064,
+            Longitude = 16.599239
         },
         new TemplateEntity()
         {
-            Name = "Template 3",
-            Content = "Template Content 3",
-            Mood = 3,
-            Latitude = 3,
-            Longitude = 3
+            Name = "Social Event",
+            Content = "Attended [event] today. It was [description of the event]. Enjoyed spending time with [people involved]. [Additional details about the event].",
+            Mood = 4
         }
     };
 
@@ -99,18 +177,56 @@ public static class DataSeedService
     {
         new LabelEntity()
         {
-            Name = "Label 1",
-            Color = "#FFFF0000" // red
+            Name = "Entertainment",
+            Color = "#FFC2DB00" // yellow
         },
         new LabelEntity()
         {
-            Name = "Label 2",
-            Color = "#FF00FF00" // green
+            Name = "Health",
+            Color = "#FFBA0000" // red
         },
         new LabelEntity()
         {
-            Name = "Label 3",
-            Color = "#FF0000FF" // blue
+            Name = "Nature",
+            Color = "#FF00700D" // green
+        },
+        new LabelEntity()
+        {
+            Name = "Family",
+            Color = "#FF8500AD" // purple
+        },
+        new LabelEntity()
+        {
+            Name = "Work",
+            Color = "#FF0038BA" // blue
         }
     };
+
+    private static async Task<MediaEntity> SaveFileAsync(byte[] imageBytes, string fileName)
+    {
+        using Stream stream = new MemoryStream(imageBytes);
+        var newFileName = await MediaFileService.SaveAsync(stream, fileName);
+        return new MediaEntity()
+        {
+            FileName = newFileName,
+            MediaType = nameof(MediaType.Image),
+            OriginalFileName = fileName
+        };
+    }
+
+    private static void InsertLabelsToEntry(EntryEntity entity, ICollection<LabelEntity> labels)
+    {
+        foreach (var label in labels)
+        {
+            entity.Labels.Add(label);
+        }
+    }
+
+    private static void InsertLabelsToTemplate(TemplateEntity entity, ICollection<LabelEntity> labels)
+    {
+        foreach (var label in labels)
+        {
+            entity.Labels.Add(label);
+        }
+    }
 }
