@@ -19,7 +19,6 @@
             Margin="0,15,0,15"
             FontSize="Medium"
             HorizontalOptions="CenterAndExpand"
-            Style="{StaticResource LabelStripe}"
             Text="{Binding HeadingText}" />
         <ScrollView Grid.Row="1">
             <StackLayout BindableLayout.ItemsSource="{Binding Entries}" Orientation="Vertical">

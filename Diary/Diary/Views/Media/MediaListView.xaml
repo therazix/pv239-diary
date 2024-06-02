@@ -63,7 +63,6 @@
             FontSize="Medium"
             HorizontalOptions="CenterAndExpand"
             IsVisible="{Binding IsEmpty}"
-            Style="{StaticResource LabelStripe}"
             Text="Your entries don't have any media yet." />
         <CollectionView ItemsSource="{Binding MediaGroups}" VerticalOptions="FillAndExpand">
             <CollectionView.ItemTemplate>
