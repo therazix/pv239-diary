@@ -94,14 +94,24 @@
                                         Text="{Binding Content}"
                                         TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
                                                                     Dark={StaticResource PrimaryLightText}}"
-                                        VerticalOptions="Center" />
+                                        VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger
+                                                Binding="{Binding IsFavorite}"
+                                                TargetType="Label"
+                                                Value="False">
+                                                <Setter Property="Grid.ColumnSpan" Value="2" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
                                     <Label
                                         Grid.Column="1"
                                         FontFamily="{x:Static fonts:Fonts.FontAwesome}"
                                         FontSize="Large"
                                         IsVisible="{Binding IsFavorite}"
                                         Text="{Static fonts:FontAwesomeIcons.Star}"
-                                        TextColor="{StaticResource Tertiary}" />
+                                        TextColor="{StaticResource Tertiary}"
+                                        VerticalTextAlignment="End" />
                                 </Grid>
 
                             </StackLayout>
