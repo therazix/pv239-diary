@@ -13,21 +13,34 @@ public static class MediaFileService
     public static async Task<string> SaveAsync(FileResult fileResult)
     {
         using Stream sourceStream = await fileResult.OpenReadAsync();
+        var fileName = fileResult.FileName;
+
+        return await SaveAsync(sourceStream, fileName);
+    }
+
+    /// <summary>
+    /// Saves the file to the media folder and returns the file name.
+    /// If the file already exists, it will not be overwritten and the
+    /// existing file name will be returned. This method does not modify
+    /// the database in any way.
+    /// </summary>
+    public static async Task<string> SaveAsync(Stream sourceStream, string fileName)
+    {
         var fileHash = CalculateMD5(sourceStream);
         sourceStream.Position = 0;
 
-        var fileName = fileHash + Path.GetExtension(fileResult.FileName);
-        var targetFilePath = Path.Combine(Constants.MediaPath, fileName);
+        var newFileName = fileHash + Path.GetExtension(fileName);
+        var targetFilePath = Path.Combine(Constants.MediaPath, newFileName);
 
         if (File.Exists(targetFilePath))
         {
-            return fileName;
+            return newFileName;
         }
 
         using FileStream targetStream = File.OpenWrite(targetFilePath);
         await sourceStream.CopyToAsync(targetStream);
 
-        return fileName;
+        return newFileName;
     }
 
     /// <summary>

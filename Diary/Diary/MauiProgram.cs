@@ -186,7 +186,7 @@ namespace Diary
                 await labelTemplateRepository.CreateTableAsync();
                 await entryMediaRepository.CreateTableAsync();
 
-                await DataSeedService.SeedAsync(entryRepository, labelRepository, templateRepository);
+                await DataSeedService.SeedAsync(entryRepository, labelRepository, templateRepository, mediaRepository);
             }
         }
     }
