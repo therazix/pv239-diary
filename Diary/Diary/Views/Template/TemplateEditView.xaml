@@ -43,7 +43,8 @@
                     <Editor
                         AutoSize="TextChanges"
                         MinimumHeightRequest="100"
-                        Text="{Binding Template.Content}" />
+                        Text="{Binding Template.Content}"
+                        TextColor="{StaticResource PrimaryDarkText}" />
                 </StackLayout>
             </Border>
 
