@@ -57,7 +57,7 @@ public static partial class EntryMapper
     private static string MapEmptyTitleToDefaultTitle(string? title) => string.IsNullOrEmpty(title) ? "No title" : title;
 
     [UserMapping(Default = false)]
-    private static string MapContentToContentSubstring(string content) => content[..Math.Min(content.Length, 50)];
+    private static string MapContentToContentSubstring(string content) => content.Length > 50 ? content[..47] + "..." : content;
 
     [UserMapping(Default = false)]
     private static int MapMediaToMediaCount(ICollection<MediaEntity> media) => media.Count;
