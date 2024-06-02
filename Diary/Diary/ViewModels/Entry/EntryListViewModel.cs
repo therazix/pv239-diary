@@ -47,7 +47,7 @@ public partial class EntryListViewModel : ViewModelBase
 
         Events = ConstructEventCollection(Items);
 
-        DaySelected(DateTime.Now.Date);
+        DaySelected();
     }
 
     private EventCollection ConstructEventCollection(ICollection<EntryListModel> items)
@@ -63,7 +63,7 @@ public partial class EntryListViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void DaySelected(DateTime dateTime)
+    private void DaySelected()
     {
         // When deselecting the date, show all entries
         if (SelectedDate == null)
@@ -72,6 +72,7 @@ public partial class EntryListViewModel : ViewModelBase
         }
         else
         {
+            var dateTime = DateTime.Parse(SelectedDate);
             var dayHasEvents = Events.TryGetValue(dateTime.Date, out var dayEvents);
 
             if (dayHasEvents)
