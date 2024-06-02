@@ -53,7 +53,7 @@ Visit the [release page](https://github.com/therazix/pv239-diary/releases/latest
 If you prefer to build the application directly from the source code, follow these steps:
 
 1. Install .NET
-Download and install the .NET SDK. Follow the instructions on [this page]((https://learn.microsoft.com/en-us/dotnet/core/install/windows)).
+Download and install the .NET SDK. Follow the instructions on [this page](https://learn.microsoft.com/en-us/dotnet/core/install/windows).
 
 
 2. Install the MAUI Workload
