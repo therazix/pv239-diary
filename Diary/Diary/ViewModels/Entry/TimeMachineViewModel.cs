@@ -8,7 +8,7 @@ namespace Diary.ViewModels.Entry;
 public partial class TimeMachineViewModel : ViewModelBase
 {
     private readonly IEntryClient _entryClient;
-    public string HeadingText { get; set; } = "Time machine is loading...";
+    public string HeadingText { get; set; } = string.Empty;
     public ICollection<EntryListModel>? Entries { get; set; }
 
     public TimeMachineViewModel(IEntryClient entryClient)
@@ -20,7 +20,9 @@ public partial class TimeMachineViewModel : ViewModelBase
     {
         var _ = new BusyIndicator(this);
         Entries = await _entryClient.GetByDayFromPreviousYearsAsync(DateTime.Now);
-        HeadingText = Entries.Count > 0 ? "This day in the past..." : "Time machine has nothing to show today...";
+        HeadingText = Entries.Count > 0
+            ? "You created the following entries on this day in previous years:"
+            : "You haven't created any entries on this day in previous years.";
     }
 
     [RelayCommand]

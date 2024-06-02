@@ -83,8 +83,8 @@ public static class DataSeedService
             Id = Guid.NewGuid(),
             Title = "Family Dinner",
             Content = "We had a family dinner at Grandma's house. The food was amazing, and it was great to catch up with everyone.",
-            CreatedAt = new DateTime(2024, 5, 14, 21, 57, 43),
-            EditedAt = new DateTime(2024, 5, 14, 21, 57, 43),
+            CreatedAt = DateTime.Today.AddYears(-1),
+            EditedAt = DateTime.Today.AddYears(-1),
             IsFavorite = true,
             Mood = 5,
             NotificationId = NotificationHelper.GetNotificationIdFromCreationDate(new DateTime(2024, 5, 14, 21, 57, 43))
