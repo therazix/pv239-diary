@@ -149,6 +149,9 @@ namespace Diary
             Routing.RegisterRoute("//templates/create", typeof(TemplateCreateView));
 
             Routing.RegisterRoute("//importexport", typeof(ImportExportView));
+
+            Routing.RegisterRoute("//map/detail", typeof(EntryDetailView));
+            Routing.RegisterRoute("//map/edit", typeof(EntryEditView));
         }
 
         private static void SetupDirectories()

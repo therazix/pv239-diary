@@ -22,6 +22,6 @@ public partial class MapView
     {
         e.HideInfoWindow = true;
         var pinModel = (PinModel)((Pin)sender).BindingContext; // Get original pin model
-        await Shell.Current.GoToAsync("//entries/detail", new Dictionary<string, object> { ["id"] = pinModel.EntryId });
+        await Shell.Current.GoToAsync("//map/detail", new Dictionary<string, object> { ["id"] = pinModel.EntryId });
     }
 }
