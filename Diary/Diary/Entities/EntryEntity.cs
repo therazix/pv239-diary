@@ -8,9 +8,7 @@ namespace Diary.Entities
 
         public string Content { get; set; } = string.Empty;
 
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime EditedAt { get; set; }
+        public DateTime DateTime { get; set; }
 
         public bool IsFavorite { get; set; }
 

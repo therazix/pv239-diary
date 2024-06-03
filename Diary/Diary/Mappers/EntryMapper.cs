@@ -20,7 +20,7 @@ public static partial class EntryMapper
 
     public static partial ICollection<EntryListModel> MapToListModels(this ICollection<EntryEntity> entities);
 
-    [MapProperty(nameof(EntryEntity.CreatedAt), nameof(MoodListModel.DateTime))]
+    [MapProperty(nameof(EntryEntity.DateTime), nameof(MoodListModel.DateTime))]
     public static partial MoodListModel MapToMoodListModel(this EntryEntity entities);
 
     public static partial ICollection<MoodListModel> MapToMoodListModels(this ICollection<EntryEntity> entities);
@@ -31,7 +31,7 @@ public static partial class EntryMapper
         {
             EntryId = entity.Id,
             Title = entity.Title,
-            Description = $"Created: {entity.CreatedAt.ToString(Constants.MapDateTimeFormat)}",
+            Description = $"Created: {entity.DateTime.ToString(Constants.MapDateTimeFormat)}",
             Location = new Location()
             {
                 Latitude = entity.Latitude ?? 0,

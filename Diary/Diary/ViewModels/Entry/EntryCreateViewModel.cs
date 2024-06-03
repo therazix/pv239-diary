@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 
 namespace Diary.ViewModels.Entry;
 
+[QueryProperty(nameof(PredefinedDateTime), "dateTime")]
 public partial class EntryCreateViewModel : ViewModelBase
 {
     private readonly IEntryClient _entryClient;
@@ -29,6 +30,10 @@ public partial class EntryCreateViewModel : ViewModelBase
     public ObservableCollection<LabelListModel> Labels { get; set; }
     public ObservableCollection<object> SelectedLabels { get; set; }
     public ObservableCollection<TemplateDetailModel> Templates { get; set; }
+    public DateTime SelectedDate { get; set; } = DateTime.Now;
+    public TimeSpan SelectedTime { get; set; } = DateTime.Now.TimeOfDay;
+    public bool UseCurrentDateTime { get; set; } = true;
+    public DateTime PredefinedDateTime { get; set; }
 
     public bool IsLocationSet { get; set; } = false;
     public string LocationText { get; set; } = string.Empty;
@@ -64,6 +69,13 @@ public partial class EntryCreateViewModel : ViewModelBase
             Id = Guid.Empty
         };
 
+        if (PredefinedDateTime != DateTime.MinValue)
+        {
+            SelectedDate = PredefinedDateTime.Date;
+            SelectedTime = PredefinedDateTime.TimeOfDay;
+            UseCurrentDateTime = false;
+        }
+
         var labels = await _labelClient.GetAllAsync();
         Labels = labels.ToObservableCollection();
 
@@ -79,6 +91,8 @@ public partial class EntryCreateViewModel : ViewModelBase
         if (Entry != null)
         {
             using var _ = new BusyIndicator(this);
+
+            SaveSelectedDateTime();
             Entry.Labels = new ObservableCollection<LabelListModel>(SelectedLabels.Select(l => (LabelListModel)l));
             await _entryClient.SetAsync(Entry);
         }
@@ -193,6 +207,21 @@ public partial class EntryCreateViewModel : ViewModelBase
         if (Entry != null)
         {
             Entry.IsFavorite = !Entry.IsFavorite;
+        }
+    }
+
+    private void SaveSelectedDateTime()
+    {
+        if (Entry != null)
+        {
+            if (UseCurrentDateTime)
+            {
+                Entry.DateTime = DateTime.Now;
+            }
+            else
+            {
+                Entry.DateTime = new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day, SelectedTime.Hours, SelectedTime.Minutes, SelectedTime.Seconds);
+            }
         }
     }
 

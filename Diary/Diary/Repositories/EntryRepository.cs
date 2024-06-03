@@ -25,7 +25,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         var entities = await GetAllAsync();
 
         entities = entities
-            .Where(e => e.CreatedAt.Month == date.Month && e.CreatedAt.Day == date.Day && e.CreatedAt.Year < date.Year)
+            .Where(e => e.DateTime.Month == date.Month && e.DateTime.Day == date.Day && e.DateTime.Year < date.Year)
             .ToList();
 
         return entities;
@@ -61,10 +61,9 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         if (entity.Id == Guid.Empty)
         {
             entity.Id = Guid.NewGuid();
-            entity.CreatedAt = DateTime.Now;
-            entity.NotificationId = NotificationHelper.GetNotificationIdFromCreationDate(entity.CreatedAt);
         }
-        entity.EditedAt = DateTime.Now;
+
+        entity.NotificationId = NotificationHelper.GetNotificationIdFromCreationDate(entity.DateTime);
 
         // Get existing labels and media that are connected to the entry
         var existingLabels = await GetLabelEntriesByEntryIdAsync(entity.Id);
@@ -133,7 +132,7 @@ public class EntryRepository : RepositoryBase<EntryEntity>, IEntryRepository
         dateTo = new DateTime(dateTo.Year, dateTo.Month, dateTo.Day, 23, 59, 59);
 
         return await connection.Table<EntryEntity>()
-            .Where(e => e.CreatedAt >= dateFrom && e.CreatedAt <= dateTo)
+            .Where(e => e.DateTime >= dateFrom && e.DateTime <= dateTo)
             .ToListAsync();
     }
 

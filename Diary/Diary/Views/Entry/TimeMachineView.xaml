@@ -43,7 +43,7 @@
                                         Grid.Row="0"
                                         Grid.Column="1"
                                         HorizontalOptions="End"
-                                        Text="{Binding CreatedAt, StringFormat='{0:D}'}"
+                                        Text="{Binding DateTime, StringFormat='{0:D}'}"
                                         TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
                                                                     Dark={StaticResource PrimaryLightText}}"
                                         VerticalOptions="Center" />

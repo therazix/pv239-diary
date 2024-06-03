@@ -10,8 +10,8 @@ namespace Diary.Enums
             [Display(Name = nameof(EntryEntity.Title))]
             Title,
 
-            [Display(Name = nameof(EntryEntity.CreatedAt))]
-            CreatedAt,
+            [Display(Name = nameof(EntryEntity.DateTime))]
+            DateTime,
 
             [Display(Name = nameof(EntryEntity.Mood))]
             Mood,

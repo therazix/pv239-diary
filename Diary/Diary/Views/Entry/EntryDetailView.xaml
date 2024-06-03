@@ -83,13 +83,8 @@
                             TextColor="{StaticResource Tertiary}" />
                     </Grid>
                     <HorizontalStackLayout Padding="0,5,0,0">
-                        <Label FontAttributes="Bold" Text="Created at: " />
-                        <Label FontAttributes="Italic" Text="{Binding Entry.CreatedAt}" />
-                    </HorizontalStackLayout>
-
-                    <HorizontalStackLayout>
-                        <Label FontAttributes="Bold" Text="Edited at: " />
-                        <Label FontAttributes="Italic" Text="{Binding Entry.EditedAt}" />
+                        <Label FontAttributes="Bold" Text="Date: " />
+                        <Label FontAttributes="Italic" Text="{Binding Entry.DateTime, StringFormat='{0:M/d/yyyy h:mm tt}'}" />
                     </HorizontalStackLayout>
 
                     <Label Margin="0,15,0,0" Text="{Binding Entry.Content}" />
