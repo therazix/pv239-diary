@@ -62,7 +62,7 @@
         </DataTemplate>
     </Shell.ItemTemplate>
 
-    <FlyoutItem Title="Entries">
+    <FlyoutItem Title="{x:Static t:AppShellTexts.Entries_FlyoutItem_Title}">
         <FlyoutItem.Icon>
             <FontImageSource
                 FontFamily="{Static f:Fonts.FontAwesome}"
@@ -70,11 +70,11 @@
                 Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
         <ShellContent
-            Title="Entries"
+            Title="{x:Static t:AppShellTexts.Entries_FlyoutItem_Title}"
             ContentTemplate="{DataTemplate entryviews:EntryListView}"
             Route="entries" />
     </FlyoutItem>
-    <FlyoutItem Title="Time machine">
+    <FlyoutItem Title="{x:Static t:AppShellTexts.TimeMachine_FlyoutItem_Title}">
         <FlyoutItem.Icon>
             <FontImageSource
                 FontFamily="{Static f:Fonts.FontAwesome}"
@@ -82,11 +82,11 @@
                 Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
         <ShellContent
-            Title="Time machine"
+            Title="{x:Static t:AppShellTexts.TimeMachine_FlyoutItem_Title}"
             ContentTemplate="{DataTemplate entryviews:TimeMachineView}"
             Route="TimeMachine" />
     </FlyoutItem>
-    <FlyoutItem Title="Templates">
+    <FlyoutItem Title="{x:Static t:AppShellTexts.Templates_FlyoutItem_Title}">
         <FlyoutItem.Icon>
             <FontImageSource
                 FontFamily="{Static f:Fonts.FontAwesome}"
@@ -94,11 +94,11 @@
                 Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
         <ShellContent
-            Title="Templates"
+            Title="{x:Static t:AppShellTexts.Templates_FlyoutItem_Title}"
             ContentTemplate="{DataTemplate templateviews:TemplateListView}"
             Route="templates" />
     </FlyoutItem>
-    <FlyoutItem Title="Labels">
+    <FlyoutItem Title="{x:Static t:AppShellTexts.Labels_FlyoutItem_Title}">
         <FlyoutItem.Icon>
             <FontImageSource
                 FontFamily="{Static f:Fonts.FontAwesome}"
@@ -106,7 +106,7 @@
                 Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
         <ShellContent
-            Title="Labels"
+            Title="{x:Static t:AppShellTexts.Labels_FlyoutItem_Title}"
             ContentTemplate="{DataTemplate labelviews:LabelListView}"
             Route="labels" />
     </FlyoutItem>
@@ -135,7 +135,7 @@
             Route="mood" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Import &amp; Export">
+    <FlyoutItem Title="{x:Static t:AppShellTexts.ImportExport_FlyoutItem_Title}">
         <FlyoutItem.Icon>
             <FontImageSource
                 FontFamily="{Static f:Fonts.FontAwesome}"
@@ -143,12 +143,12 @@
                 Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
         <ShellContent
-            Title="Import &amp; Export"
+            Title="{x:Static t:AppShellTexts.ImportExport_FlyoutItem_Title}"
             ContentTemplate="{DataTemplate importexportviews:ImportExportView}"
             Route="importexport" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Map">
+    <FlyoutItem Title="{x:Static t:AppShellTexts.Map_FlyoutItem_Title}">
         <FlyoutItem.Icon>
             <FontImageSource
                 FontFamily="{Static f:Fonts.FontAwesome}"
@@ -156,7 +156,7 @@
                 Color="{StaticResource PrimaryLightText}" />
         </FlyoutItem.Icon>
         <ShellContent
-            Title="Map"
+            Title="{x:Static t:AppShellTexts.Map_FlyoutItem_Title}"
             ContentTemplate="{DataTemplate mapviews:MapView}"
             Route="map" />
     </FlyoutItem>

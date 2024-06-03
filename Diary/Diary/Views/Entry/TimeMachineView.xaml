@@ -10,7 +10,7 @@
     xmlns:views="clr-namespace:Diary.Views"
     xmlns:vm="clr-namespace:Diary.ViewModels.Entry"
     x:Name="Root"
-    Title="Time machine"
+    Title="Time Machine"
     x:DataType="vm:TimeMachineViewModel">
 
     <Grid Margin="15,0,15,5" RowDefinitions="Auto, *">

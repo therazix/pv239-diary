@@ -123,13 +123,28 @@
   <data name="Diary_FlyoutItem_Title" xml:space="preserve">
     <value>Diary</value>
   </data>
+  <data name="Entries_FlyoutItem_Title" xml:space="preserve">
+    <value>Entries</value>
+  </data>
   <data name="Gallery_FlyoutItem_Title" xml:space="preserve">
     <value>Gallery</value>
+  </data>
+  <data name="ImportExport_FlyoutItem_Title" xml:space="preserve">
+    <value>Import &amp; Export</value>
+  </data>
+  <data name="Labels_FlyoutItem_Title" xml:space="preserve">
+    <value>Labels</value>
   </data>
   <data name="Map_FlyoutItem_Title" xml:space="preserve">
     <value>Map</value>
   </data>
   <data name="Mood_FlyoutItem_Title" xml:space="preserve">
     <value>Mood</value>
+  </data>
+  <data name="Templates_FlyoutItem_Title" xml:space="preserve">
+    <value>Templates</value>
+  </data>
+  <data name="TimeMachine_FlyoutItem_Title" xml:space="preserve">
+    <value>Time Machine</value>
   </data>
 </root>
