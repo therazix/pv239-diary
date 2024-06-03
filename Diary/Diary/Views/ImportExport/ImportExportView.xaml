@@ -17,14 +17,22 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Button
+        <Label
             Grid.Row="0"
+            Margin="0,10,0,15"
+            FontSize="Medium"
+            HorizontalOptions="CenterAndExpand"
+            Text="Here you can export and import all of your data." />
+
+        <Button
+            Grid.Row="1"
             Command="{Binding ExportCommand}"
             Text="Export" />
         <Button
-            Grid.Row="1"
+            Grid.Row="2"
             Command="{Binding ImportCommand}"
             Text="Import" />
     </Grid>
