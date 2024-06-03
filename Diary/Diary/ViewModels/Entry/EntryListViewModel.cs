@@ -26,6 +26,7 @@ public partial class EntryListViewModel : ViewModelBase
     public ObservableCollection<EntryListModel>? Items { get; set; }
     public ObservableCollection<EntryListModel>? SelectedDayEntries { get; set; } = [];
     public string? SelectedDate { get; set; } = null;
+    public DateTime SelectedDateTime { get; set; } = DateTime.MinValue;
 
     public EntryListViewModel(IEntryClient entryClient, ILabelClient labelClient, IPopupService popupService)
     {
@@ -54,7 +55,7 @@ public partial class EntryListViewModel : ViewModelBase
     {
         var eventCollection = new EventCollection();
 
-        foreach (var itemsByCreationDate in items.GroupBy(i => i.CreatedAt.Date))
+        foreach (var itemsByCreationDate in items.GroupBy(i => i.DateTime.Date))
         {
             eventCollection[itemsByCreationDate.Key] = itemsByCreationDate.ToList();
         }
@@ -65,14 +66,9 @@ public partial class EntryListViewModel : ViewModelBase
     [RelayCommand]
     private void DaySelected()
     {
-        // When deselecting the date, show all entries
-        if (SelectedDate == null)
+        if (DateTime.TryParse(SelectedDate, out var dateTime))
         {
-            SelectedDayEntries = Items;
-        }
-        else
-        {
-            var dateTime = DateTime.Parse(SelectedDate);
+            SelectedDateTime = dateTime;
             var dayHasEvents = Events.TryGetValue(dateTime.Date, out var dayEvents);
 
             if (dayHasEvents)
@@ -85,6 +81,12 @@ public partial class EntryListViewModel : ViewModelBase
                 SelectedDayEntries = [];
             }
         }
+        else
+        {
+            // When deselecting the date, show all entries
+            SelectedDayEntries = Items;
+            SelectedDateTime = DateTime.MinValue;
+        }
     }
 
     [RelayCommand]
@@ -94,9 +96,9 @@ public partial class EntryListViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task GoToCreateAsync()
+    private async Task GoToCreateAsync(DateTime dateTime)
     {
-        await Shell.Current.GoToAsync("//entries/create");
+        await Shell.Current.GoToAsync("//entries/create", new Dictionary<string, object> { ["dateTime"] = dateTime });
     }
 
     [RelayCommand]
@@ -120,6 +122,8 @@ public partial class EntryListViewModel : ViewModelBase
 
     private async Task ApplyFilter(EntryFilterModel entryFilter)
     {
+        using var _ = new BusyIndicator(this);
+
         _entryFilter = entryFilter;
         SaveEntryFilter(entryFilter);
         FilterSet = IsFilterSet();

@@ -28,6 +28,10 @@ public partial class EntryEditViewModel : ViewModelBase
     public EntryDetailModel Entry { get; set; } = null!;
     public ObservableCollection<LabelListModel> Labels { get; set; }
     public ObservableCollection<object> SelectedLabels { get; set; }
+    public DateTime SelectedDate { get; set; } = DateTime.Now;
+    public TimeSpan SelectedTime { get; set; } = DateTime.Now.TimeOfDay;
+    public bool UseCurrentDateTime { get; set; }
+
     public bool IsLocationSet { get; set; } = false;
     public string LocationText { get; set; } = string.Empty;
     public Color LocationTextColor { get; set; } = Color.FromArgb("#FF000000");
@@ -49,6 +53,9 @@ public partial class EntryEditViewModel : ViewModelBase
     public override async Task OnAppearingAsync()
     {
         using var _ = new BusyIndicator(this);
+
+        SelectedDate = Entry.DateTime.Date;
+        SelectedTime = Entry.DateTime.TimeOfDay;
 
         var labels = await _labelClient.GetAllAsync();
         SelectedLabels = new ObservableCollection<object>(labels.Where(l => Entry.Labels.Select(el => el.Id).Contains(l.Id)));
@@ -72,6 +79,8 @@ public partial class EntryEditViewModel : ViewModelBase
     {
         using (new BusyIndicator(this))
         {
+            SaveSelectedDateTime();
+
             _mediaToDelete = _mediaToDelete.Where(m => Entry.Media.All(em => em.Id != m.Id)).ToList();
             await _mediaClient.DeleteIfUnusedAsync(_mediaToDelete, [Entry.Id]);
             _mediaToDelete.Clear();
@@ -162,6 +171,18 @@ public partial class EntryEditViewModel : ViewModelBase
         if (Entry != null)
         {
             Entry.IsFavorite = !Entry.IsFavorite;
+        }
+    }
+
+    private void SaveSelectedDateTime()
+    {
+        if (UseCurrentDateTime)
+        {
+            Entry.DateTime = DateTime.Now;
+        }
+        else
+        {
+            Entry.DateTime = new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day, SelectedTime.Hours, SelectedTime.Minutes, SelectedTime.Seconds);
         }
     }
 

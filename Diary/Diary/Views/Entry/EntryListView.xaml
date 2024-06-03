@@ -83,7 +83,7 @@
                                     <Label
                                         Grid.Column="1"
                                         HorizontalOptions="End"
-                                        Text="{Binding CreatedAt, StringFormat='{0:D}'}"
+                                        Text="{Binding DateTime, StringFormat='{0:D}'}"
                                         TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText},
                                                                     Dark={StaticResource PrimaryLightText}}"
                                         VerticalOptions="Center" />
@@ -131,7 +131,8 @@
             <Button
                 Grid.Column="0"
                 BackgroundColor="{StaticResource PrimaryLight}"
-                Command="{Binding GoToCreateCommand}"
+                Command="{Binding BindingContext.GoToCreateCommand, Source={x:Reference Root}}"
+                CommandParameter="{Binding SelectedDateTime}"
                 FontAttributes="Bold"
                 Text="Add new"
                 TextColor="White"

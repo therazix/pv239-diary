@@ -8,7 +8,7 @@ namespace Diary.Models.Entry
 {
     public record EntryFilterModel : ModelBase
     {
-        public OrderByProperty? OrderByProperty { get; set; } = EntryFilterEnums.OrderByProperty.CreatedAt;
+        public OrderByProperty? OrderByProperty { get; set; } = EntryFilterEnums.OrderByProperty.DateTime;
 
         public OrderByDirection? OrderByDirection { get; set; } = EntryFilterEnums.OrderByDirection.Descending;
 

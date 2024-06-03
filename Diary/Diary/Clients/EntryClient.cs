@@ -48,12 +48,12 @@ public class EntryClient : IEntryClient
 
         if (entryFilter?.DateFrom != null)
         {
-            entities = entities.Where(e => e.CreatedAt >= entryFilter.DateFrom).ToList();
+            entities = entities.Where(e => e.DateTime >= entryFilter.DateFrom).ToList();
         }
 
         if (entryFilter?.DateTo != null)
         {
-            entities = entities.Where(e => e.CreatedAt < entryFilter.DateTo.Value.AddDays(1)).ToList();
+            entities = entities.Where(e => e.DateTime < entryFilter.DateTo.Value.AddDays(1)).ToList();
         }
 
         if (entryFilter?.OrderByProperty != null)
@@ -76,7 +76,7 @@ public class EntryClient : IEntryClient
     public async Task<ICollection<EntryListModel>> GetByDayFromPreviousYearsAsync(DateTime date)
     {
         var entities = await _entryRepository.GetByDayFromPreviousYearsAsync(date);
-        entities = entities.OrderByDescending(e => e.CreatedAt).ToList();
+        entities = entities.OrderByDescending(e => e.DateTime).ToList();
 
         return entities.MapToListModels();
     }
@@ -94,13 +94,20 @@ public class EntryClient : IEntryClient
     /// </summary>
     public async Task<EntryDetailModel> SetAsync(EntryDetailModel model)
     {
+        DateTime? oldDateTime = null;
+        if (model.Id != Guid.Empty)
+        {
+            var oldEntity = await _entryRepository.GetByIdAsync(model.Id);
+            oldDateTime = oldEntity?.DateTime;
+        }
+
         var entity = model.MapToEntity();
         var savedEntity = await _entryRepository.SetAsync(entity);
         await _mediaRepository.DeleteIfUnusedAsync(entity.Media);
         await MediaFileService.DeleteUnusedFilesAsync(_mediaRepository);
 
 #if ANDROID
-        await ScheduleTimeMachineNotificationAsync(savedEntity);
+        await ScheduleTimeMachineNotificationAsync(savedEntity, oldDateTime);
 #endif
         return savedEntity.MapToDetailModel();
     }
@@ -144,46 +151,73 @@ public class EntryClient : IEntryClient
         return entitiesWithLocation.MapToPinModels();
     }
 
-    private async Task ScheduleTimeMachineNotificationAsync(EntryEntity entity)
+    private async Task ScheduleTimeMachineNotificationAsync(EntryEntity entity, DateTime? oldDateTime)
     {
         if (await LocalNotificationCenter.Current.AreNotificationsEnabled() == false)
         {
             await LocalNotificationCenter.Current.RequestNotificationPermission();
         }
 
+        if (oldDateTime != null) // If the entry is being updated, the old notification must be updated or removed
+        {
+            var oldNotificationId = Helpers.NotificationHelper.GetNotificationIdFromCreationDate(oldDateTime.Value);
+            var entriesWithOldNotificationId = await _entryRepository.GetByNotificationIdAsync(oldNotificationId);
+
+            LocalNotificationCenter.Current.Cancel(oldNotificationId);
+
+            if (entriesWithOldNotificationId.Count > 0)
+            {
+                var previousNotification = CreateNotification(oldNotificationId, oldDateTime.Value, entriesWithOldNotificationId.Count);
+                await LocalNotificationCenter.Current.Show(previousNotification);
+            }
+        }
+
         var entriesWithTheSameNotificationId = await _entryRepository.GetByNotificationIdAsync(entity.NotificationId);
 
-        TimeSpan repeatInterval;
-        DateTime notificationDate = entity.CreatedAt.AddYears(1);
+        LocalNotificationCenter.Current.Cancel(entity.NotificationId);
 
-        if (entity.CreatedAt.Month == 2 && entity.CreatedAt.Day == 29)
+        var request = CreateNotification(entity.NotificationId, entity.DateTime, entriesWithTheSameNotificationId.Count);
+
+        await LocalNotificationCenter.Current.Show(request);
+    }
+
+    private NotificationRequest CreateNotification(int notificationId, DateTime date, int numOfEntries)
+    {
+        TimeSpan interval;
+
+        if (date.Month == 2 && date.Day == 29)
         {
-            notificationDate = entity.CreatedAt.AddYears(4);
-            repeatInterval = TimeSpan.FromDays(365 * 3 + 366);
+            while (date < DateTime.Now) // Notification date must be in the future
+            {
+                date = date.AddYears(4);
+            }
+            interval = TimeSpan.FromDays(365 * 3 + 366);
         }
         else
         {
-            repeatInterval = notificationDate - entity.CreatedAt;
+            while (date < DateTime.Now) // Notification date must be in the future
+            {
+                date = date.AddYears(1);
+            }
+            interval = TimeSpan.FromDays(365);
         }
 
-        var request = new NotificationRequest
+
+        var entryText = numOfEntries > 1 ? "entries" : "entry";
+
+        return new NotificationRequest
         {
-            NotificationId = entity.NotificationId,
+            NotificationId = notificationId,
             Title = "Diary Time Machine",
-            Description = $"You have already written {entriesWithTheSameNotificationId.Count} entries on this day in the past.",
+            Description = $"You have already written {numOfEntries} {entryText} on this day in the past.",
 
             Schedule = new NotificationRequestSchedule
             {
-                NotifyTime = notificationDate,
-                NotifyRepeatInterval = repeatInterval,
+                NotifyTime = date,
+                NotifyRepeatInterval = interval,
                 RepeatType = NotificationRepeat.TimeInterval
             },
             Android = { Priority = AndroidPriority.High }
         };
-
-        // Remove scheduled notification with out-of-date number of diary entries written on the same day
-        LocalNotificationCenter.Current.Cancel([entity.NotificationId]);
-
-        await LocalNotificationCenter.Current.Show(request);
     }
 }

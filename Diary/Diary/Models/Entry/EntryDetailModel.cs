@@ -9,8 +9,7 @@ public record EntryDetailModel : ModelBase
     public required Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; }
-    public DateTime EditedAt { get; set; }
+    public DateTime DateTime { get; set; }
     public bool IsFavorite { get; set; }
 
     [Range(1, 5)]

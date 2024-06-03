@@ -74,12 +74,12 @@
                             Grid.Row="2"
                             Grid.Column="0"
                             FontAttributes="Bold"
-                            Text="Created from:" />
+                            Text="From:" />
                         <Label
                             Grid.Row="2"
                             Grid.Column="1"
                             FontAttributes="Bold"
-                            Text="Created to:" />
+                            Text="To:" />
                         <DatePicker
                             Grid.Row="3"
                             Grid.Column="0"
