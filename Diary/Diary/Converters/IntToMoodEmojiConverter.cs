@@ -5,7 +5,7 @@ namespace Diary.Converters
 {
     public class IntToMoodEmojiConverter : BaseConverterOneWay<int, string>
     {
-        private static readonly string _defaultMoodEmoji = "😢";
+        private static readonly string _defaultMoodEmoji = ":(";
 
         public override string ConvertFrom(int value, CultureInfo? culture = null)
         {
