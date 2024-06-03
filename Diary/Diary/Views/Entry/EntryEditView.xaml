@@ -146,6 +146,7 @@
                         Grid.Row="3"
                         Grid.Column="1"
                         Margin="0,5,0,0"
+                        TextColor="{StaticResource PrimaryDarkText}"
                         Time="{Binding SelectedTime}">
                         <TimePicker.Triggers>
                             <DataTrigger
@@ -153,6 +154,7 @@
                                 TargetType="TimePicker"
                                 Value="True">
                                 <Setter Property="IsEnabled" Value="False" />
+                                <Setter Property="TextColor" Value="{StaticResource Gray400}" />
                             </DataTrigger>
                         </TimePicker.Triggers>
                     </TimePicker>
