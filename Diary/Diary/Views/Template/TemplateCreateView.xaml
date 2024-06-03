@@ -165,6 +165,7 @@
                         Grid.Row="5"
                         Grid.ColumnSpan="2"
                         ItemsSource="{Binding Labels}"
+                        MaximumHeightRequest="120"
                         SelectedItems="{Binding SelectedLabels, Mode=TwoWay}"
                         SelectionMode="Multiple">
                         <CollectionView.ItemTemplate>

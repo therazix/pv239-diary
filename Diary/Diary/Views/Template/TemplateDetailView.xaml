@@ -89,7 +89,7 @@
                             Margin="0,15,0,0"
                             FontAttributes="Bold"
                             Text="Labels:" />
-                        <CollectionView ItemsSource="{Binding Template.Labels}">
+                        <CollectionView ItemsSource="{Binding Template.Labels}" MaximumHeightRequest="120">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="labelmodels:LabelListModel">
                                     <StackLayout Orientation="Horizontal" Spacing="10">

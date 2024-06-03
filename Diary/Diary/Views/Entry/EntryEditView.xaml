@@ -254,6 +254,7 @@
                         Text="Labels:" />
                     <CollectionView
                         ItemsSource="{Binding Labels}"
+                        MaximumHeightRequest="120"
                         SelectedItems="{Binding SelectedLabels, Mode=TwoWay}"
                         SelectionMode="Multiple">
                         <CollectionView.ItemTemplate>

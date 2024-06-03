@@ -147,7 +147,7 @@
                         Padding="0,10,0,0"
                         IsVisible="{Binding HasLabels}">
                         <Label FontAttributes="Bold" Text="Labels:" />
-                        <CollectionView ItemsSource="{Binding Entry.Labels}">
+                        <CollectionView ItemsSource="{Binding Entry.Labels}" MaximumHeightRequest="120">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="labelmodels:LabelListModel">
                                     <StackLayout Orientation="Horizontal" Spacing="10">
