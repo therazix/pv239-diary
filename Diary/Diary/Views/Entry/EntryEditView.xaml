@@ -190,6 +190,7 @@
                         <Label FontAttributes="Bold" Text="Mood:" />
                         <Slider
                             Maximum="5"
+                            MaximumTrackColor="{StaticResource PrimaryDarkText}"
                             Minimum="1"
                             WidthRequest="200"
                             Value="{Binding Entry.Mood}" />

@@ -75,6 +75,7 @@
                             Grid.Column="0"
                             IsEnabled="{Binding PresetMood}"
                             Maximum="5"
+                            MaximumTrackColor="{StaticResource PrimaryDarkText}"
                             Minimum="1"
                             Value="{Binding Template.Mood}" />
                         <Label
