@@ -41,6 +41,7 @@
                                                      Dark={StaticResource PrimaryLightText}}"
             EventIndicatorColor="{AppThemeBinding Light={StaticResource TertiaryDark},
                                                   Dark={StaticResource Tertiary}}"
+            EventIndicatorSelectedTextColor="{StaticResource PrimaryLightText}"
             EventIndicatorType="BottomDot"
             Events="{Binding Events}"
             HorizontalOptions="Fill"
