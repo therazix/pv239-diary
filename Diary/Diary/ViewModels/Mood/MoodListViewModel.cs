@@ -25,7 +25,8 @@ public partial class MoodListViewModel : ViewModelBase
 
     public DateTime AverageMoodFrom { get; set; }
     public DateTime AverageMoodTo { get; set; }
-    public string MonthRadarChartDayFromText { get; set; }
+    public string MonthRadarChartSubHeaderText { get; set; }
+    public string WeekLineChartSubHeaderText { get; set; }
     public LineChart WeekLineChart { get; set; }
     public RadarChart MonthRadarChart { get; set; }
     public PointChart AverageMoodPointChart { get; set; }
@@ -90,6 +91,8 @@ public partial class MoodListViewModel : ViewModelBase
     [RelayCommand]
     private async Task ChangeAverageMoodChartRangeAsync()
     {
+        using var _ = new BusyIndicator(this);
+
         var moodEntries = await _entryClient.GetMoodFromEntriesByDateRangeAsync(AverageMoodFrom, AverageMoodTo);
 
         SetAverageMoodPointChart(moodEntries);
@@ -111,6 +114,8 @@ public partial class MoodListViewModel : ViewModelBase
 
     private void SetWeekLineChart(ICollection<MoodListModel> moodEntries)
     {
+        WeekLineChartSubHeaderText = $"{_weekLineChartDayFrom:M/d/yyyy} - {_weekLineChartDayTo:M/d/yyyy}";
+
         var lineChartEntries = GetEntriesForWeekLineChart(moodEntries);
 
         WeekLineChart = new LineChart
@@ -129,6 +134,8 @@ public partial class MoodListViewModel : ViewModelBase
 
     private void SetMonthRadarChart(ICollection<MoodListModel> moodEntries)
     {
+        MonthRadarChartSubHeaderText = _monthRadarChartDayFrom.ToString("MMMM yyyy");
+
         var radarChartEntries = GetEntriesForMonthRadarChart(moodEntries);
         var maxValue = radarChartEntries.Any()
                 ? radarChartEntries.Where(e => e.Value != null).Max(e => (float)e.Value!) + 0.35f // Without adding this value, some circles may not be fully visible in charts
@@ -169,14 +176,14 @@ public partial class MoodListViewModel : ViewModelBase
     private List<ChartEntry> GetEntriesForWeekLineChart(ICollection<MoodListModel> moodEntries)
     {
         var currentWeekDays = Enumerable.Range(0, 7)
-            .Select(i => _weekLineChartDayFrom.AddDays(i).ToString("dd.MM."))
+            .Select(i => _weekLineChartDayFrom.AddDays(i).ToString("M/d"))
             .ToList();
 
         var lineChartEntries = new List<ChartEntry>();
 
         foreach (var day in currentWeekDays)
         {
-            var moods = moodEntries.Where(m => m.DateTime.ToString("dd.MM.") == day);
+            var moods = moodEntries.Where(m => m.DateTime.ToString("M/d") == day);
             var moodColors = moods.Select(m => _intToMoodColorConverter.ConvertFrom(m.Mood)).ToList();
 
             var averageMood = moods.Any()

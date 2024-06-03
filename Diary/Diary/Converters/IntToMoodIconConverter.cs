@@ -8,7 +8,7 @@ public class IntToMoodIconConverter : BaseConverterOneWay<int, string>
 {
     private static readonly string _defaultMoodIconName = "";
 
-    public override string ConvertFrom(int value, CultureInfo? culture)
+    public override string ConvertFrom(int value, CultureInfo? culture = null)
     {
         return value switch
         {
