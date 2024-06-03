@@ -79,11 +79,38 @@ namespace Diary.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Entries.
+        /// </summary>
+        internal static string Entries_FlyoutItem_Title {
+            get {
+                return ResourceManager.GetString("Entries_FlyoutItem_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Gallery.
         /// </summary>
         internal static string Gallery_FlyoutItem_Title {
             get {
                 return ResourceManager.GetString("Gallery_FlyoutItem_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import &amp; Export.
+        /// </summary>
+        internal static string ImportExport_FlyoutItem_Title {
+            get {
+                return ResourceManager.GetString("ImportExport_FlyoutItem_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Labels.
+        /// </summary>
+        internal static string Labels_FlyoutItem_Title {
+            get {
+                return ResourceManager.GetString("Labels_FlyoutItem_Title", resourceCulture);
             }
         }
         
@@ -102,6 +129,24 @@ namespace Diary.Resources.Texts {
         internal static string Mood_FlyoutItem_Title {
             get {
                 return ResourceManager.GetString("Mood_FlyoutItem_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Templates.
+        /// </summary>
+        internal static string Templates_FlyoutItem_Title {
+            get {
+                return ResourceManager.GetString("Templates_FlyoutItem_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time Machine.
+        /// </summary>
+        internal static string TimeMachine_FlyoutItem_Title {
+            get {
+                return ResourceManager.GetString("TimeMachine_FlyoutItem_Title", resourceCulture);
             }
         }
     }
