@@ -11,12 +11,12 @@ The Personal Diary Management Application is designed to help users maintain a d
 
 ### Introduction Screen
 - Overview of entries: Provides a comprehensive view of all diary entries.
-- Filtering and sorting: Filter entries by creation date, mood and labels. Sort entries for easier navigation.
+- Filtering and sorting: Filter entries by date, mood and labels. Sort entries for easier navigation.
 - New entry creation: Add new entries using a form. Users can select a template to pre-fill the entry details, which can then be customized.
 - Calendar view: Display entries in a calendar format. Users can select a specific date to show only the entries that were added on that day.
 
 ### Entry Detail
-- Display entry information: Shows all details related to an entry, including creation date, modification date, location, labels, mood and attached media.
+- Display entry information: Shows all details related to an entry, including date, location, labels, mood and attached media.
 - Entry management: Edit, delete, or mark entries as favorites for quick access. Users can also assign labels to entries for better organization and filtering. Additionally, users can attach images and videos to enrich their entries.
 
 ### Labels
@@ -32,7 +32,7 @@ The Personal Diary Management Application is designed to help users maintain a d
 - Push notifications: Receive push notifications when an anniversary arrives, reminding users of entries from previous years.
 
 ### Gallery
-- Media overview: View all images and videos associated with entries by the date they were created.
+- Media overview: View all images and videos associated with entries by date.
 
 ### Map
 - Google Maps integration: View entries on a map with points representing their locations.
@@ -48,6 +48,8 @@ To install and run the latest version of the Personal Diary Management Applicati
 
 ### Method 1: Install Pre-Built Application
 Visit the [release page](https://github.com/therazix/pv239-diary/releases/latest) on GitHub to download the latest `.apk` and `.aab` files for your Android device.
+
+> ⚠️ Maps are no longer working due to invalidated API keys. If you wish to use maps, you need to provide your own API keys and build the application yourself. Please refer to Method 2 for detailed instructions.
 
 ### Method 2: Build from source
 If you prefer to build the application directly from the source code, follow these steps:
@@ -76,7 +78,13 @@ cd pv239-diary
 dotnet restore Diary/Diary/Diary.csproj
 ```
 
-6. Build application
+6. Change API keys
+
+In the `Diary/Diary/Platforms/Android/AndroidManifest.xml` file, change the value of `com.google.android.geo.API_KEY` to your own Google Maps API key. You can obtain the API key [here](https://developers.google.com/maps/documentation/android-sdk).
+
+> ℹ️ If you wish to try out the Windows version of the application, you also need to change the `BingMapsApiKey` located in the `Diary/Diary/Constants.cs` file. You can obtain the API key [here](https://www.bingmapsportal.com/). This step is not required for Android.
+
+7. Build application
 ```sh
 dotnet build Diary/Diary/Diary.csproj -f net8.0-android -c Release
 ```
